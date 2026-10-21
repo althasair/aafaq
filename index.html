@@ -706,7 +706,7 @@ let ROUND=0;
 const S={g:0,i:0,pts:0,streak:0,mult:1};
 
 /* ===== sync between devices (Google Apps Script) ===== */
-const SYNC_URL='__SYNC_URL__';
+const SYNC_URL='https://script.google.com/macros/s/AKfycbyhKJXdNa_6ipWnfuywUXbj0i-4QAtyAv3lh-pqwtkUd50ojGBG63d3yvxXkAbE0Bvk/exec';
 const SY={on:/^https:\/\/script\.google\.com\//.test(SYNC_URL),off:0,d:{},m:{},mode:'view',pin:'',ok:0,err:0,ev:[],sent:'',ctlSig:'',grpSig:'',adopted:false,sel:null};
 try{SY.pin=localStorage.getItem('aafaq-pin')||''}catch(e){}
 let DONE={},TL={};try{DONE=JSON.parse(localStorage.getItem('aafaq-done')||'{}')}catch(e){}
