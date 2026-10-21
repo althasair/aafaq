@@ -250,6 +250,11 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
 .go-t{font-family:var(--f-ruqaa);font-size:clamp(40px,7.5vw,96px);color:var(--rosso);line-height:1.1}
 .go-c{font-size:clamp(70px,14vw,180px);font-weight:800;color:var(--emerald);animation:pulse 1s infinite}
 .go p{font-size:clamp(14px,2vw,24px);color:var(--muted);margin:0}
+.go-lock{display:flex;align-items:center;gap:12px;justify-content:center;font-size:clamp(13px,1.65vw,22px);font-weight:700;color:var(--leather);background:#fff;border:1px dashed var(--gold);border-radius:999px;padding:1.2% 4%;white-space:nowrap}
+.go-lock .pulse{width:16px;height:16px;border-radius:50%;background:var(--rosso);animation:pl 1.4s ease-in-out infinite}
+.go .go-ask{font-family:var(--f-verse);font-size:clamp(20px,3.2vw,44px);color:var(--emerald);font-weight:700}
+.go-open{font-size:clamp(16px,2.2vw,30px)!important;padding:1.4% 4%!important;border-radius:14px!important}
+.go-msg{color:var(--rosso);font-weight:700;font-size:clamp(12px,1.4vw,18px)}
 .envs{display:grid;grid-template-columns:1.2fr 1fr;gap:3%;flex:1;min-height:0}
 .gal{display:grid;gap:2%;grid-template-columns:repeat(auto-fit,minmax(0,1fr));min-height:0;align-items:center}
 .gal img{width:100%;height:100%;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:6px;min-height:0}
@@ -425,9 +430,9 @@ body.noanno .cl{border-color:transparent;padding:0;margin:0}body.noanno .cl-tag{
 .nxt ul{margin:0;padding:0;list-style:none;display:grid;gap:2px;font-size:13px}.nxt li b{color:var(--rosso)}
 @media (max-width:900px){.nxt{grid-template-columns:repeat(2,1fr)}}
 /* demo-lab slide */
-.dl{display:grid;grid-template-columns:1.25fr 1fr;gap:2.5%;flex:1;min-height:0}
-.dl-scr{position:relative;background:#FBF6EC;border:2px solid var(--gold);border-radius:10px;padding:2% 2.2%;display:flex;flex-direction:column;gap:2.2%;font-size:clamp(7px,.74vw,10px);line-height:1.35;min-height:0;overflow:hidden}
-.dl-scr svg{height:3.4vw;max-height:46px;width:100%}
+.dl{display:grid;grid-template-columns:1.15fr 1fr;gap:2.5%;flex:1;min-height:0}
+.dl-scr{position:relative;background:#FBF6EC;border:2px solid var(--gold);border-radius:10px;padding:2% 2.2%;display:flex;flex-direction:column;justify-content:space-between;gap:2%;font-size:clamp(7px,.78vw,11px);line-height:1.35;min-height:0;overflow:hidden}
+.dl-scr svg{height:3.2vw;max-height:52px;width:100%}
 .dl-b{position:relative;background:#fff;border:1px solid var(--line);border-radius:6px;padding:.95em 1.6% .35em;transition:box-shadow .3s,transform .3s}
 .dl-b.hot{box-shadow:0 0 0 3px var(--rosso),0 8px 18px -8px rgba(0,0,0,.5);transform:scale(1.015);z-index:2}
 .dl-n{position:absolute;top:-.9em;inset-inline-start:-.6em;width:1.9em;height:1.9em;border-radius:50%;display:grid;place-items:center;background:var(--emerald);color:#F1D9A0;font-weight:800;font-size:1.15em;border:2px solid #F1D9A0;z-index:3}
@@ -439,6 +444,17 @@ body.noanno .cl{border-color:transparent;padding:0;margin:0}body.noanno .cl-tag{
 .dl-score{display:flex;justify-content:space-between;align-items:center;background:var(--leather,#3B2416);color:#F1D9A0;border-radius:6px;padding:1% 2%}
 .dl-score em{font-style:normal;background:var(--rosso);color:#fff;border-radius:999px;padding:0 6px}
 .dl-score i{font-style:normal;background:#C59A52;color:#fff;border-radius:4px;padding:1px 8px}
+.dl-side{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:2.5%;min-height:0}
+.dl-card{background:#fff;border:2px solid var(--gold);border-radius:12px;padding:4% 5.5%;display:grid;gap:3%;align-content:start;overflow:hidden;min-height:0;box-shadow:0 10px 24px -14px rgba(0,0,0,.4)}
+.dl-card.in{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.dc-h{display:flex;align-items:center;gap:12px}.dc-h b{font-family:var(--f-verse);font-size:clamp(18px,2.3vw,34px);color:var(--emerald);line-height:1.2}
+.dc-n{flex:none;width:1.7em;height:1.7em;border-radius:50%;display:grid;place-items:center;background:var(--rosso);color:#F1D9A0;font-weight:800;font-size:clamp(18px,2.2vw,30px)}
+.dl-card p{margin:0;font-size:clamp(13px,1.5vw,22px);line-height:1.7;color:var(--ink)}
+.dc-do{font-size:clamp(12px,1.3vw,19px);color:var(--leather);background:#FBF6EC;border-radius:8px;padding:2.5% 4%}.dc-do i{font-style:normal;font-weight:800;color:var(--emerald)}
+.dc-ax{justify-self:start;font-size:clamp(11px,1.2vw,17px);font-weight:800;color:#fff;background:var(--rosso);border-radius:999px;padding:1% 4%}
+.dl-nav{display:flex;flex-wrap:nowrap;gap:4px;justify-content:center;align-items:center}
+.dl-dot,.dl-arr{width:clamp(22px,2.05vw,32px);height:clamp(22px,2.05vw,32px);padding:0;border-radius:50%;border:2px solid var(--gold);background:#fff;color:var(--emerald);font-weight:800;font-size:clamp(12px,1.2vw,17px);cursor:pointer;font-family:inherit}
+.dl-dot.on{background:var(--rosso);border-color:var(--rosso);color:#fff}.dl-arr{background:var(--emerald);color:#F1D9A0;border-color:var(--emerald)}
 .dl-leg{list-style:none;margin:0;padding:0;display:grid;gap:.6%;align-content:start;overflow:hidden}
 .dl-leg li{display:grid;grid-template-columns:auto 1fr;gap:6px;align-items:start;padding:.3% 1.2%;border-radius:8px;border:1px solid transparent;cursor:pointer;font-size:clamp(8px,.92vw,12.5px);line-height:1.35;transition:background .3s}
 .dl-leg li small{display:none!important}.dl-leg li.hot small{display:block!important}
@@ -454,6 +470,7 @@ body.noanno .cl{border-color:transparent;padding:0;margin:0}body.noanno .cl-tag{
 .rg>div{background:#fff;border:1px solid var(--line);border-radius:8px;padding:3% 5%;display:grid;gap:2px;align-content:start}
 .rg .gn{font-family:var(--f-ruqaa);font-size:2em;color:var(--emerald);line-height:1.1}
 .rg .m b{color:var(--ink)}.rg .m span{color:var(--rosso);font-weight:700}.rg .m small{display:block;color:var(--muted)}
+.hm1{flex:1;min-height:0;position:relative}.hm1 img{position:absolute;inset:0;margin:auto;max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;border:2px solid var(--gold);box-shadow:0 12px 26px -16px rgba(0,0,0,.5)}
 .hm{display:grid;grid-template-columns:1.7fr 1fr;gap:2.5%;flex:1;min-height:0}
 .hm img{width:100%;height:100%;object-fit:contain;border-radius:8px;border:1px solid var(--line);background:#fff;min-height:0}
 .hm ol{list-style:none;margin:0;padding:0;display:grid;gap:1.4%;align-content:start;font-size:clamp(9px,1.1vw,14px)}
@@ -464,6 +481,37 @@ body.noanno .cl{border-color:transparent;padding:0;margin:0}body.noanno .cl-tag{
 .en li{background:#fff;border:1px solid var(--line);border-radius:8px;padding:2% 3%;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
 .en li .k{width:2em;height:2em;border-radius:50%;display:grid;place-items:center;background:var(--emerald);color:#F1D9A0;font-weight:800}
 .en li small{display:block;color:var(--muted);font-size:.8em}
+.gd{display:grid;grid-template-columns:1fr 1.25fr;gap:2.5%;flex:1;min-height:0}
+.gd-st{list-style:none;margin:0;padding:0;display:grid;gap:1.6%;align-content:start}
+.gd-st li{background:#fff;border:1px solid var(--line);border-radius:10px;padding:1.6% 3%;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+.gd-st .k{width:1.9em;height:1.9em;border-radius:50%;display:grid;place-items:center;background:var(--emerald);color:#F1D9A0;font-weight:800;font-size:clamp(12px,1.3vw,19px)}
+.gd-st b{display:block;font-size:clamp(12px,1.35vw,20px);color:var(--emerald)}.gd-st small{display:block;font-size:clamp(10px,1vw,15px);color:var(--muted);margin-top:1px;line-height:1.4}
+.gd-pg{background:#fff;border:1px solid #CDBB98;border-radius:4px;padding:2.4% 3%;box-shadow:0 14px 30px -16px rgba(0,0,0,.45);display:grid;gap:1.6%;align-content:start;transform:rotate(-.6deg);font-size:clamp(8px,.86vw,12.5px);line-height:1.35;overflow:hidden;min-height:0}
+.gd-cap{justify-self:start;background:var(--rosso);color:#fff;font-weight:800;border-radius:999px;padding:.6% 3%;font-size:.95em}
+.gd-t{font-weight:800;color:var(--emerald);font-size:1.35em;border-bottom:2px solid var(--gold);padding-bottom:.6%}.gd-t2{font-weight:800;color:var(--emerald);font-size:1.15em;margin-top:1%}
+.gd-tb{width:100%;border-collapse:collapse}.gd-tb th,.gd-tb td{border:1px solid #D9CBB0;padding:.5% 1.2%;text-align:start;vertical-align:top}
+.gd-tb th{background:#F3ECDD;color:var(--leather);white-space:nowrap;width:1%}.gd-l th{white-space:normal;width:auto}.gd-l tr:first-child th{background:var(--emerald);color:#F1D9A0}
+.gd-l tr.me{outline:3px solid var(--rosso);outline-offset:-2px}.gd-l tr.me em{display:block;font-style:normal;color:var(--rosso);font-weight:800}
+.hw{font-family:var(--f-ruqaa);color:#1D3F8F;font-size:1.12em;line-height:1.45}
+.gx{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6%;flex:1;min-height:0;overflow:hidden}
+.gx>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:4% 5.5%;display:grid;gap:4px;align-content:start;font-size:clamp(9px,1.1vw,15.5px);line-height:1.4;overflow:hidden}
+.gx-h b{display:block;font-size:1.35em;color:var(--emerald)}.gx-h span{color:var(--rosso);font-weight:800}
+.gx-l{background:#F3ECDD;border-radius:6px;padding:3% 5%;color:var(--leather);font-weight:700}
+.gx-r{display:grid;gap:2px}.gx-r i{font-style:normal;font-weight:800;color:var(--muted);font-size:.9em}
+.ip .ih{justify-content:space-between}
+.ip-dots{display:flex;gap:6px}.ip-dots i{width:12px;height:12px;border-radius:50%;background:var(--line)}.ip-dots i.on{background:var(--rosso)}
+.ip-body{display:grid;gap:16px;min-height:52vh;align-content:center;text-align:center;animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.ip-t{font-family:var(--f-verse);font-weight:700;font-size:clamp(26px,3.6vw,48px);color:var(--emerald);line-height:1.3}
+.ip-big{font-weight:800;font-size:clamp(24px,3.2vw,44px);color:var(--leather);line-height:1.4}
+.ip-q{font-size:clamp(18px,2.2vw,30px);color:var(--ink);line-height:1.6}
+.ip-joke{justify-self:center;background:#FFF6D8;color:var(--rosso);border:3px solid var(--rosso);border-radius:18px;padding:12px 26px;font-weight:800;font-size:clamp(18px,2.2vw,30px);transform:rotate(-1.5deg)}
+.ip-qs{list-style:none;margin:0;padding:0;display:grid;gap:10px;justify-items:center}.ip-qs li{background:var(--emerald);color:#F1D9A0;border-radius:999px;padding:8px 26px;font-weight:800;font-size:clamp(17px,2vw,28px)}
+.ip-pts{display:grid;gap:10px;max-width:1100px;justify-self:center}.ip-pts p{margin:0;font-size:clamp(16px,1.9vw,26px);line-height:1.7;background:#fff;border:1px solid var(--line);border-inline-start:6px solid var(--gold);border-radius:10px;padding:10px 18px;text-align:start}
+.ip-pts.big p{font-size:clamp(18px,2.2vw,30px)}
+.ip-sign{font-family:var(--f-ruqaa);font-size:clamp(26px,3.2vw,44px);color:var(--rosso)}
+.ip-go{font-weight:800;font-size:clamp(22px,2.8vw,38px);color:var(--rosso)}
+.ip-ctl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;border-top:1px solid var(--line);padding-top:10px}
+.vrow{display:grid;gap:6px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px}.vst{font-size:13px;color:var(--muted)}
 .donecard{text-align:center;display:grid;gap:12px;justify-items:center;padding:28px 16px;background:rgba(255,250,241,.95);border:1px solid var(--gold,#C59A52);border-radius:10px;box-shadow:0 10px 30px rgba(59,36,22,.12)}
 .donecard .seal{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:38px;color:#fff;background:radial-gradient(circle at 35% 30%,#2F7A55,#123F2C);box-shadow:0 0 0 6px rgba(197,154,82,.35)}
 .donecard.tout .seal{background:radial-gradient(circle at 35% 30%,#C59A52,#8C6A2F)}
@@ -609,6 +657,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:26px;borde
         <div class="box"><h3>باركود الدخول</h3><p class="lede" style="font-size:13px">يُطبع باركود كل مجموعة على طاولتها، وباركود التوجيه على مقاعد الضيوف.</p>
           <div class="qrs"><figure><div class="qr"><svg viewBox="0 0 132 132" class="segno"><g transform="scale(4)"><path fill="#fff" d="M0 0h33v33h-33z"/><path class="qrline" stroke="#3b2416" d="M2 2.5h7m1 0h2m2 0h2m2 0h2m4 0h7m-29 1h1m5 0h1m1 0h2m1 0h4m1 0h1m2 0h2m1 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h2m4 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m7 0h1m1 0h2m1 0h2m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h3m3 0h1m1 0h4m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m2 0h1m1 0h1m6 0h1m3 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-19 1h2m1 0h3m2 0h2m-20 1h1m2 0h6m3 0h2m1 0h7m2 0h1m1 0h3m-29 1h2m1 0h1m1 0h1m2 0h1m1 0h1m1 0h8m3 0h2m1 0h2m-28 1h2m1 0h1m2 0h6m1 0h1m1 0h2m4 0h1m1 0h2m1 0h1m-26 1h1m3 0h1m1 0h1m1 0h2m1 0h2m1 0h1m1 0h2m2 0h3m1 0h1m2 0h1m-26 1h2m1 0h1m2 0h3m1 0h1m2 0h1m3 0h1m1 0h2m4 0h1m-29 1h1m1 0h1m1 0h1m2 0h2m1 0h6m1 0h2m2 0h8m-29 1h1m3 0h1m1 0h2m3 0h3m1 0h1m2 0h5m1 0h1m1 0h1m1 0h1m-29 1h1m1 0h1m1 0h2m2 0h2m2 0h1m3 0h1m2 0h1m1 0h1m1 0h2m1 0h1m1 0h1m-27 1h1m2 0h3m1 0h1m1 0h2m1 0h3m3 0h1m4 0h1m-26 1h1m2 0h1m6 0h2m1 0h3m2 0h3m3 0h1m1 0h2m-28 1h3m1 0h3m2 0h2m1 0h1m2 0h1m3 0h7m2 0h1m-29 1h3m4 0h1m2 0h3m1 0h1m6 0h1m1 0h1m1 0h2m-27 1h2m1 0h1m1 0h2m1 0h1m2 0h1m1 0h6m1 0h8m-20 1h1m5 0h2m1 0h2m1 0h1m3 0h2m-26 1h7m1 0h1m1 0h2m2 0h2m3 0h2m1 0h1m1 0h2m-26 1h1m5 0h1m1 0h1m5 0h2m1 0h1m2 0h1m3 0h1m2 0h2m-29 1h1m1 0h3m1 0h1m1 0h9m2 0h7m2 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m2 0h2m1 0h2m1 0h1m6 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m3 0h3m2 0h2m1 0h1m1 0h2m1 0h3m-29 1h1m5 0h1m2 0h3m2 0h1m1 0h1m2 0h1m3 0h4m1 0h1m-29 1h7m1 0h8m3 0h2m2 0h2"/></g></svg></div><figcaption>السابقات</figcaption></figure><figure><div class="qr"><svg viewBox="0 0 132 132" class="segno"><g transform="scale(4)"><path fill="#fff" d="M0 0h33v33h-33z"/><path class="qrline" stroke="#3b2416" d="M2 2.5h7m2 0h1m1 0h1m3 0h2m2 0h1m2 0h7m-29 1h1m5 0h1m4 0h3m1 0h1m1 0h2m3 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m2 0h3m3 0h1m1 0h1m4 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m2 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m5 0h5m1 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m1 0h1m4 0h5m1 0h2m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-18 1h2m3 0h2m2 0h1m-21 1h1m2 0h1m1 0h2m1 0h4m4 0h1m1 0h1m1 0h2m1 0h1m-24 1h3m2 0h1m2 0h1m2 0h1m8 0h3m2 0h1m2 0h1m-28 1h1m2 0h3m1 0h1m1 0h3m3 0h2m1 0h1m4 0h4m-26 1h1m1 0h1m3 0h1m1 0h3m1 0h1m1 0h1m2 0h2m3 0h1m1 0h2m-28 1h5m1 0h1m5 0h1m2 0h3m1 0h4m2 0h1m1 0h2m-27 1h2m3 0h2m2 0h1m4 0h1m2 0h2m-21 1h4m1 0h2m3 0h1m1 0h1m4 0h2m1 0h1m1 0h7m-28 1h1m1 0h1m4 0h1m1 0h1m2 0h3m1 0h2m1 0h1m1 0h1m2 0h1m1 0h1m-26 1h1m2 0h4m1 0h1m2 0h2m1 0h2m1 0h3m1 0h1m3 0h1m-25 1h1m1 0h1m2 0h4m4 0h2m3 0h3m1 0h1m2 0h1m-29 1h1m1 0h1m1 0h1m1 0h1m2 0h2m2 0h1m3 0h1m2 0h1m1 0h1m1 0h1m2 0h2m-27 1h2m1 0h1m2 0h3m1 0h2m1 0h6m1 0h1m1 0h1m2 0h2m-29 1h1m2 0h1m1 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h7m1 0h1m-19 1h1m1 0h2m1 0h1m2 0h1m2 0h2m3 0h1m1 0h3m-29 1h7m2 0h1m1 0h4m2 0h1m2 0h1m1 0h1m1 0h1m2 0h1m-28 1h1m5 0h1m1 0h1m1 0h4m2 0h1m1 0h3m3 0h3m-27 1h1m1 0h3m1 0h1m7 0h1m1 0h2m2 0h5m2 0h2m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h1m2 0h1m2 0h1m1 0h6m-28 1h1m1 0h3m1 0h1m2 0h2m2 0h1m3 0h2m5 0h3m1 0h1m-29 1h1m5 0h1m2 0h2m2 0h1m1 0h1m1 0h2m1 0h3m4 0h1m-28 1h7m1 0h3m3 0h1m2 0h1m2 0h2m2 0h2m1 0h1"/></g></svg></div><figcaption>الذاريات</figcaption></figure><figure><div class="qr"><svg viewBox="0 0 132 132" class="segno"><g transform="scale(4)"><path fill="#fff" d="M0 0h33v33h-33z"/><path class="qrline" stroke="#3b2416" d="M2 2.5h7m2 0h2m1 0h1m2 0h2m2 0h1m2 0h7m-29 1h1m5 0h1m1 0h1m6 0h5m2 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m2 0h4m2 0h1m4 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m6 0h1m1 0h1m2 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h2m2 0h2m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m3 0h2m1 0h1m1 0h2m2 0h1m2 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h2m2 0h1m3 0h1m1 0h2m-21 1h1m1 0h1m1 0h1m1 0h1m4 0h2m1 0h1m1 0h3m5 0h1m2 0h1m-28 1h4m5 0h2m1 0h1m7 0h3m2 0h1m2 0h1m-28 1h1m1 0h2m1 0h1m4 0h1m1 0h1m3 0h1m4 0h1m1 0h1m1 0h3m-29 1h3m1 0h2m1 0h2m1 0h3m3 0h2m1 0h1m3 0h2m2 0h1m-28 1h2m1 0h1m2 0h1m1 0h3m1 0h1m2 0h3m1 0h4m2 0h1m1 0h2m-26 1h3m2 0h2m3 0h1m6 0h1m1 0h1m2 0h1m2 0h1m-29 1h2m4 0h5m1 0h1m1 0h1m3 0h1m3 0h1m1 0h2m1 0h2m-28 1h2m1 0h2m1 0h9m1 0h2m1 0h1m1 0h1m2 0h1m1 0h1m-28 1h2m2 0h1m1 0h3m2 0h2m1 0h1m2 0h1m2 0h4m1 0h1m1 0h2m-28 1h1m5 0h1m2 0h1m1 0h1m1 0h1m1 0h1m3 0h3m2 0h2m1 0h1m-29 1h1m1 0h1m2 0h2m1 0h1m3 0h2m3 0h1m2 0h1m1 0h1m1 0h1m2 0h2m-28 1h1m7 0h1m1 0h2m2 0h1m1 0h2m1 0h1m3 0h2m1 0h1m-28 1h1m3 0h1m1 0h1m1 0h1m2 0h1m4 0h9m-17 1h2m3 0h1m2 0h1m2 0h2m3 0h1m1 0h3m-29 1h7m3 0h1m1 0h1m1 0h1m1 0h2m1 0h2m1 0h1m1 0h2m1 0h2m-29 1h1m5 0h1m5 0h3m1 0h5m3 0h2m-26 1h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h1m1 0h2m2 0h5m2 0h2m-29 1h1m1 0h3m1 0h1m2 0h1m2 0h3m1 0h2m1 0h2m2 0h2m1 0h3m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m4 0h1m1 0h1m2 0h3m2 0h1m-29 1h1m5 0h1m2 0h3m2 0h2m1 0h2m1 0h3m4 0h1m-28 1h7m1 0h1m3 0h1m3 0h2m1 0h4m1 0h1m2 0h2"/></g></svg></div><figcaption>الفارقات</figcaption></figure><figure><div class="qr"><svg viewBox="0 0 132 132" class="segno"><g transform="scale(4)"><path fill="#fff" d="M0 0h33v33h-33z"/><path class="qrline" stroke="#3b2416" d="M2 2.5h7m1 0h4m2 0h1m4 0h2m1 0h7m-29 1h1m5 0h1m1 0h3m5 0h3m1 0h1m1 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h3m1 0h1m2 0h2m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h2m1 0h1m1 0h4m1 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m2 0h3m1 0h1m3 0h1m1 0h1m2 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-21 1h1m5 0h2m1 0h1m-18 1h1m1 0h2m1 0h3m1 0h2m1 0h2m2 0h2m1 0h2m1 0h1m2 0h1m1 0h2m-29 1h2m1 0h1m1 0h1m2 0h1m2 0h3m3 0h8m3 0h1m-29 1h8m1 0h2m1 0h2m2 0h1m1 0h1m4 0h1m2 0h2m-28 1h1m2 0h1m1 0h1m3 0h2m1 0h1m2 0h1m3 0h1m1 0h2m1 0h1m3 0h1m-28 1h2m1 0h3m2 0h1m1 0h2m1 0h1m2 0h1m1 0h1m5 0h2m-26 1h5m1 0h1m4 0h1m1 0h2m3 0h1m1 0h2m3 0h3m-27 1h1m2 0h4m2 0h1m1 0h1m5 0h2m1 0h1m3 0h3m-26 1h3m1 0h1m3 0h1m2 0h2m3 0h2m1 0h3m2 0h1m-27 1h2m3 0h4m1 0h2m1 0h1m1 0h1m1 0h1m1 0h2m2 0h2m1 0h1m-25 1h3m1 0h2m1 0h1m1 0h1m1 0h2m1 0h1m2 0h1m2 0h1m1 0h3m-28 1h1m1 0h2m2 0h1m2 0h9m3 0h1m2 0h1m1 0h1m-25 1h4m3 0h1m1 0h4m2 0h3m1 0h1m2 0h1m1 0h1m-26 1h1m2 0h3m1 0h3m2 0h2m1 0h2m2 0h7m-19 1h5m3 0h3m1 0h1m3 0h5m-29 1h7m1 0h2m1 0h2m1 0h1m3 0h3m1 0h1m1 0h2m1 0h1m-28 1h1m5 0h1m1 0h2m2 0h4m2 0h3m3 0h2m1 0h2m-29 1h1m1 0h3m1 0h1m8 0h1m1 0h1m2 0h5m1 0h1m-27 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m1 0h3m3 0h1m1 0h3m2 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m5 0h1m4 0h1m3 0h1m2 0h1m1 0h1m-29 1h1m5 0h1m3 0h6m3 0h7m1 0h1m-28 1h7m1 0h1m1 0h1m7 0h4m1 0h1m3 0h1"/></g></svg></div><figcaption>العاديات</figcaption></figure><figure><div class="qr"><svg viewBox="0 0 132 132" class="segno"><g transform="scale(4)"><path fill="#fff" d="M0 0h33v33h-33z"/><path class="qrline" stroke="#3b2416" d="M2 2.5h7m1 0h6m2 0h2m4 0h7m-29 1h1m5 0h1m1 0h2m3 0h1m2 0h1m2 0h2m1 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m3 0h3m4 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m4 0h2m1 0h1m1 0h2m1 0h2m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h2m1 0h2m1 0h1m1 0h4m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m2 0h1m2 0h1m5 0h1m3 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h1m3 0h3m2 0h2m-20 1h1m2 0h7m1 0h3m1 0h7m2 0h1m1 0h3m-29 1h5m3 0h1m4 0h7m3 0h2m1 0h2m-26 1h2m2 0h1m1 0h1m1 0h1m1 0h2m1 0h2m4 0h1m1 0h2m1 0h1m-27 1h1m1 0h2m4 0h3m2 0h1m1 0h1m1 0h2m2 0h3m1 0h1m2 0h1m-27 1h1m1 0h1m1 0h2m4 0h2m2 0h1m3 0h1m1 0h2m4 0h1m-29 1h2m1 0h3m3 0h2m2 0h3m1 0h2m2 0h8m-29 1h1m1 0h1m2 0h2m1 0h1m3 0h2m1 0h1m2 0h5m1 0h1m1 0h1m1 0h1m-26 1h2m3 0h1m1 0h1m1 0h1m3 0h1m2 0h1m1 0h1m1 0h2m1 0h1m1 0h1m-28 1h1m1 0h1m1 0h2m1 0h1m3 0h1m1 0h3m3 0h1m4 0h1m-26 1h1m1 0h1m1 0h1m2 0h9m2 0h3m3 0h1m1 0h2m-28 1h2m1 0h1m2 0h2m2 0h1m4 0h1m3 0h7m2 0h1m-29 1h2m3 0h1m2 0h2m1 0h1m2 0h1m6 0h1m1 0h1m1 0h2m-27 1h3m2 0h5m3 0h6m1 0h8m-20 1h3m1 0h1m1 0h2m1 0h2m1 0h1m3 0h2m-26 1h7m1 0h2m4 0h2m3 0h2m1 0h1m1 0h2m-26 1h1m5 0h1m1 0h4m2 0h2m1 0h1m2 0h1m3 0h1m2 0h2m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h7m2 0h7m2 0h1m-29 1h1m1 0h3m1 0h1m1 0h3m4 0h2m1 0h2m1 0h1m6 0h1m-29 1h1m1 0h3m1 0h1m4 0h1m3 0h1m2 0h2m1 0h1m1 0h2m1 0h3m-29 1h1m5 0h1m2 0h1m2 0h1m1 0h1m1 0h1m2 0h1m3 0h4m1 0h1m-29 1h7m1 0h1m1 0h1m2 0h3m3 0h2m2 0h2"/></g></svg></div><figcaption>الموريات</figcaption></figure><figure><div class="qr"><svg viewBox="0 0 132 132" class="segno"><g transform="scale(4)"><path fill="#fff" d="M0 0h33v33h-33z"/><path class="qrline" stroke="#3b2416" d="M2 2.5h7m2 0h1m2 0h1m2 0h1m3 0h1m2 0h7m-29 1h1m5 0h1m1 0h3m1 0h8m2 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m2 0h2m4 0h1m4 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m4 0h1m2 0h2m2 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h2m2 0h4m2 0h2m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m3 0h1m2 0h1m1 0h2m2 0h1m2 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h3m1 0h2m2 0h1m1 0h2m-21 1h1m1 0h1m1 0h1m1 0h1m2 0h2m1 0h2m2 0h3m5 0h1m2 0h1m-28 1h1m1 0h3m4 0h1m3 0h1m6 0h3m2 0h1m2 0h1m-26 1h1m2 0h1m1 0h4m5 0h1m4 0h1m1 0h1m1 0h3m-27 1h4m3 0h3m1 0h1m2 0h2m1 0h1m3 0h2m2 0h1m-28 1h1m5 0h3m1 0h1m1 0h2m1 0h3m1 0h4m2 0h1m1 0h2m-28 1h1m1 0h1m1 0h1m1 0h3m1 0h1m1 0h1m6 0h1m1 0h1m2 0h1m2 0h1m-28 1h2m1 0h1m1 0h4m1 0h1m6 0h1m3 0h1m1 0h2m1 0h2m-29 1h4m3 0h2m2 0h5m1 0h2m1 0h1m1 0h1m2 0h1m1 0h1m-28 1h2m3 0h2m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m2 0h4m1 0h1m1 0h2m-27 1h4m2 0h1m2 0h3m2 0h1m3 0h3m2 0h2m1 0h1m-29 1h1m2 0h2m1 0h1m1 0h2m4 0h1m2 0h1m2 0h1m1 0h1m1 0h1m2 0h2m-28 1h1m3 0h1m1 0h1m1 0h2m1 0h2m1 0h1m1 0h2m1 0h1m3 0h2m1 0h1m-28 1h1m2 0h10m1 0h1m1 0h9m-17 1h4m4 0h1m2 0h2m3 0h1m1 0h3m-29 1h7m2 0h1m3 0h1m2 0h2m1 0h2m1 0h1m1 0h2m1 0h2m-29 1h1m5 0h1m3 0h2m4 0h5m3 0h2m1 0h1m-28 1h1m1 0h3m1 0h1m1 0h1m1 0h3m3 0h2m2 0h5m-25 1h1m1 0h3m1 0h1m3 0h4m2 0h2m1 0h2m2 0h2m1 0h3m-29 1h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h2m3 0h1m1 0h1m2 0h3m2 0h1m-29 1h1m5 0h1m2 0h1m2 0h2m1 0h1m1 0h2m1 0h3m4 0h1m-28 1h7m1 0h3m1 0h1m1 0h1m1 0h2m1 0h4m1 0h1m2 0h2"/></g></svg></div><figcaption>أساتذتنا في التوجيه</figcaption></figure></div></div>
         <div class="box" style="overflow-x:auto"><h3>خريطة التدوير</h3><table class="rot" id="rotT"></table></div>
+        <div class="box" style="display:grid;gap:8px"><h3>الأصوات</h3><p class="lede" style="margin:0;font-size:13px">صوت يُسمع على هذا الجهاز مع بداية كل جولة، وصوت بعد الانفجار عند انتهاء الوقت. يُسجَّل بالصوت مباشرة (حتى 10 ثوانٍ) أو يُرفع ملف صوتي.</p><div id="vBox" style="display:grid;gap:10px"></div></div>
         <div class="box" style="display:grid;gap:8px"><h3>بيانات التجربة</h3><p class="lede" style="margin:0;font-size:13px">بعد البروفة تُمسح نقاط المجموعات وإجاباتها، ويبدأ يوم الملتقى من الصفر.</p><div class="row"><button class="btn ghost" id="aReset" type="button">مسح بيانات البروفة</button><span id="aResetMsg" style="font-size:13px;color:var(--muted)"></span></div></div>
       </div>
     </section>
@@ -1107,15 +1156,32 @@ const mmss=t=>{t=Math.max(0,Math.ceil(t));return String(Math.floor(t/60)).padSta
 function remain(){return C2.running?Math.max(0,(C2.endAt-Date.now())/1000):C2.remain}
 
 function startRound(r){
+  window._ipMan=null;playVoice('start');
   ROUND=r;C2.round=r;C2.phase='round';C2.boomAt=0;C2.remain=C2.dur;C2.endAt=Date.now()+C2.dur*1000;C2.running=true;C2.boomed=false;C2.nextAt=0;
   try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
   renderMe();refreshAll();stageBanner(r);renderAgenda();
 }
 function pause(){if(C2.phase!=='round')return;if(C2.running){C2.remain=remain();C2.running=false}else{C2.endAt=Date.now()+C2.remain*1000;C2.running=true}refreshAll()}
 function boomNow(){if(C2.phase!=='round')return;C2.remain=0;C2.endAt=Date.now();C2.running=true;}
+/* ===== voices: recorded or uploaded, kept on this device ===== */
+const VOICE={start:'«وقتكم يبدأ الآن»',end:'«انتهى الوقت»'};
+function vGet(k){try{return localStorage.getItem('aafaq-v-'+k)}catch(e){return null}}
+function vSet(k,v){try{v?localStorage.setItem('aafaq-v-'+k,v):localStorage.removeItem('aafaq-v-'+k);return true}catch(e){return false}}
+function chime(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const t=audioCtx.currentTime;[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,t+i*.12);g.gain.linearRampToValueAtTime(.22,t+i*.12+.02);g.gain.exponentialRampToValueAtTime(.001,t+i*.12+.9);o.connect(g);g.connect(audioCtx.destination);o.start(t+i*.12);o.stop(t+i*.12+1)})}catch(e){}}
+function playVoice(k){if(typeof SY!=='undefined'&&SY.mode==='group')return;const v=vGet(k);if(v){try{const a=new Audio(v);a.play().catch(()=>{})}catch(e){}}else if(k==='start')chime()}
+let _rec=null,_recK=null;
+function renderVoices(){const box=$('#vBox');if(!box)return;box.innerHTML=Object.keys(VOICE).map(k=>`<div class="vrow"><b>صوت ${VOICE[k]}</b><span class="vst">${vGet(k)?'✓ محفوظ على هذا الجهاز':(k==='start'?'الآن: نغمة افتتاح':'الآن: صوت الانفجار فقط')}</span>
+  <div class="row"><button class="btn ${_recK===k?'gold':''}" type="button" data-rec="${k}">${_recK===k?'■ إيقاف التسجيل':'● تسجيل بصوتي'}</button><label class="btn ghost" style="cursor:pointer">رفع ملف صوت<input type="file" accept="audio/*" data-up="${k}" hidden></label><button class="btn ghost" type="button" data-play="${k}">تجربة</button>${vGet(k)?`<button class="btn ghost" type="button" data-del="${k}">حذف</button>`:''}</div></div>`).join('')+'<div id="vMsg" class="sync-st"></div>';
+  box.querySelectorAll('[data-rec]').forEach(b=>b.onclick=async()=>{const k=b.dataset.rec;if(_rec){_rec.stop();return}
+    try{const st=await navigator.mediaDevices.getUserMedia({audio:true});const ch=[];_rec=new MediaRecorder(st);_recK=k;_rec.ondataavailable=e=>ch.push(e.data);
+      _rec.onstop=()=>{st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:_rec.mimeType||'audio/webm'});const fr=new FileReader();fr.onload=()=>{const ok=vSet(k,fr.result);$('#vMsg').textContent=ok?'تم حفظ الصوت':'الصوت طويل؛ يكفي تسجيل أقصر من 10 ثوانٍ';_rec=null;_recK=null;renderVoices()};fr.readAsDataURL(bl)};
+      _rec.start();renderVoices();setTimeout(()=>{if(_rec&&_recK===k)_rec.stop()},12000)}catch(e){$('#vMsg').textContent='تعذّر الوصول إلى الميكروفون؛ يلزم السماح للمتصفح باستخدامه'}});
+  box.querySelectorAll('[data-up]').forEach(i=>i.onchange=()=>{const f=i.files[0];if(!f)return;if(f.size>1500000){$('#vMsg').textContent='الملف كبير؛ اختاري مقطعاً أقصر';return}const fr=new FileReader();fr.onload=()=>{$('#vMsg').textContent=vSet(i.dataset.up,fr.result)?'تم حفظ الصوت':'تعذّر الحفظ';renderVoices()};fr.readAsDataURL(f)});
+  box.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const k=b.dataset.play;if(k==='end'){playBoom()}else playVoice(k)});
+  box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{vSet(b.dataset.del,null);renderVoices()});}
 function playBoom(){try{if(!audioCtx)return;const n=audioCtx.sampleRate*1.2,b=audioCtx.createBuffer(1,n,audioCtx.sampleRate),d=b.getChannelData(0);
   for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.5);const s=audioCtx.createBufferSource(),f=audioCtx.createBiquadFilter();f.type='lowpass';f.frequency.value=900;
-  s.buffer=b;s.connect(f);f.connect(audioCtx.destination);s.start()}catch(e){}}
+  s.buffer=b;s.connect(f);f.connect(audioCtx.destination);s.start()}catch(e){}setTimeout(()=>playVoice('end'),1600)}
 
 function tick(){
   if(C2.phase==='round'){
@@ -1123,7 +1189,7 @@ function tick(){
     if(r<=0&&!C2.boomed){C2.boomed=true;C2.boomAt=Date.now();C2.running=false;C2.remain=0;playBoom();
       if(C2.auto&&C2.round<4)C2.nextAt=Date.now()+120000; renderScreen(true);if(!$('#v-lab').hidden&&viewGroup===null)renderLab();}
     if(C2.nextAt&&Date.now()>=C2.nextAt&&(!SY.on||SY.mode==='admin')){C2.nextAt=0;startRound(C2.round+1);return}
-    if(C2.boomed){if(!C2.boomAt)C2.boomAt=Date.now();if(!$('#v-screen').hidden&&Date.now()-C2.boomAt>7000){if(!this._it||Date.now()-this._it>3000){this._it=Date.now();renderScreen(true)}else renderScreen(false)}}
+    if(C2.boomed){if(!C2.boomAt)C2.boomAt=Date.now();if(!$('#v-screen').hidden&&Date.now()-C2.boomAt>7000){renderScreen(false)}}
     updateScreen();
   }
   if(!$('#v-admin').hidden)$('#aState').textContent=stateText();
@@ -1153,20 +1219,47 @@ let curPhase=-1,phLast=0,phI=0;
 function tiles(t){t=Math.max(0,Math.ceil(t));const m=String(Math.floor(t/60)).padStart(2,'0'),s=String(t%60).padStart(2,'0');return [m[0],m[1],s[0],s[1]]}
 function roundPts(g,r){if(!SY.on)return null;const L=memList(g);return L.length?Math.max(...L.map(x=>(x.ev||[]).filter(e=>e.r===r).reduce((a,e)=>a+(e.g||0),0))):0}
 function totalPts(g){return SY.on?grpPts(g):(g===S.g?GROUPS[g].demo+S.pts:GROUPS[g].demo)}
+const FBQ=[
+ ["كيف كانت أول محطة؟","واجهتوا أي مشكلة في المعمل أو في الجوال؟ ولا أموركم تمام؟","«اللي ما ضبطت معاها… لا تحاتي، أينشتاين نفسه احتاج أكثر من محاولة!»"],
+ ["محطتين… والحماس للحين ما نزل؟","فيه شي ما كان واضح؟ والوقت كان كافي ولا القنبلة سبقتكم؟","«نيوتن يقول: الجسم الساكن يبقى ساكناً… بس انتوا ما شاء الله ما وقفتوا!»"],
+ ["نص الطريق… كيف الطاقة؟","أي محطة لين الحين كانت الأقرب لصفكِ؟","«المقاومة اليوم بس في الدوائر… مو في الحماس!»"],
+ ["أربع محطات وما زلتوا صامدات!","وش أكثر شي بتاخذينه معكِ لمدرستكِ؟","«الجهد عالي، والتيار ماشي… والدائرة مكتملة بوجودكم!»"],
+ ["خمس محطات… كفو والله!","وش أجمل لحظة مرت عليكِ اليوم؟","«تعبنا نيوتن وأينشتاين اليوم… وما قصّروا!»"]];
+const REMIND=[
+ {h:"تذكير: الفروق الفردية والتمايز",q:["هل لاحظتوا وجودهما في المحطة؟","هل شفتوهما مفيدين للمتعلمة؟"],p:["نراعي التمايز في كل نشاط: هدف واحد، ومستويات مختلفة.","لا نفتح الذكاء الاصطناعي إلا بعد انتهاء التجربة؛ وهذا سبب تحكّمنا في المنصة أمامكم.","وهذا ما ينبغي تطبيقه في حصصنا كلها، وما ستشاهدونه بإذن الله في حصة أ. سارة خالد."]},
+ {h:"تذكير: التمايز… من الملاحظة إلى التمكّن",q:["هل لاحظتوا التمايز هذه المرة؟","هل حسّيتوا أنكم تمكّنتوا منه؟","هل تحبون تطبيقه لما ترجعون إلى مدارسكم؟"],p:["نريد أن نتمكّن منه أكثر… فلنطبّقه في المحطة الثالثة."]},
+ {h:"من الدعم… إلى الأساسي… إلى التمكّن",q:["أي مستوى بدأتم به؟ وهل ارتقيتم؟"],p:["ننقل الطالبة من الدعم إلى الأساسي إلى التمكّن؛ لا تبقى طالبة في الدعم، فكل طالبة قادرة على أن تتمكّن وتتطور.","مستوى «الدعم» هنا للتدريب فقط، لتعرفي متى تحتاج الطالبة إلى دعم؛ ولن نسمّيه للطالبات.","وفي حصة أ. سارة خالد سترون الأمر مختلفاً تماماً، والمنصة نفسها مختلفة تبعاً للمرحلة العمرية والخبرة: إثارة دافعية أكثر، وتفاعل أكثر."]},
+ {h:"تذكير: التغذية الراجعة والذكاء الاصطناعي",q:["هل لاحظتوا شكل التغذية الراجعة بعد كل إجابة؟","وهل كشفتوا خطأ Copilot بالتجربة؟"],p:["التغذية الراجعة البنّاءة: ما تحقق، والدليل، والخطوة التالية.","والذكاء الاصطناعي بعد التجربة لا قبلها… والحكم دائماً للدليل."]}];
+const PANEL_MS=25000;
+function interPanels(){const r=C2.round;return r>=4?['res','fb','close','coffee']:['res','fb','rem','next']}
+function interIdx(){const P=interPanels();if(window._ipMan!=null&&window._ipR===C2.round)return Math.min(P.length-1,window._ipMan);return Math.max(0,Math.min(P.length-1,Math.floor((Date.now()-C2.boomAt-7000)/PANEL_MS)))}
 function interlude(){
-  const r=C2.round,last=r>=4;
+  const r=C2.round,last=r>=4,P=interPanels(),ip=interIdx(),kind=P[ip];
   const rp=GROUPS.map((g,k)=>({k,n:g.n,p:SY.on?roundPts(k,r):totalPts(k)})).sort((a,b)=>b.p-a.p);
   const tot=GROUPS.map((g,k)=>({k,n:g.n,p:totalPts(k)})).sort((a,b)=>b.p-a.p),max=Math.max(10,...tot.map(x=>x.p));
-  const w=last?tot[0]:rp[0];
-  const nx=last?'':`<div class="nxt">${GROUPS.map((g,k)=>{const st=stationOf(k,r+1);return `<div><span class="gn">${g.n}</span><span class="to">إلى الطاولة ${st+1}: ${ST[st][0]}</span><ul>${g.m.map((m,i)=>`<li>${m}: <b>${TASKS[(i+r+1)%4]}</b></li>`).join('')}</ul></div>`}).join('')}</div>`;
-  return `<div class="inter box"><div class="ih"><b>${last?'النتائج النهائية للمحطات':'نتائج الجولة '+ORD[r]}</b>${last?'':`<span class="cd">الجولة ${ORD[r+1]} بعد <span id="iCd">${mmss(C2.nextAt?(C2.nextAt-Date.now())/1000:0)}</span></span>`}</div>
-    <div class="win"><span class="cup" aria-hidden="true">🏆</span><div><small>${last?'المجموعة المتصدّرة بعد الجولات الخمس':'المجموعة الفائزة في هذه الجولة'}</small><strong>${w.n}</strong><small>${w.p} نقطة</small></div></div>
-    <div class="board">${tot.map(x=>`<div class="lane"><div class="nm">${x.n}</div><div class="track"><i style="width:${(x.p/max*100).toFixed(1)}%"></i></div><b>${x.p}</b></div>`).join('')}</div>
-    ${last?'<p class="lede" style="text-align:center;margin:0">إلى منصة العرض والجولة الحاسمة</p>':`<h3 style="margin:4px 0 0">الجولة ${ORD[r+1]}: انتقلن إلى الطاولة التالية… وتبدّلت المهام</h3>${nx}`}</div>`;
+  const w=last?tot[0]:rp[0],ctl=!SY.on||SY.mode==='admin';
+  let body='';
+  if(kind==='res')body=`<div class="ip-t">${last?'النتائج النهائية للمحطات':'نتائج الجولة '+ORD[r]}</div>
+    <div class="win"><span class="cup" aria-hidden="true">🏆</span><div><small>${last?'المجموعة المتصدّرة بعد الجولات الخمس':'الأفضل في هذه الجولة'}</small><strong>${w.n}</strong><small>${w.p} نقطة</small></div></div>
+    <div class="board">${tot.map(x=>`<div class="lane"><div class="nm">${x.n}</div><div class="track"><i style="width:${(x.p/max*100).toFixed(1)}%"></i></div><b>${x.p}</b></div>`).join('')}</div>`;
+  if(kind==='fb'){const q=FBQ[r];body=`<div class="ip-t">تغذية راجعة سريعة</div><div class="ip-big">${q[0]}</div><div class="ip-q">${q[1]}</div><div class="ip-joke">${q[2]}</div>`}
+  if(kind==='rem'){const m=REMIND[r];body=`<div class="ip-t">${m.h}</div><ul class="ip-qs">${m.q.map(x=>`<li>${x}</li>`).join('')}</ul><div class="ip-pts">${m.p.map(x=>`<p>${x}</p>`).join('')}</div>`}
+  if(kind==='next')body=`<div class="ip-t">يلا نبدأ المحطة ${ORD[r+1]}… انتقلن إلى الطاولة التالية، وتبدّلت المهام</div>
+    <div class="nxt">${GROUPS.map((g,k)=>{const st=stationOf(k,r+1);return `<div><span class="gn">${g.n}</span><span class="to">إلى الطاولة ${st+1}: ${ST[st][0]}</span><ul>${g.m.map((m,i)=>`<li>${m}: <b>${TASKS[(i+r+1)%4]}</b></li>`).join('')}</ul></div>`}).join('')}</div>
+    <div class="ip-go">وقتكم يبدأ بعد <span id="iCd2">${mmss(C2.nextAt?(C2.nextAt-Date.now())/1000:0)}</span></div>`;
+  if(kind==='close')body=`<div class="ip-t">للأسف… انتهى لقائي معكم</div><div class="ip-pts big"><p>كنت سعيدة جداً بلقائكم، وجاهزة للرد على كل استفساراتكم.</p><p>أتمنى أني أفدتكم اليوم… والإفادة الكبيرة أكيد في حصة أ. سارة خالد.</p><p>سنستمتع معاً بحضور حصة استثنائية بتفعيل الذكاء الاصطناعي بشكل مميز.</p></div><div class="ip-sign">أ. أريج أبو حاشية · بوصلة الورشة</div>`;
+  if(kind==='coffee')body=`<div class="ip-t">تفضّلوا على «قهوة نيوتن» ☕</div><div class="ip-big">تعبنا نيوتن وأينشتاين اليوم… خلّونا نتقهوى معهم</div><div class="ip-q">بريك خفيف لطيف، وبعدها ندخل حصة أ. سارة خالد، ونلتقي ببناتنا الطالبات</div>`;
+  return `<div class="inter box ip"><div class="ih"><span class="ip-dots">${P.map((_,i)=>`<i class="${i===ip?'on':''}"></i>`).join('')}</span>${last?'':`<span class="cd">المحطة ${ORD[r+1]} بعد <span id="iCd">${mmss(C2.nextAt?(C2.nextAt-Date.now())/1000:0)}</span></span>`}</div>
+    <div class="ip-body">${body}</div>
+    ${ctl?`<div class="ip-ctl"><button class="btn ghost" type="button" id="ipPrev">→ السابقة</button><button class="btn ghost" type="button" id="ipNext">التالية ←</button>${last?'':`<button class="btn ghost" type="button" id="ipMore">+ دقيقة</button><button class="btn gold" type="button" id="ipGo">بدء المحطة ${ORD[r+1]} الآن</button>`}</div>`:''}</div>`;
 }
+function bindInter(){const n=(d)=>{window._ipR=C2.round;window._ipMan=Math.max(0,Math.min(interPanels().length-1,interIdx()+d));renderScreen(true)};
+  const p=$('#ipPrev'),x=$('#ipNext'),m=$('#ipMore'),g=$('#ipGo');if(p)p.onclick=()=>n(-1);if(x)x.onclick=()=>n(1);
+  if(m)m.onclick=()=>{if(C2.nextAt){C2.nextAt+=60000;C2.auto=true}else C2.nextAt=Date.now()+60000;renderScreen(true)};
+  if(g)g.onclick=()=>{C2.nextAt=0;window._ipMan=null;startRound(C2.round+1)}}
 function renderScreen(full){
   const el=$('#scrBody');if(!el)return;
-  if(C2.phase==='round'&&C2.boomed&&C2.boomAt&&Date.now()-C2.boomAt>7000){if(full||el.dataset.k!=='inter'){el.dataset.k='inter';el.innerHTML=interlude()}const c=$('#iCd');if(c)c.textContent=mmss(C2.nextAt?(C2.nextAt-Date.now())/1000:0);return}
+  if(C2.phase==='round'&&C2.boomed&&C2.boomAt&&Date.now()-C2.boomAt>7000){const key='inter'+C2.round+':'+interIdx();if(full||el.dataset.k!==key){el.dataset.k=key;el.innerHTML=interlude();bindInter()}const t=mmss(C2.nextAt?(C2.nextAt-Date.now())/1000:0);['#iCd','#iCd2'].forEach(q=>{const c=$(q);if(c)c.textContent=t});return}
   if(C2.phase==='idle'||C2.phase==='present'){
     el.innerHTML=`<div class="idle box"><div class="big">${C2.phase==='present'?'العرض التقديمي':'استعدّي'}</div>
       <p class="lede" style="margin:0">${C2.phase==='present'?'تعرض أ. أريج أبو حاشية شرائح الافتتاح الآن، وتنتقل هذه الشاشة إلى المؤقت تلقائياً عند بدء الجولة الأولى.':'تبدأ الجولات من لوحة أ. أريج أبو حاشية.'}</p></div>`;return;}
@@ -1254,6 +1347,7 @@ $('#pinGo').onclick=()=>{const v=$('#pinIn').value.trim();if(!v)return;$('#pinMs
 $('#aReset').onclick=()=>{if(!SY.on){$('#aResetMsg').textContent='المزامنة غير مفعّلة';return}if($('#aReset').dataset.c!=='1'){$('#aReset').dataset.c='1';$('#aReset').textContent='تأكيد المسح';$('#aResetMsg').textContent='تُمسح كل النقاط والإجابات';return}
   $('#aReset').dataset.c='';$('#aReset').textContent='مسح بيانات البروفة';C2.z=Date.now();api({a:'reset',pin:SY.pin}).then(j=>{$('#aResetMsg').textContent=j&&j.ok?'تم المسح':'تعذّر المسح';SY.ctlSig='';pushCtl()})};
 function renderAdmin(){
+  renderVoices();
   const locked=SY.on&&SY.mode!=='admin';$('#pinBox').hidden=!locked;
   document.querySelectorAll('#v-admin .adm button:not(#pinGo)').forEach(b=>b.disabled=locked);
   $('#aSync').innerHTML=SY.on?(locked?'أدخلي الرمز السري لتتحكمي في الملتقى من هذا الجهاز':syncText()):'';
@@ -1368,16 +1462,16 @@ const GMEAN=[
  ["العاديات: 2","الخيل التي تقدح الشرر بحوافرها.","الشرارة الكهربائية والطاقة، وهي محور المحطات الخمس.","قدح الفكرة: التغذية الراجعة تُشعل التعلم وتسرّعه."]];
 
 const DEMO=[
- ["رأس المعمل","اسم المجموعة، ورقم الجولة، والمحطة الحالية؛ يظهر تلقائياً بعد مسح الباركود.","",0],
- ["شريط المراحل الخمس","يبيّن أين وصلت المجموعة، ولا تُفتح مرحلة قبل إنهاء التي قبلها.","",1],
- ["التوقّع","سؤال قبل التجربة.","تقويم قبلي",3],
- ["التجربة","الدائرة بالصورة وباليد وبالأرقام، مع تحدٍّ عملي.","فروق فردية · تقويم أدائي · ربط بالواقع",0],
- ["تحدّي القراءة","قراءة من الجهاز بوقت محدد، وقيم مختلفة لكل مجموعة.","تقويم · لا يحلّها الذكاء الاصطناعي",4],
- ["التغذية الراجعة","بعد كل إجابة: ما تحقق، والدليل، والخطوة التالية.","تغذية راجعة بنّاءة",2],
- ["المهمة المتمايزة","هدف واحد بثلاثة مستويات: دعم، وأساسي، وتمكّن، والارتقاء مفتوح.","تمايز",1],
- ["تحقّقي من Copilot","ادّعاء من الذكاء الاصطناعي تحكم عليه التجربة، ومعه مثال من قطر وأثر في الاستدامة.","تقويم ختامي · ذكاء اصطناعي · هوية قطرية · استدامة",4],
- ["وقفة تأمل للمعلمة","ماذا حدث هنا تربوياً؟ وكيف أطبّقه في صفي؟ وسؤال للنقاش.","خاصة بورشة المعلمات",2],
- ["النقاط وتسليم المحطة","تتضاعف النقاط ×2 بعد إجابتين صحيحتين متتاليتين، ثم تُسلَّم المحطة ويُغلق معملها.","تسارع ×2",3]];
+ ["رأس المعمل","أول ما يظهر بعد مسح الباركود: اسم مجموعتكِ، ورقم الجولة، والمحطة التي تعملين عليها الآن.","تتأكدين أنكِ في المحطة الصحيحة.",""],
+ ["شريط المراحل الخمس","خمس مراحل بالترتيب، والمرحلة الحالية ملوّنة بالأحمر. لا تُفتح مرحلة قبل إنهاء التي قبلها.","تعرفين أين وصلت مجموعتكِ.",""],
+ ["التوقّع","سؤال قصير قبل أي تجربة: ماذا تتوقعين أن يحدث؟","تختار المجموعة إجابة واحدة.","تقويم قبلي"],
+ ["التجربة","دائرة تتحكمين بها بيدكِ: تغيّرين الجهد، وترين المصباح والأرقام تتغير أمامكِ.","تنفّذ قائدة التجربة التحدي العملي.","فروق فردية · تقويم أدائي · ربط بالواقع"],
+ ["تحدّي القراءة","قراءة رقم من الجهاز خلال دقيقة. الرقم مختلف في كل مجموعة، فلا يُنسخ من أحد.","تكتب المجموعة القراءة من جهازها.","تقويم بوقت محدد"],
+ ["التغذية الراجعة","بعد كل إجابة تظهر ثلاثة أسطر: ما تحقق، والدليل، والخطوة التالية.","تقرئينها قبل الانتقال.","تغذية راجعة بنّاءة"],
+ ["المهمة المتمايزة","سؤال واحد الهدف بثلاثة مستويات: دعم، وأساسي، وتمكّن. ابدئي بالمستوى المناسب، وارتقي متى شئتِ.","تختار المجموعة مستواها.","تمايز"],
+ ["تحقّقي من Copilot","جملة قالها الذكاء الاصطناعي: صحيحة أم خاطئة؟ والحكم لتجربتكِ. ومعها مثال من قطر، وأثر في الاستدامة.","تحكم المجموعة بالدليل.","تقويم ختامي · ذكاء اصطناعي · هوية قطرية · استدامة"],
+ ["وقفة تأمل للمعلمة","بطاقة تحت كل مرحلة: ماذا حدث هنا تربوياً؟ وكيف أطبّقه في صفي؟ وسؤال للنقاش.","تتناقش المجموعة دقيقة.","خاصة بورشة المعلمات"],
+ ["النقاط وتسليم المحطة","إجابتان صحيحتان متتاليتان تضاعفان النقاط ×2. وفي النهاية زر «تسليم المحطة»، فيُغلق المعمل.","تسلّم المجموعة المحطة.","تسارع ×2"]];
 function demoLab(){const n=i=>`<span class="dl-n">${i+1}</span>`,B=(i,h,st='')=>`<div class="dl-b" data-i="${i}" style="${st}">${n(i)}${h}</div>`;
  return `<div class="dl-scr a1">
   ${B(0,'<b style="font-family:var(--f-ruqaa);font-size:1.35em;color:var(--emerald)">معمل مجموعة الموريات</b> · الجولة 1 · محطة تجريبية: المصباح والبطارية')}
@@ -1390,7 +1484,8 @@ function demoLab(){const n=i=>`<span class="dl-n">${i+1}</span>`,B=(i,h,st='')=>
   <div class="dl-row">${B(7,'<b>قال Copilot:</b> «المصباح يستهلك التيار فيقل بعده» · <b>صحيحة؟ خاطئة؟</b><br><span style="color:var(--emerald)">من قطر · الاستدامة 🌿</span>')}${B(8,'<b style="color:var(--emerald)">وقفة تأمل للمعلمة</b><br>ماذا حدث هنا؟ · في صفكِ · سؤال للنقاش')}</div>
   ${B(9,'<div class="dl-score"><span>مجموعتي · الموريات · 6 نقاط <em>تسارع ×2</em></span><i>تسليم المحطة</i></div>','padding:0;border:0;background:none')}
  </div>
- <ol class="dl-leg a2">${DEMO.map((d,i)=>`<li data-i="${i}"><span class="k">${i+1}</span><span><b>${d[0]}</b><small>${d[1]}</small>${d[2]?`<em>${d[2]}</em>`:''}</span></li>`).join('')}</ol>`}
+ <div class="dl-side a2"><div class="dl-card" id="dlCard"></div>
+  <div class="dl-nav"><button type="button" class="dl-arr" id="dlPrev" aria-label="السابق">→</button>${DEMO.map((d,i)=>`<button type="button" class="dl-dot" data-j="${i}">${i+1}</button>`).join('')}<button type="button" class="dl-arr" id="dlNext" aria-label="التالي">←</button></div></div>`}
 const SLIDES=[
  ()=>`<div class="sl-title"><div class="s-sch">مدرسة الشيماء الثانوية للبنات · قسم الفيزياء · بإشراف إدارة التوجيه التربوي</div><div class="s-aafaq a1">آفاق</div>
    <div class="s-verse a2">﴿سَنُرِيهِمْ آيَاتِنَا فِي الْآفَاقِ وَفِي أَنفُسِهِمْ﴾</div><div class="s-ribbon a3">الاستراتيجية قوة ◆ والتغذية الراجعة تسارع</div><div class="s-day a4">يوم فيزيائي استثنائي</div></div>`,
@@ -1428,10 +1523,33 @@ const SLIDES=[
    <div class="rl"><div class="a1"><b>العدسة · ثابتة طوال اليوم</b><span>ترصد كل معلمة محورين من المحاور الثمانية.</span><div class="rot4">${LENS.map(l=>`<span>${l[0]}</span>`).join('')}</div></div>
    <div class="a2"><b>المهمة · تتبدّل كل جولة</b><span>تنتقل كل معلمة إلى المهمة التالية مع كل جولة.</span><div class="rot4">${TASKS.map((t,i)=>`<span>${t}</span>${i<3?'<i>←</i>':''}`).join('')}</div></div></div>
    <div class="rg a3">${GROUPS.map(g=>`<div><span class="gn">${g.n}</span>${g.m.map((m,i)=>`<div class="m"><b>${m}</b> · <span>${TASKS[i%4]}</span><small>${LENS[i][0]}</small></div>`).join('')}</div>`).join('')}</div>
-   <p class="s-note">المهام المكتوبة للجولة الأولى… وتُعرض المهام الجديدة على الشاشة قبل كل جولة</p>`,
- ()=>`<h3 class="s-h">خريطة القاعة</h3><div class="hm"><img class="a1" src="hall-map.jpg" alt="خريطة قاعة الفيزياء وعليها أرقام المحطات الخمس">
-   <ol class="a2">${ST.map((s,k)=>`<li><span class="k">${k+1}</span><span><b>${s[0]}</b><small>أ. ${s[1]} · تبدأ عندها مجموعة ${GROUPS[groupAt(k,0)].n}</small></span></li>`).join('')}<li class="bd"><span class="k">◼</span><span><b>السبورة والشاشة</b><small>المؤقت ونتائج كل جولة</small></span></li></ol></div>
-   <p class="s-note" style="margin:0">التدوير بعد كل جولة: من الطاولة 1 إلى 2، ومن 5 إلى 1</p>`,
+   <p class="s-note">ابحثي عن اسمكِ: <span style="color:var(--rosso)">مهمتكِ بالأحمر</span>، و<span style="color:var(--muted)">عدستكِ تحتها</span> · وتُعرض المهام الجديدة على الشاشة قبل كل جولة</p>`,
+ ()=>`<h3 class="s-h">الآن: كيف تدوّنين في دليل المتدربة؟</h3><div class="gd">
+   <ol class="gd-st a1">${[
+    ["افتحي الدليل على صفحة المحطة","المحطة التي تقفين عندها الآن، مثلاً: «المحطة 1: الدايود والترانزستور»"],
+    ["ضعي ✓ أمام مهمتكِ","كما هي أمام اسمكِ على الشاشة في هذه الجولة"],
+    ["اكتبي توقّعكِ قبل التجربة","سطر واحد، قبل أن تفتح المجموعة المعمل"],
+    ["اكتبي في صف عدستكِ فقط","«الشاهد الذي رصدته» و«فكرة أنقلها إلى صفي»"],
+    ["ضعي ✓ أمام مستوى مجموعتكم","الدعم، أو الأساسي، أو التمكّن"]].map((x,i)=>`<li><span class="k">${i+1}</span><span><b>${x[0]}</b><small>${x[1]}</small></span></li>`).join('')}</ol>
+   <div class="gd-pg a2"><div class="gd-cap">نموذج: دليل هيفاء أبو راس · مجموعة السابقات · الجولة الأولى</div>
+    <div class="gd-t">المحطة 1: الدايود والترانزستور</div>
+    <table class="gd-tb"><tr><th>مهمتي في المحطة</th><td><span class="hw">☑</span> قائدة التجربة &nbsp; ☐ المسجّلة &nbsp; ☐ ضابطة الوقت &nbsp; ☐ المتحدثة</td></tr>
+     <tr><th>مستوى مجموعتنا</th><td>☐ الدعم &nbsp; <span class="hw">☑</span> الأساسي &nbsp; ☐ التمكّن</td></tr>
+     <tr><th>توقعي قبل التجربة</th><td class="hw">إذا عكسنا الدايود ينطفئ المصباح</td></tr></table>
+    <div class="gd-t2">ما رصدته بعدستي</div>
+    <table class="gd-tb gd-l"><tr><th>العدسة</th><th>الشاهد الذي رصدته</th><th>فكرة أنقلها إلى صفي</th></tr>
+     <tr class="me"><th>مهندسة التمايز <em>← عدستي</em></th><td class="hw">عُرض الدايود بالرسم وباليد وبالأرقام، وبدأنا بالأساسي ثم ارتقينا للتمكّن</td><td class="hw">سؤال الترانزستور بثلاثة مستويات لطالباتي</td></tr>
+     <tr><th>خبيرة التقويم</th><td></td><td></td></tr><tr><th>سفيرة الواقع</th><td></td><td></td></tr><tr><th>رائدة الهوية</th><td></td><td></td></tr></table></div></div>`,
+ ()=>`<h3 class="s-h">ماذا تكتب كل واحدة في صف عدستها؟</h3>
+   <div class="gx">${[
+    ["هيفاء أبو راس","قائدة التجربة","مهندسة التمايز","عُرض الدايود بالرسم وباليد وبالأرقام، وبدأنا بالمستوى الأساسي ثم ارتقينا للتمكّن.","أعدّ سؤال الترانزستور بثلاثة مستويات لطالباتي."],
+    ["شذى نوافله","المسجّلة","خبيرة التقويم والتغذية الراجعة","سؤال التوقّع كشف أن اثنتين منا توقعتا زيادة السطوع؛ والتغذية الراجعة ذكرت الدليل والخطوة التالية.","أبدأ درس الدايود بسؤال توقّع على السبورة."],
+    ["هديل الحايك","ضابطة الوقت","سفيرة الواقع والاستدامة","رُبط الدايود بألواح الطاقة الشمسية وترشيد تشغيل الأجهزة.","أعرض صورة الألواح الشمسية في مدرستنا قبل الشرح."],
+    ["أسماء بكر","المتحدثة","رائدة الهوية والذكاء الاصطناعي","قال Copilot إن الدايود يمرّر التيار في الاتجاهين، فأثبتنا خطأه بالتجربة؛ ومثال من مشروعات قطر الذكية.","أعطي الطالبات ادّعاءً من الذكاء الاصطناعي ليصحّحنه بالدليل."]]
+    .map((x,i)=>`<div class="a${1+i%4}"><div class="gx-h"><b>${x[0]}</b><span>${x[1]}</span></div><div class="gx-l">العدسة: ${x[2]}</div><div class="gx-r"><i>الشاهد الذي رصدته</i><span class="hw">${x[3]}</span></div><div class="gx-r"><i>فكرة أنقلها إلى صفي</i><span class="hw">${x[4]}</span></div></div>`).join('')}</div>
+   <p class="s-note" style="margin:0;font-size:clamp(11px,1.4vw,19px)">مثال من مجموعة السابقات في المحطة 1 · كل معلمة تكتب في صف عدستها فقط، والمتحدثة تقرأ أقوى شاهد على المضيفة</p>`,
+ ()=>`<h3 class="s-h">خريطة القاعة <small>منظر علوي · المحطات الخمس ومكان بوصلة الورشة</small></h3><div class="hm1 a1"><img src="hall-map.jpg" alt="خريطة القاعة من أعلى: خمس طاولات مرقمة، ومكان أ. أريج أبو حاشية عند السبورة"></div>
+   <p class="s-note" style="margin:0">التدوير بعد كل جولة: 1 ← 2 ← 3 ← 4 ← 5 ← ثم إلى 1</p>`,
  ()=>`<h3 class="s-h">تعليمات الدخول إلى المعمل</h3><ol class="en">${[
    ["توجّهي مع مجموعتكِ إلى طاولتكِ","حسب خريطة القاعة"],
    ["صوّري باركود المجموعة","الموجود على الطاولة، بكاميرا الجوال"],
@@ -1442,7 +1560,10 @@ const SLIDES=[
    ["سلّمي المحطة بعد آخر مرحلة","ويُغلق المعمل عند انتهاء الوقت أيضاً"],
    ["تابعي نتائج الجولة على الشاشة","ثم انتقلي إلى الطاولة التالية بمهمتكِ الجديدة"]].map((x,i)=>`<li class="a${1+i%4}"><span class="k">${i+1}</span><span><b>${x[0]}</b><small>${x[1]}</small></span></li>`).join('')}</ol>`,
  ()=>`<div class="quipslide"><img src="lab-scene.jpg" alt=""><div class="qbubble">ترى نيوتن ما بيحلّها عنكم!</div></div>`,
- ()=>`<div class="go"><div class="go-t a1">الجولة الأولى… وقتكم يبدأ الآن!</div><div class="go-c" id="goC">5</div><p class="a3">تُفتح المعامل على جوالاتكن، و${C2.dur/60} دقائق في كل محطة… والقنبلة تشتغل من أول ثانية</p><button class="btn gold" id="goNow">ابدئي الآن</button></div>`,
+ ()=>`<div class="go" id="goBox"><div class="go-t a1">الجولة الأولى</div>
+   <div class="go-lock a2"><span class="pulse"></span>المعامل مقفلة الآن على جوالاتكن… بانتظار إذن بوصلة الورشة</div>
+   <p class="go-ask a3">أ. أريج أبو حاشية، تفضّلي بفتح المعامل</p>
+   <button class="btn gold go-open a4" id="goOpen" type="button">🧭 فتح المعامل وبدء الجولة</button><div id="goMsg" class="go-msg"></div></div>`,
  ...[0,1,2,3,4].map(k=>()=>`<h3 class="s-h">المحطة ${k+1}: ${ST[k][0]} <small>أ. ${ST[k][1]}</small></h3>
    <div class="envs"><div class="gal">${ENV[k].img.map(s=>`<img src="${s}" alt="">`).join('')}</div>
    <div class="envk"><div class="a1"><b>ربط بالواقع</b><span>${ENV[k].real}</span></div><div class="a2"><b>الهوية القطرية</b><span>${ENV[k].qa}</span></div><div class="a3"><b>التنمية المستدامة</b><span>${ENV[k].su}</span></div>
@@ -1456,10 +1577,20 @@ function renderShow(){
   $('#sNum').textContent=`${slide+1} / ${SLIDES.length}`;
   document.querySelectorAll('#axGrid [data-i]').forEach(c=>{const f=()=>{const i=+c.dataset.i;document.querySelectorAll('#axGrid [data-i]').forEach(x=>x.classList.toggle('open',x===c));clearInterval(window._axT);$('#axD').innerHTML=`<b>${i+1}. ${AXD[i][0]}</b><span>${AXD[i][1]}</span><span style="color:var(--emerald);font-weight:700">${AXC[i]}</span><span class="lab-in">في منصة آفاق: ${AXD[i][2]}</span>`};c.onclick=f;c.onkeydown=e=>{if(e.key==='Enter')f()}});
   clearInterval(window._axT);if($('#axGrid')){let ai=0;const show=()=>{const c=document.querySelector(`#axGrid [data-i="${ai}"]`);if(!c)return clearInterval(window._axT);document.querySelectorAll('#axGrid [data-i]').forEach(x=>x.classList.toggle('open',x===c));$('#axD').innerHTML=`<b>${ai+1}. ${AXD[ai][0]}</b><span>${AXD[ai][1]}</span><span style="color:var(--emerald);font-weight:700">${AXC[ai]}</span><span class="lab-in">في منصة آفاق: ${AXD[ai][2]}</span>`;ai=(ai+1)%8};show();window._axT=setInterval(show,9000)}
-  clearInterval(window._dlT);if($('#dlS')){let di=0;const hi=i=>{document.querySelectorAll('#dlS [data-i]').forEach(x=>x.classList.toggle('hot',+x.dataset.i===i))};
-    const run=()=>{hi(di);di=(di+1)%DEMO.length};run();window._dlT=setInterval(run,6000);
-    document.querySelectorAll('#dlS .dl-leg li,#dlS .dl-b').forEach(x=>x.onclick=()=>{clearInterval(window._dlT);hi(+x.dataset.i)})}
-  if($('#goC')){let c=5;goTimer=setInterval(()=>{c--;if($('#goC'))$('#goC').textContent=c;if(c<=0){clearInterval(goTimer);launch()}},1000);$('#goNow').onclick=()=>{clearInterval(goTimer);launch()}}
+  clearInterval(window._dlT);if($('#dlS')){let di=0;
+    const hi=i=>{di=(i+DEMO.length)%DEMO.length;const d=DEMO[di];document.querySelectorAll('#dlS .dl-b').forEach(x=>x.classList.toggle('hot',+x.dataset.i===di));
+      document.querySelectorAll('#dlS .dl-dot').forEach(x=>x.classList.toggle('on',+x.dataset.j===di));
+      $('#dlCard').innerHTML=`<div class="dc-h"><span class="dc-n">${di+1}</span><b>${d[0]}</b></div><p>${d[1]}</p><div class="dc-do"><i>ماذا تفعلين؟</i> ${d[2]}</div>${d[3]?`<div class="dc-ax">${d[3]}</div>`:''}`;
+      const c=$('#dlCard');c.classList.remove('in');void c.offsetWidth;c.classList.add('in')};
+    const stop=()=>clearInterval(window._dlT);hi(0);window._dlT=setInterval(()=>hi(di+1),15000);
+    $('#dlPrev').onclick=()=>{stop();hi(di-1)};$('#dlNext').onclick=()=>{stop();hi(di+1)};
+    document.querySelectorAll('#dlS .dl-dot').forEach(x=>x.onclick=()=>{stop();hi(+x.dataset.j)});
+    document.querySelectorAll('#dlS .dl-b').forEach(x=>x.onclick=()=>{stop();hi(+x.dataset.i)})}
+  if($('#goOpen')){$('#goOpen').onclick=()=>{
+    if(SY.on&&SY.mode!=='admin'){$('#goMsg').textContent='يلزم إدخال الرمز السري في لوحة أ. أريج أبو حاشية على هذا الجهاز أولاً';return}
+    C2.active=C2.active.map(()=>true);if(SY.on)pushCtl();
+    $('#goBox').innerHTML=`<div class="go-t">فُتحت المعامل!</div><div class="go-c" id="goC">3</div><p>وقتكم يبدأ الآن… ${C2.dur/60} دقائق في كل محطة، والقنبلة تشتغل من أول ثانية</p>`;
+    let c=3;goTimer=setInterval(()=>{c--;if($('#goC'))$('#goC').textContent=Math.max(c,0);if(c<=0){clearInterval(goTimer);launch()}},1000)}}
 }
 function launch(){C2.active=C2.active.map(()=>true);startRound(0);document.querySelector('[data-v="screen"]').click();slide=Math.min(slide+1,SLIDES.length-1)}
 $('#sPrev').onclick=()=>{slide=Math.max(0,slide-1);renderShow()};
