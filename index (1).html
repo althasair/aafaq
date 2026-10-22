@@ -512,6 +512,16 @@ body.noanno .cl{border-color:transparent;padding:0;margin:0}body.noanno .cl-tag{
 .ip-go{font-weight:800;font-size:clamp(22px,2.8vw,38px);color:var(--rosso)}
 .ip-ctl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;border-top:1px solid var(--line);padding-top:10px}
 .vrow{display:grid;gap:6px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px}.vst{font-size:13px;color:var(--muted)}
+.rolebar{display:grid;gap:4px;background:var(--emerald);color:#F7F1E5;border:2px solid var(--gold,#C59A52);border-radius:10px;padding:10px 14px;margin-bottom:12px}
+.rolebar b{color:#F1D9A0;font-size:17px}.rolebar span{font-size:14px;line-height:1.6}
+.rolebar.me{background:var(--rosso)}
+.rolelock .lab,.rolelock .q,.rolelock .levels,.rolelock #lq,.rolelock .ai,.rolelock .opts{opacity:.75}
+.st.passed{opacity:.6;cursor:not-allowed;border-color:var(--emerald)!important}
+.dbn{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.dbn span{background:#FFF6D8;color:var(--rosso);border:1px solid var(--rosso);border-radius:999px;padding:3px 12px;font-weight:800;font-size:13px}
+.rb{display:grid;grid-template-columns:repeat(4,1fr);gap:1.8%;flex:1;min-height:0}
+.rb>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:4% 5%;display:grid;gap:6px;align-content:start;font-size:clamp(12px,1.5vw,21px);line-height:1.55}
+.rb b{font-family:var(--f-verse);font-size:1.5em;color:var(--emerald)}.rb em{font-style:normal;font-weight:800;color:var(--rosso)}
+.rmap{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2%}.rmap>div{background:var(--emerald);color:#F7F1E5;border-radius:8px;padding:2% 3%;text-align:center;font-size:clamp(9px,1vw,14px)}.rmap b{display:block;color:#F1D9A0}
 .donecard{text-align:center;display:grid;gap:12px;justify-items:center;padding:28px 16px;background:rgba(255,250,241,.95);border:1px solid var(--gold,#C59A52);border-radius:10px;box-shadow:0 10px 30px rgba(59,36,22,.12)}
 .donecard .seal{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:38px;color:#fff;background:radial-gradient(circle at 35% 30%,#2F7A55,#123F2C);box-shadow:0 0 0 6px rgba(197,154,82,.35)}
 .donecard.tout .seal{background:radial-gradient(circle at 35% 30%,#C59A52,#8C6A2F)}
@@ -619,7 +629,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:26px;borde
 
     <!-- GUIDANCE -->
     <section class="view" id="v-guide" hidden>
-      <div class="guide-hero"><b>حيّاكم الله… أساتذتنا في التوجيه</b><span>لوحة عرض لمتابعة الملتقى لحظة بلحظة، دون أدوات تحكم.</span></div>
+      <div class="guide-hero"><b>حيّاكم الله… أ. نورة المناعي وأساتذتنا في التوجيه</b><span>لوحة عرض لمتابعة الملتقى لحظة بلحظة، دون أدوات تحكم.</span></div>
       <div class="ggrid">
         <div class="box"><h3>الآن</h3><div id="gNow" class="gnow"></div></div>
         <div class="box"><h3>ترتيب المجموعات</h3><div class="board" id="gBoard"></div></div>
@@ -696,7 +706,7 @@ let ROUND=0;
 const S={g:0,i:0,pts:0,streak:0,mult:1};
 
 /* ===== sync between devices (Google Apps Script) ===== */
-const SYNC_URL='__SYNC_URL__';
+const SYNC_URL='https://script.google.com/macros/s/AKfycbyhKJXdNa_6ipWnfuywUXbj0i-4QAtyAv3lh-pqwtkUd50ojGBG63d3yvxXkAbE0Bvk/exec';
 const SY={on:/^https:\/\/script\.google\.com\//.test(SYNC_URL),off:0,d:{},m:{},mode:'view',pin:'',ok:0,err:0,ev:[],sent:'',ctlSig:'',grpSig:'',adopted:false,sel:null};
 try{SY.pin=localStorage.getItem('aafaq-pin')||''}catch(e){}
 let DONE={},TL={};try{DONE=JSON.parse(localStorage.getItem('aafaq-done')||'{}')}catch(e){}
@@ -705,8 +715,37 @@ const STEPN=['التوقّع','التجربة','تحدّي القراءة','ال
 const sNow=()=>Date.now()+SY.off;
 function api(q){const t0=Date.now();return fetch(SYNC_URL+'?'+new URLSearchParams(q).toString(),{cache:'no-store'}).then(r=>r.json()).then(j=>{const t1=Date.now();if(j.now)SY.off=j.now-(t0+t1)/2;SY.ok=Date.now();if(j.d)ingest(j.d);return j}).catch(e=>{SY.err++;return {ok:false}})}
 function memKey(){return 'm'+S.g+'_'+S.i}
+/* roles: who acts in each step (index into TASKS) */
+const STEP_ROLE=[1,0,0,2,3];
+const ownerIdx=st=>(STEP_ROLE[st]-ROUND%4+8)%4;
+const teamMode=()=>SY.on&&SY.mode==='group'&&viewGroup===null;
+const isOwner=()=>!teamMode()||S.i===ownerIdx(step);
+function gState(){try{return SY.g&&SY.g[S.g]}catch(e){return null}}
+function pushGroup(extra){if(!teamMode()||!isOwnerAny())return;const gt=gTally();const o=Object.assign({ok:gt.ok,n:gt.n,k:curSt,s:step,p:S.pts,r:ROUND,d:curSt!=null&&stDoneR(S.g,ROUND,curSt)?1:0,t:Math.round(sNow()/1000)},extra||{});SY.gLast=o;api({a:'set',k:'G'+S.g,v:JSON.stringify(o),w:1})}
+function isOwnerAny(){return true}
+function gTally(){const gs=gState(),key=`${ROUND}:${curSt}`;if(!SY.gt||SY.gt.key!==key)SY.gt={key,ok:0,n:0};if(gs&&gs.r===ROUND&&gs.k===curSt&&(gs.n||0)>SY.gt.n){SY.gt.ok=gs.ok||0;SY.gt.n=gs.n||0}return SY.gt}
+function stDoneR(g,r,k){return !!DONE[doneKey(g,r,k)]}
+function stDone(g,k){const z=(typeof C2!=='undefined'&&C2.z)||0;return Object.keys(DONE).some(x=>{const p=x.split(':');return +p[0]===g&&+p[2]===k&&+p[3]===z})}
+function markDone(g,r,k){DONE[doneKey(g,r,k)]=1;try{localStorage.setItem('aafaq-done',JSON.stringify(DONE))}catch(e){}}
+function applyGroup(){
+  if(!teamMode())return;const gs=gState();if(!gs||gs.r!==ROUND)return;
+  if(typeof gs.p==='number'&&gs.p>S.pts){S.pts=gs.p;$('#sp').textContent=S.pts;}
+  if(gs.k==null||$('#v-lab').hidden)return;
+  if(gs.d&&!stDoneR(S.g,ROUND,gs.k)){markDone(S.g,ROUND,gs.k);if(curSt===gs.k||C2.phase==='round'){clearInterval(timerId);const el=$('#lab-vd');el.hidden=false;$('#lab-list').hidden=true;el.innerHTML=doneCard(gs.k,false)}return}
+  if(gs.k===curSt&&gs.s!==step&&!stDoneR(S.g,ROUND,gs.k)){step=gs.s;runStation(curSt)}
+}
+function roleLock(el){
+  if(!teamMode())return;const oi=ownerIdx(step),G=GROUPS[S.g],who=G.m[oi],task=TASKS[STEP_ROLE[step]];
+  const mineT=TASKS[(S.i+ROUND)%4];
+  if(S.i===oi){el.insertAdjacentHTML('afterbegin',`<div class="rolebar me"><b>دوركِ الآن (${task})</b><span>نفّذي هذه المرحلة على جوالكِ، وزميلاتكِ يتابعنكِ ويناقشنكِ.</span></div>`);return}
+  el.classList.add('rolelock');
+  el.insertAdjacentHTML('afterbegin',`<div class="rolebar"><b>هذه المرحلة على جوال ${who} · ${task}</b><span>مهمتكِ في هذه الجولة: ${mineT}. تابعي معها وناقشيها، ودوّني في دليلكِ؛ وتنتقل الشاشة تلقائياً مع كل مرحلة.</span></div>`);
+  el.querySelectorAll('button,input,select,a.btn').forEach(x=>{if(!['back','annT'].includes(x.id))x.disabled=true});
+}
+/* bonuses: speed, accuracy, mastery */
+function bonus(n,label){if(!n)return;if(teamMode()&&!isOwner())return;S.pts+=n;const t=TL[curSt]=TL[curSt]||{ok:0,n:0,pts:0};t.pts+=n;(t.bn=t.bn||[]).push([label,n]);$('#sp').textContent=S.pts;renderBoard();boost(`${label} +${n}`);if(SY.on){SY.ev.push({r:ROUND,k:curSt,s:step,l:-1,o:1,g:n,b:label,t:Math.round(sNow()/1000)});pushMine()}pushGroup()}
 function logEv(base,ok,gain){if(!SY.on)return;SY.ev.push({r:ROUND,k:curSt,s:step,l:step===3?base-1:-1,o:ok?1:0,g:gain,t:Math.round(sNow()/1000)});if(SY.ev.length>40)SY.ev.shift();pushMine()}
-function mine(){return {st:curSt,s:step,p:S.pts,ev:SY.ev,r:ROUND,d:curSt!=null&&DONE[doneKey(S.g,ROUND,curSt)]?1:0}}
+function mine(){return {st:curSt,s:step,p:S.pts,ev:SY.ev,r:ROUND,d:curSt!=null&&stDoneR(S.g,ROUND,curSt)?1:0}}
 let _pmT=0;function pushMine(){if(!SY.on||SY.mode!=='group')return;clearTimeout(_pmT);_pmT=setTimeout(()=>poll(true),300)}
 function poll(force){
   if(!SY.on)return;
@@ -720,7 +759,7 @@ function applyCtl(o,adopt){
   if(o.b&&!C2.boomAt)C2.boomAt=Date.now()-(adopt?8000:0);if(!o.b)C2.boomAt=0;
 }
 function ingest(d){
-  SY.d=d;SY.m={};for(const k in d){if(k[0]==='m'){try{SY.m[k]=JSON.parse(d[k])}catch(e){}}}
+  SY.d=d;SY.m={};SY.g={};for(const k in d){if(k[0]==='m'){try{SY.m[k]=JSON.parse(d[k])}catch(e){}}if(k[0]==='G'){try{SY.g[+k.slice(1)]=JSON.parse(d[k])}catch(e){}}}
   if(d.ctl){let o;try{o=JSON.parse(d.ctl)}catch(e){}
     if(o){
       if(SY.mode==='admin'){if(!SY.adopted){SY.adopted=true;if(C2.phase==='idle'&&o.p!=='idle'){applyCtl(o,true);SY.ctlSig=JSON.stringify(ctlObj());renderMe();refreshAll();renderAgenda()}}}
@@ -738,6 +777,7 @@ function ingest(d){
       }
     }
   }
+  try{applyGroup()}catch(e){}
   liveRefresh();
 }
 function liveRefresh(){
@@ -745,7 +785,7 @@ function liveRefresh(){
 }
 function syncText(){if(!SY.on)return '';const a=SY.ok?Math.round((Date.now()-SY.ok)/1000):-1;return a<0?'جارٍ الاتصال…':(a<15?'<b>● متصل</b> · آخر تحديث قبل '+a+' ث':'انقطع الاتصال، تُعاد المحاولة تلقائياً')}
 function memList(g){const out=[];for(let i=0;i<4;i++){const v=SY.m['m'+g+'_'+i];if(v)out.push(Object.assign({i,on:(sNow()/1000-(v.t||0))<20},v))}return out}
-function grpPts(g){if(!SY.on)return null;const L=memList(g);return L.length?Math.max(...L.map(x=>x.p||0)):0}
+function grpPts(g){if(!SY.on)return null;const L=memList(g),gs=SY.g&&SY.g[g];return Math.max(gs&&gs.p||0,...(L.length?L.map(x=>x.p||0):[0]))}
 
 
 /* ticker */
@@ -790,14 +830,16 @@ document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',
 
 /* scoring */
 function award(base,ok){
+  if(teamMode()&&!isOwner())return 0;
+  if(teamMode()){const gt=gTally();gt.n++;if(ok)gt.ok++;}
   if(curSt!=null){const t=TL[curSt]=TL[curSt]||{ok:0,n:0,pts:0};t.n++;if(ok)t.ok++;}
   if(ok){
     const gain=base*S.mult;S.pts+=gain;S.streak++;
     const was=S.mult;S.mult=S.streak>=2?2:1;
     if(S.mult===2&&was===1)boost('تسارع! ×2');
-    if(curSt!=null)TL[curSt].pts+=gain;$('#sp').textContent=S.pts;$('#sm').hidden=S.mult!==2;renderBoard();logEv(base,true,gain);return gain;
+    if(curSt!=null)TL[curSt].pts+=gain;$('#sp').textContent=S.pts;$('#sm').hidden=S.mult!==2;renderBoard();logEv(base,true,gain);pushGroup();return gain;
   }
-  S.streak=0;S.mult=1;$('#sm').hidden=true;logEv(base,false,0);return 0;
+  S.streak=0;S.mult=1;$('#sm').hidden=true;logEv(base,false,0);pushGroup();return 0;
 }
 function boost(t){const b=$('#boost');b.innerHTML=`<div>${t}</div>`;setTimeout(()=>b.innerHTML='',1300)}
 function renderBoard(){
@@ -838,7 +880,7 @@ let step=0,timerId=null,curSt=null;
 const STEPS=['التوقّع','التجربة','تحدّي القراءة','المهمة المتمايزة','تحقّقي من Copilot'];
 const fx=(v,d=2)=>Number(v).toFixed(d);
 function stepsBar(){return `<div class="steps">${STEPS.map((t,k)=>`<span class="${k===step?'on':k<step?'done':''}">${k+1}. ${t}${k===4&&step<4?' <small>(تُفتح بعد التجربة)</small>':''}</span>`).join('')}</div>`}
-function startTimer(sec,box,onEnd){clearInterval(timerId);let t=sec;const el=box.querySelector('.timer');
+function startTimer(sec,box,onEnd){clearInterval(timerId);let t=sec;const el=box.querySelector('.timer');if(teamMode()&&!isOwner()){if(el)el.textContent='';return}
   const tick=()=>{el.textContent=t+' ث';el.classList.toggle('low',t<=10);if(t<=0){clearInterval(timerId);onEnd()}t--};tick();timerId=setInterval(tick,1000)}
 const bench=svg=>`<div class="bench">${svg}</div>`;
 const meters=list=>`<div class="meters">${list.map(([id,l])=>`<div class="meter"><small>${l}</small><b id="${id}"></b></div>`).join('')}</div>`;
@@ -1032,7 +1074,7 @@ function runStation(k){
   const head=`<div class="row" style="justify-content:space-between"><div><h2>المحطة ${k+1}: ${L.name}</h2><p class="lede">المضيفة: أ. ${L.host} · كتاب الصف الحادي عشر صفحة ${L.page}</p></div>
     <div class="row"><button class="btn ghost" id="annT" type="button">${document.body.classList.contains('noanno')?'إظهار أسهم المحاور':'إخفاء أسهم المحاور'}</button><button class="btn ghost" id="back" type="button">كل المحطات</button></div></div>${stepsBar()}`;
   const next=l=>`<button class="btn" id="nx" style="margin-top:10px" type="button">${l}</button>`;
-  const bindNext=to=>{const b=el.querySelector('#nx');if(b)b.onclick=()=>{step=to;runStation(k)}};
+  const bindNext=to=>{const b=el.querySelector('#nx');if(b)b.onclick=()=>{step=to;runStation(k);pushGroup()}};
   const mcq=(box,q,base,onDone)=>{box.innerHTML+=`<div class="opts" id="qo">${q.o.map((x,i)=>`<button type="button" data-i="${i}">${x}</button>`).join('')}</div><div id="qf"></div>`;
     let d=false;box.querySelectorAll('#qo button').forEach(b=>b.onclick=()=>{if(d)return;d=true;const ok=+b.dataset.i===q.a;b.classList.add(ok?'right':'wrong');if(!ok)box.querySelector(`#qo [data-i="${q.a}"]`).classList.add('right');onDone(ok)});return ()=>d};
   if(step===0){
@@ -1061,7 +1103,7 @@ function runStation(k){
       const ev=`قراءة الجهاز ${fx(m)} ${R.unit}${id!=null?`، والقيمة النظرية ${fx(id)} ${R.unit}`:''}؛ ${R.why}`;
       startTimer(60,box,()=>finish(false,'انتهى الوقت',ev));
       $('#qs').onclick=()=>{const v=parseFloat($('#qa').value.replace(',','.'));if(isNaN(v))return;
-        finish(Math.abs(v-m)<=tol,id!=null&&Math.abs(v-id)<=Math.abs(m-id)/2?'هذه القيمة النظرية من القانون، لا قراءة الجهاز':'القراءة لا تطابق جهازكِ',ev)};
+        const okR=Math.abs(v-m)<=tol;finish(okR,id!=null&&Math.abs(v-id)<=Math.abs(m-id)/2?'هذه القيمة النظرية من القانون، لا قراءة الجهاز':'القراءة لا تطابق جهازكِ',ev);if(okR&&Math.abs(v-m)<=tol/2)bonus(1,'دقة القراءة')};
     }else{
       // mystery gate: override sim gate selector
       $('#gsel').hidden=true;const real=Bv;$('#gN').textContent='؟';
@@ -1087,7 +1129,7 @@ function runStation(k){
       el.querySelectorAll('#lv button').forEach(x=>x.setAttribute('aria-pressed',x===b));
       const Lv=+b.dataset.l,q=L.levels[Lv],box=$('#lq');let done=false;
       box.innerHTML=`<div class="q"><div class="row" style="justify-content:space-between"><p><b>${LN[Lv]}:</b> ${q.t}</p><span class="timer"></span></div>${q.o?`<div class="opts" id="qo">${q.o.map((x,i)=>`<button type="button" data-i="${i}">${x}</button>`).join('')}</div>`:`<div class="num"><input id="qa" inputmode="decimal" aria-label="الإجابة"><button class="btn" id="qs" type="button">تحقّق</button></div>`}<div id="qf"></div></div>`;
-      const finish=(ok,why)=>{if(done)return;done=true;clearInterval(timerId);const g2=award(Lv+1,ok);D[Lv]=ok;busy=false;paint();
+      const finish=(ok,why)=>{if(done)return;done=true;clearInterval(timerId);const g2=award(Lv+1,ok);D[Lv]=ok;busy=false;paint();if(D[0]===true&&D[1]===true&&D[2]===true&&!D.mb){D.mb=1;bonus(2,'إتقان المستويات الثلاثة')}
         const up=[0,1,2].find(i=>i>Lv&&D[i]===undefined),left=[0,1,2].filter(i=>D[i]===undefined);
         const nxt=up!==undefined?`ارتقي إلى مستوى ${LN[up]} لتجمعي ${PT[up]} إضافية`:(left.length?`ما زال مستوى ${LN[left[0]]} متاحاً`:'أنجزتِ المستويات الثلاثة؛ انتقلي إلى «تحقّقي من Copilot»');
         box.querySelector('#qf').innerHTML=fb(ok,ok?`إجابة صحيحة (+${g2})`:(why||'الإجابة تحتاج مراجعة'),q.ev,nxt)+(up!==undefined?`<button class="btn gold" id="lvUp" type="button" style="margin-top:10px">ارتقي إلى ${LN[up]}</button>`:'');
@@ -1112,28 +1154,30 @@ function runStation(k){
     $('#tryIt').onclick=()=>{const sb=$('#sandbox');if(!sb.hidden){sb.hidden=true;return}sb.hidden=false;sb.innerHTML=`<div class="lab two" style="margin-top:10px">${bench(L.sim.svg())}<div class="ctl">${L.sim.ctl()}<p class="lede" style="margin:0;font-size:13px">معمل للتجربة الحرة، لا تُحتسب فيه نقاط.</p></div></div>`;L.sim.wire(()=>{})};
     $('#again').onclick=()=>finishStation(k);
   }
-  addReflect(step);
+  addReflect(step);roleLock(el);
   el.querySelector('#annT').onclick=()=>{document.body.classList.toggle('noanno');el.querySelector('#annT').textContent=document.body.classList.contains('noanno')?'إظهار أسهم المحاور':'إخفاء أسهم المحاور'};
   el.querySelector('#back').onclick=()=>{clearInterval(timerId);if(LABS[4].sim._o)LABS[4].sim.out=LABS[4].sim._o;showPicker()};
 }
 function doneCard(k,tout){
-  const g=viewGroup??S.g,G=GROUPS[g],t=TL[k]||{ok:0,n:0,pts:0},rnd=C2.phase==='round';
+  const g=viewGroup??S.g,G=GROUPS[g],rnd=C2.phase==='round';let t=TL[k]||{ok:0,n:0,pts:0};if(teamMode()){const gt=gTally();t=Object.assign({},t,{ok:gt.ok,n:gt.n})}
   const q=tout?'«على قدر أهل العزم تأتي العزائم… الجولة الجاية لكم!»':PH[4][Math.floor(Math.random()*4)];
   return `<div class="donecard ${tout?'tout':''}"><div class="seal">${tout?'⌛':'✓'}</div>
     <b>${tout?'انتهى وقت الجولة':'أحسنتنّ يا '+G.n+'!'}</b>
     <span class="dst">${tout?'أُغلق معمل':'أنجزتنّ'} المحطة ${k+1}: ${ST[k][0]}</span>
-    <div class="dstats"><span><b>${t.pts}</b>نقطة من هذه المحطة</span><span><b>${t.ok} / ${t.n}</b>إجابات صحيحة</span><span><b>${S.pts}</b>مجموع نقاط المجموعة</span></div>
+    ${t.bn&&t.bn.length?`<div class="dbn">${t.bn.map(x=>`<span>${x[0]} +${x[1]}</span>`).join("")}</div>`:""}<div class="dstats">${teamMode()?"":`<span><b>${t.pts}</b>نقطة من هذه المحطة</span>`}<span><b>${t.ok} / ${t.n}</b>إجابات صحيحة</span><span><b>${S.pts}</b>مجموع نقاط المجموعة</span></div>
     <span class="q8">${q}</span>
     <p class="lede" style="margin:0">${rnd?(C2.round<4?'أُغلق معمل هذه المحطة، ويُفتح معمل المحطة التالية مع بدء الجولة القادمة.':'انتهت الجولات الخمس، والموعد في منصة العرض.'):'أُغلق معمل هذه المحطة.'}</p>
     ${rnd?'':'<button class="btn" id="again2" type="button">العودة إلى المحطات</button>'}</div>`}
 function finishStation(k){
   clearInterval(timerId);if(LABS[4].sim._o)LABS[4].sim.out=LABS[4].sim._o;
-  const g=viewGroup??S.g;DONE[doneKey(g,ROUND,k)]=1;try{localStorage.setItem('aafaq-done',JSON.stringify(DONE))}catch(e){}
+  const t=teamMode()?gTally():(TL[k]||{ok:0,n:0});if(t.n>=5&&t.ok===t.n)bonus(2,'محطة بلا أخطاء');
+  if(C2.phase==='round'&&!C2.boomed){const rm=remain()/60;bonus(Math.min(3,Math.floor(rm/2)),'سرعة الإنجاز')}
+  const g=viewGroup??S.g;markDone(g,ROUND,k);pushGroup({d:1});
   const el=$('#lab-vd');el.hidden=false;$('#lab-list').hidden=true;el.innerHTML=doneCard(k,false);boost('أُنجزت المحطة');pushMine();
   const a=el.querySelector('#again2');if(a)a.onclick=()=>{step=0;showPicker()};window.scrollTo({top:$('#v-lab').offsetTop-10,behavior:'smooth'});
 }
 function showPicker(){$('#lab-vd').hidden=true;$('#lab-list').hidden=false;renderLabHead();}
-function openStation(k){$('#lab-list').hidden=true;if(curSt!==k){step=0;window._lvDone=null}runStation(k)}
+function openStation(k){if(viewGroup===null&&stDone(viewGroup??S.g,k)){clearInterval(timerId);$('#lab-list').hidden=true;const el=$('#lab-vd');el.hidden=false;el.innerHTML=doneCard(k,false);curSt=k;const a=el.querySelector('#again2');if(a)a.onclick=()=>{step=0;showPicker()};return}$('#lab-list').hidden=true;if(curSt!==k){step=0;window._lvDone=null}runStation(k)}
 
 /* ===== Controller: rounds, timer, lab access (single-device prototype) ===== */
 const INSTR=[
@@ -1367,9 +1411,9 @@ function renderLabHead(){
   const g=viewGroup??S.g,G=GROUPS[g],st=stationOf(g,ROUND);
   $('#lab-mine').innerHTML=`<div class="labhead"><div class="grp">معمل مجموعة ${G.n}<small>${G.v}</small></div>
     <div>${C2.phase==='round'?`الجولة ${C2.round+1} · محطتكِ الآن: م${st+1} ${ST[st][0]}`:'اختاري المحطة التي تعملين عليها'}${viewGroup!==null?' · <span class="sample">عرض أ. أريج أبو حاشية</span>':''}</div></div>`;
-  $('#stations').innerHTML=ST.map((s,k)=>`<button type="button" class="st ${C2.phase==='round'&&k===st?'live':''}" data-k="${k}">
-    <span class="n">المحطة ${k+1}</span><b>${s[0]}</b><span>أ. ${s[1]} · صفحة ${s[2]}</span><span>${C2.phase==='round'&&k===st?'محطة مجموعتكِ الآن':'افتحي المعمل'}</span></button>`).join('');
-  document.querySelectorAll('#stations .st').forEach(b=>b.onclick=()=>openStation(+b.dataset.k));
+  $('#stations').innerHTML=ST.map((s,k)=>{const dn=viewGroup===null&&stDone(g,k);return `<button type="button" class="st ${C2.phase==='round'&&k===st?'live':''} ${dn?'passed':''}" data-k="${k}" ${dn?'disabled':''}>
+    <span class="n">المحطة ${k+1}</span><b>${s[0]}</b><span>أ. ${s[1]} · صفحة ${s[2]}</span><span>${dn?'✓ اجتازتها مجموعتكِ':(C2.phase==='round'&&k===st?'محطة مجموعتكِ الآن':'افتحي المعمل')}</span></button>`}).join('');
+  document.querySelectorAll('#stations .st:not([disabled])').forEach(b=>b.onclick=()=>openStation(+b.dataset.k));
 }
 function renderLab(){
   const g=viewGroup??S.g,st=stationOf(g,ROUND);
@@ -1379,7 +1423,7 @@ function renderLab(){
   if(C2.phase==='round'&&!C2.active[g]){$('#lab-list').hidden=true;$('#lab-vd').hidden=true;
     $('#lab-mine').innerHTML+=`<div class="lock"><b>معمل مجموعتكِ مقفل</b><span class="lede" style="margin:0">تضغط قائدة التجربة زر التفعيل عند بدء العمل في المحطة.</span><button class="btn" id="act" type="button">تفعيل معملنا</button></div>`;
     $('#act').onclick=()=>{C2.active[g]=true;renderLab();if(!$('#v-admin').hidden)renderAdmin()};return}
-  if(C2.phase==='round'&&viewGroup===null&&(DONE[doneKey(g,ROUND,st)]||C2.boomed)){clearInterval(timerId);$('#lab-list').hidden=true;const el=$('#lab-vd');el.hidden=false;el.innerHTML=doneCard(st,!DONE[doneKey(g,ROUND,st)]);curSt=st;return}
+  if(C2.phase==='round'&&viewGroup===null&&(stDone(g,st)||C2.boomed)){clearInterval(timerId);$('#lab-list').hidden=true;const el=$('#lab-vd');el.hidden=false;el.innerHTML=doneCard(st,!stDone(g,st));curSt=st;return}
   if(C2.phase==='round'){const key=`${g}:${ROUND}`;if(curLabKey!==key){curLabKey=key;step=0;curSt=null}$('#lab-list').hidden=true;openStation(st);return}
   if($('#lab-vd').hidden)$('#lab-list').hidden=false;
 }
@@ -1402,7 +1446,7 @@ function liveCards(box,dbox,openLab){
   dbox.innerHTML=`<div class="gtabs">${GROUPS.map((g,j)=>`<button type="button" data-k="${j}" aria-pressed="${j===k}">${g.n}</button>`).join('')}</div>`+
     G.m.map((nm,i)=>{const v=SY.m['m'+k+'_'+i],on=v&&(sNow()/1000-(v.t||0))<20;
       return `<div class="mem"><div class="who"><span class="dot ${on?'on':''}"></span>${nm}<small>${v?(v.st!=null?'م'+(v.st+1)+': '+ST[v.st][0]+' · '+(v.d?'✓ سلّمت المحطة':STEPN[v.s||0]):'في الصفحة الرئيسية'):'لم تدخل المنصة بعد'}</small></div>
-        <div class="evs">${v&&v.ev&&v.ev.length?v.ev.slice().reverse().map(e=>`<span class="${e.o?'ok':'no'}">م${(e.k??0)+1} · ${STEPN[e.s]}${e.l>=0?' '+LVN[e.l]:''} ${e.o?'✓ +'+e.g:'✗'}</span>`).join(''):'<span>لا إجابات بعد</span>'}</div>
+        <div class="evs">${v&&v.ev&&v.ev.length?v.ev.slice().reverse().map(e=>`<span class="${e.o?'ok':'no'}">م${(e.k??0)+1} · ${e.b||STEPN[e.s]}${e.l>=0?' '+LVN[e.l]:''} ${e.o?'✓ +'+e.g:'✗'}</span>`).join(''):'<span>لا إجابات بعد</span>'}</div>
         <div class="pp">${v?v.p||0:0}</div></div>`}).join('')+
     (openLab?`<div class="row"><button class="btn ghost" type="button" id="openLabK">فتح معمل ${G.n} على هذا الجهاز</button></div>`:'');
   dbox.querySelectorAll('.gtabs button').forEach(b=>b.onclick=()=>{SY.sel=+b.dataset.k;liveCards(box,dbox,openLab)});
@@ -1452,7 +1496,7 @@ const ENV=[
  {img:["i24.jpg","i23.jpg"],real:"التحكم في مستوى الصوت وضبط شدة الإضاءة.",qa:"التحكم في إضاءة المساحات الداخلية في المتاحف والمنشآت الثقافية القطرية.",su:"ضبط الإضاءة بقدر الحاجة لتقليل هدر الكهرباء.",links:[]},
  {img:["i26.jpg","i25.jpg","i21.gif"],real:"إنارة الشوارع تلقائياً عند حلول الظلام، وضبط التبريد في أنظمة التكييف.",qa:"إنارة شوارع الدوحة حسب شدة الضوء، وتبريد استاد البيت لمواجهة حرارة الصيف.",su:"ترشيد استهلاك الطاقة في الإنارة والتبريد.",links:[["Tinkercad","https://www.tinkercad.com"],["Circuit Simulator","https://www.falstad.com/circuit/"]]},
  {img:["i28.jpg","i27.jpg","i29.jpg"],real:"أنظمة الأمان التي لا يُفتح فيها الباب إلا عند تحقق شرط محدد.",qa:"أنظمة الدخول الذكية في المنشآت الحديثة في دولة قطر.",su:"تشغيل الإضاءة عند الحاجة فقط لتقليل هدر الكهرباء.",links:[["logic.ly","https://logic.ly/lessons/"],["CircuitVerse","https://circuitverse.org/simulator"]]}];
-const TEAM=[["أ. أريج أبو حاشية","منسقة قسم الفيزياء · بوصلة الورشة"],["أ. مريم ماشه","محضرة المختبر"],["أ. إسراء بركات","محطة الدايود والترانزستور"],["أ. سمر رشيد","محطة دائرة مجزئ الجهد"],["أ. سارة خالد","محطة المقاومة الضوئية والحرارية · منفذة الحصة"],["أ. نهى محسن","محطة البوابات المنطقية"]];
+const TEAM=[["أ. نورة المناعي","الموجهة التربوية · إدارة التوجيه التربوي"],["أ. أريج أبو حاشية","منسقة قسم الفيزياء · بوصلة الورشة"],["أ. مريم ماشه","محضرة المختبر"],["أ. إسراء بركات","محطة الدايود والترانزستور"],["أ. سمر رشيد","محطة دائرة مجزئ الجهد"],["أ. سارة خالد","محطة المقاومة الضوئية والحرارية · منفذة الحصة"],["أ. نهى محسن","محطة البوابات المنطقية"]];
 const AXES8=["مراعاة الفروق الفردية","التمايز","التغذية الراجعة البنّاءة","أساليب التقويم","تفعيل الذكاء الاصطناعي","ربط المحتوى بالواقع","تعزيز التنمية المستدامة","إبراز الهوية القطرية"];
 const GMEAN=[
  ["النازعات: 4","المتسابقات إلى تنفيذ الأمر بلا تردد.","السرعة والتسارع: تغيّر السرعة في زمن قصير <bdi dir='ltr'>(a = Δv/Δt)</bdi>.","المبادرة إلى التجربة قبل انتظار الإجابة الجاهزة؛ وسرعة التغذية الراجعة."],
@@ -1487,7 +1531,7 @@ function demoLab(){const n=i=>`<span class="dl-n">${i+1}</span>`,B=(i,h,st='')=>
  <div class="dl-side a2"><div class="dl-card" id="dlCard"></div>
   <div class="dl-nav"><button type="button" class="dl-arr" id="dlPrev" aria-label="السابق">→</button>${DEMO.map((d,i)=>`<button type="button" class="dl-dot" data-j="${i}">${i+1}</button>`).join('')}<button type="button" class="dl-arr" id="dlNext" aria-label="التالي">←</button></div></div>`}
 const SLIDES=[
- ()=>`<div class="sl-title"><div class="s-sch">مدرسة الشيماء الثانوية للبنات · قسم الفيزياء · بإشراف إدارة التوجيه التربوي</div><div class="s-aafaq a1">آفاق</div>
+ ()=>`<div class="sl-title"><div class="s-sch">مدرسة الشيماء الثانوية للبنات · قسم الفيزياء · بإشراف الموجهة التربوية أ. نورة المناعي</div><div class="s-aafaq a1">آفاق</div>
    <div class="s-verse a2">﴿سَنُرِيهِمْ آيَاتِنَا فِي الْآفَاقِ وَفِي أَنفُسِهِمْ﴾</div><div class="s-ribbon a3">الاستراتيجية قوة ◆ والتغذية الراجعة تسارع</div><div class="s-day a4">يوم فيزيائي استثنائي</div></div>`,
  ()=>`<h3 class="s-h">فكرة اليوم في معادلة</h3><div class="fma"><span class="a1">F</span><span class="eq a2">=</span><span class="a3">m</span><span class="eq a3">·</span><span class="a4">a</span></div>
    <div class="fma-k"><div class="a2"><b>F القوة</b><span>الاستراتيجية التدريسية الفاعلة</span></div><div class="a3"><b>m الكتلة</b><span>المحتوى وخصائص الطالبات</span></div><div class="a4"><b>a التسارع</b><span>التغذية الراجعة البنّاءة</span></div></div>`,
@@ -1559,6 +1603,17 @@ const SLIDES=[
    [`${C2.dur/60} دقائق للمحطة`,"المؤقت والقنبلة على الشاشة"],
    ["سلّمي المحطة بعد آخر مرحلة","ويُغلق المعمل عند انتهاء الوقت أيضاً"],
    ["تابعي نتائج الجولة على الشاشة","ثم انتقلي إلى الطاولة التالية بمهمتكِ الجديدة"]].map((x,i)=>`<li class="a${1+i%4}"><span class="k">${i+1}</span><span><b>${x[0]}</b><small>${x[1]}</small></span></li>`).join('')}</ol>`,
+ ()=>`<h3 class="s-h">العمل الجماعي: مَن تعمل في كل مرحلة؟</h3>
+   <p class="lede a1" style="margin:0;font-size:clamp(12px,1.4vw,19px)">تمسح كل معلمة الباركود على جوالها، فتظهر المرحلة على جوال صاحبة الدور، وتتابعها الزميلات على جوالاتهن ويناقشنها ويدوّنّ في الدليل؛ وتنتقل الجوالات معاً إلى المرحلة التالية.</p>
+   <div class="rmap a2">${STEPN.map((n,i)=>`<div><b>${i+1}. ${n}</b>${TASKS[STEP_ROLE[i]]}</div>`).join('')}</div>
+   <div class="rb a3" style="grid-template-columns:repeat(4,1fr)">${TASKS.map((t,i)=>`<div><b>${t}</b><span>${["تنفّذ التجربة وتقرأ من الجهاز","تسجّل توقّع المجموعة بعد النقاش","تختار مستوى المهمة وتراقب الوقت","تحكم على ادّعاء Copilot وتسلّم المحطة"][i]}</span></div>`).join('')}</div>
+   <p class="s-note" style="margin:0">وتتبدّل الأدوار مع كل جولة… فكل معلمة تمرّ على المراحل كلها</p>`,
+ ()=>`<h3 class="s-h">كيف تُقيَّم المجموعات؟</h3><div class="rb a1">
+   <div><b>صحة الإجابات</b><span>التوقّع: نقطة</span><span>التحدي العملي: نقطتان</span><span>تحدّي القراءة: 3 نقاط</span><span>المستويات: نقطة، ونقطتان، و3 نقاط</span><span>تحقّق Copilot: نقطتان</span></div>
+   <div><b>الدقة</b><span>قراءة الجهاز بدقة عالية (نصف هامش الخطأ)</span><em>+1</em><span>إجابتان صحيحتان متتاليتان: تسارع</span><em>النقاط ×2</em></div>
+   <div><b>الإتقان</b><span>إنجاز المستويات الثلاثة كلها صحيحة</span><em>+2</em><span>محطة كاملة بلا أي خطأ</span><em>+2</em></div>
+   <div><b>السرعة</b><span>تسليم المحطة قبل انتهاء الوقت</span><em>+1 لكل دقيقتين متبقيتين (حتى 3)</em></div></div>
+   <p class="s-note" style="margin:0">تُجمع النقاط للمجموعة، وتُعلن الأفضل بعد كل جولة على الشاشة</p>`,
  ()=>`<div class="quipslide"><img src="lab-scene.jpg" alt=""><div class="qbubble">ترى نيوتن ما بيحلّها عنكم!</div></div>`,
  ()=>`<div class="go" id="goBox"><div class="go-t a1">الجولة الأولى</div>
    <div class="go-lock a2"><span class="pulse"></span>المعامل مقفلة الآن على جوالاتكن… بانتظار إذن بوصلة الورشة</div>
@@ -1570,7 +1625,7 @@ const SLIDES=[
    <div class="envk"><div class="a1"><b>ربط بالواقع</b><span>${ENV[k].real}</span></div><div class="a2"><b>الهوية القطرية</b><span>${ENV[k].qa}</span></div><div class="a3"><b>التنمية المستدامة</b><span>${ENV[k].su}</span></div>
    ${ENV[k].links.length?`<div class="a4 links">${ENV[k].links.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]}</a>`).join('')}</div>`:''}</div></div>`),
  ()=>`<div class="quipslide"><img src="lab-scene.jpg" alt=""><div class="qbubble">واضح إن الجاذبية اليوم جاذبة الكل للتجربة!</div></div>`,
- ()=>`<div class="sl-title"><div class="s-aafaq a1">شكراً لكم</div><div class="s-day a2">مكتب توجيه العلوم · إدارة مدرسة الشيماء · معلمات قسم الفيزياء · محضرة المختبر · جميع الحضور</div><div class="s-ribbon a3">الاستراتيجية قوة ◆ والتغذية الراجعة تسارع</div></div>`];
+ ()=>`<div class="sl-title"><div class="s-aafaq a1">شكراً لكم</div><div class="s-day a2">الموجهة التربوية أ. نورة المناعي · مكتب توجيه العلوم · إدارة مدرسة الشيماء · معلمات قسم الفيزياء · محضرة المختبر · جميع الحضور</div><div class="s-ribbon a3">الاستراتيجية قوة ◆ والتغذية الراجعة تسارع</div></div>`];
 let slide=0,goTimer=null;
 function renderShow(){
   clearInterval(goTimer);
