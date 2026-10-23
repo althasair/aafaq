@@ -1233,7 +1233,7 @@ const mmss=t=>{t=Math.max(0,Math.ceil(t));return String(Math.floor(t/60)).padSta
 function remain(){return C2.running?Math.max(0,(C2.endAt-Date.now())/1000):C2.remain}
 
 function startRound(r){
-  window._ipMan=null;playVoice('start');
+  window._ipMan=null;window._endK=null;preloadEnd();playVoice('start');
   ROUND=r;C2.round=r;C2.phase='round';C2.boomAt=0;C2.remain=C2.dur;C2.endAt=Date.now()+C2.dur*1000;C2.running=true;C2.boomed=false;C2.nextAt=0;
   try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
   renderMe();refreshAll();stageBanner(r);renderAgenda();
@@ -1254,7 +1254,7 @@ function vSet(k,v){try{v?localStorage.setItem('aafaq-v-'+k,v):localStorage.remov
 function chime(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const t=audioCtx.currentTime;[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,t+i*.12);g.gain.linearRampToValueAtTime(.22,t+i*.12+.02);g.gain.exponentialRampToValueAtTime(.001,t+i*.12+.9);o.connect(g);g.connect(audioCtx.destination);o.start(t+i*.12);o.stop(t+i*.12+1)})}catch(e){}}
 function playVoice(k,fb){if(typeof SY!=='undefined'&&SY.mode==='group')return;const v=vGet(k);if(v){playURL(v);return}playURL(SNDF[k],miss=>{if(miss===1){if(fb)fb();else if(k==='start')chime()}})}
 let _rec=null,_recK=null;
-function renderVoices(){const box=$('#vBox');if(!box)return;box.innerHTML=`<div class="vrow"><b>🔊 مستوى الصوت</b><div class="row" style="gap:10px;align-items:center"><input type="range" id="vVol" min="0.2" max="2.5" step="0.1" value="${vol()}" style="flex:1"><span id="vVolT">${Math.round(vol()*100)}%</span><button class="btn ghost" type="button" data-play="boom">تجربة</button></div></div>`+Object.keys(VOICE).map(k=>`<div class="vrow"><b>صوت ${VOICE[k]}</b><span class="vst">${vGet(k)?'✓ محفوظ على هذا الجهاز':(k==='start'?'الآن: نغمة افتتاح':k==='boom'?'الآن: انفجار مركّب من المنصة':'الآن: دون صوت')}</span>
+function renderVoices(){const box=$('#vBox');if(!box)return;box.innerHTML=`<div class="vrow"><b>🔊 مستوى الصوت</b><div class="row" style="gap:10px;align-items:center"><input type="range" id="vVol" min="0.2" max="2.5" step="0.1" value="${vol()}" style="flex:1"><span id="vVolT">${Math.round(vol()*100)}%</span><button class="btn ghost" type="button" data-play="boom">تجربة</button></div></div>`+Object.keys(VOICE).map(k=>`<div class="vrow"><b>صوت ${VOICE[k]}</b><span class="vst">${vGet(k)?'✓ محفوظ على هذا الجهاز':(k==='start'?'الآن: «بدأ الوقت» المعتمد للمنصة':k==='boom'?'الآن: انفجار مركّب من المنصة':'الآن: «انتهى الوقت» المعتمد للمنصة · يبدأ قبل الصفر بطول المقطع')}</span>
   <div class="row"><button class="btn ${_recK===k?'gold':''}" type="button" data-rec="${k}">${_recK===k?'■ إيقاف التسجيل':'● تسجيل بصوتي'}</button><label class="btn ghost" style="cursor:pointer">رفع ملف صوت<input type="file" accept="audio/*" data-up="${k}" hidden></label><button class="btn ghost" type="button" data-play="${k}">تجربة</button>${vGet(k)?`<button class="btn ghost" type="button" data-del="${k}">حذف</button>`:''}</div></div>`).join('')+'<div id="vMsg" class="sync-st"></div>';
   box.querySelectorAll('[data-rec]').forEach(b=>b.onclick=async()=>{const k=b.dataset.rec;if(_rec){_rec.stop();return}
     try{const st=await navigator.mediaDevices.getUserMedia({audio:true});const ch=[];_rec=new MediaRecorder(st);_recK=k;_rec.ondataavailable=e=>ch.push(e.data);
@@ -1272,12 +1272,18 @@ function synthBoom(){try{const c=ac();if(!c)return;const t=c.currentTime,V=vol()
   s.buffer=b;s.connect(f);f.connect(sg);sg.connect(out);sg.connect(dl);s.start(t);
   /* debris crackle */for(let i=0;i<14;i++){const tt=t+.25+Math.random()*1.6,cl=c.createOscillator(),cg=c.createGain();cl.type='square';cl.frequency.value=900+Math.random()*2400;cg.gain.setValueAtTime(.12*Math.random(),tt);cg.gain.exponentialRampToValueAtTime(.0001,tt+.03);cl.connect(cg);cg.connect(out);cl.start(tt);cl.stop(tt+.04)}
 }catch(e){}}
-function playBoom(){const v=vGet('boom');if(v)playURL(v);else playURL(SNDF.boom,miss=>{if(miss===1)synthBoom()});setTimeout(()=>playVoice('end'),2200)}
+function playBoom(){const v=vGet('boom');if(v)playURL(v);else playURL(SNDF.boom,miss=>{if(miss===1)synthBoom()})}
+/* end clip: starts (clip length) seconds before zero so it finishes exactly at 00:00 — on Areej's device only */
+let END_LEN=15.4;
+function endLen(){const v=vGet('end');const b=v?SNDC[v]:SNDC[SNDF.end];return b&&b.duration?b.duration:END_LEN}
+function preloadEnd(){const c=ac();if(!c)return;const u=vGet('end')||SNDF.end;if(SNDC[u]!==undefined)return;fetch(u).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>c.decodeAudioData(b)).then(buf=>{SNDC[u]=buf}).catch(()=>{})}
+const endMine=()=>!SY.on||SY.mode==='admin';
 
 function tick(){
   if(C2.phase==='round'){
-    const r=remain();
-    if(r<=0&&!C2.boomed){C2.boomed=true;C2.boomAt=Date.now();C2.running=false;C2.remain=0;playBoom();
+    const r=remain(),ek=C2.round+':'+(C2.z||0);
+    if(endMine()&&C2.running&&!C2.boomed&&r>0&&r<=endLen()&&window._endK!==ek){window._endK=ek;playVoice('end')}
+    if(r<=0&&!C2.boomed){C2.boomed=true;C2.boomAt=Date.now();C2.running=false;C2.remain=0;playBoom();if(endMine()&&window._endK!==ek){window._endK=ek;playVoice('end')}
       if(C2.auto&&C2.round<4)C2.nextAt=Date.now()+120000; renderScreen(true);if(!$('#v-lab').hidden&&viewGroup===null)renderLab();}
     if(C2.nextAt&&Date.now()>=C2.nextAt&&(!SY.on||SY.mode==='admin')){C2.nextAt=0;startRound(C2.round+1);return}
     if(C2.boomed){if(!C2.boomAt)C2.boomAt=Date.now();if(!$('#v-screen').hidden&&Date.now()-C2.boomAt>7000){renderScreen(false)}}
