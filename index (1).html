@@ -146,6 +146,14 @@ input[type=range]{width:100%;accent-color:var(--emerald)}
 .scorebar .g{font-family:var(--f-ruqaa);font-size:24px;color:var(--gold-2)}
 .scorebar .pts{font-variant-numeric:tabular-nums;font-weight:800;font-size:20px}
 .mult{background:var(--rosso);color:#fff;border-radius:999px;padding:2px 10px;font-weight:800;font-size:14px}
+.rdock{margin-top:10px}.rdock:empty{display:none}
+.dk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;background:rgba(255,250,241,.96);border:1px solid var(--line);border-radius:999px;padding:6px 10px;box-shadow:0 8px 20px -14px rgba(0,0,0,.4)}
+.dk .dks{color:var(--emerald);font-variant-numeric:tabular-nums;padding:0 6px}
+.dk .btn{padding:6px 14px;font-size:14px}
+.clapbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px}
+.clapb small{opacity:.75;margin-inline-start:4px}
+.clp{font-size:13px;color:var(--leather);white-space:nowrap;margin-inline-start:6px}
+.clapmini{border:1px solid var(--line);background:var(--card-2);border-radius:999px;padding:2px 10px;cursor:pointer;margin-inline-start:6px}
 .boost{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:20}
 .boost div{font-family:var(--f-ruqaa);font-size:clamp(48px,14vw,110px);color:var(--rosso);text-shadow:0 4px 0 var(--gold-2);animation:pop 1.2s ease forwards}
 @keyframes pop{0%{transform:scale(.4);opacity:0}25%{transform:scale(1.08);opacity:1}75%{opacity:1}100%{transform:scale(1.3);opacity:0}}
@@ -605,6 +613,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:26px;borde
     <!-- SHOW -->
     <section class="view" id="v-show" hidden>
       <div class="stage"><div class="slide" id="slide"></div></div>
+      <div class="rdock" data-dock></div>
       <div class="row" style="justify-content:center;margin-top:10px"><button class="btn ghost" id="sPrev">السابقة</button><span id="sNum" style="min-width:70px;text-align:center"></span><button class="btn" id="sNext">التالية</button><button class="btn ghost" id="sFull">ملء الشاشة</button></div>
     </section>
 
@@ -616,6 +625,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:26px;borde
         <span class="sample">تُثبَّت كل شاشة على محطتها مرة واحدة</span>
       </div>
       <div id="scrBody"></div>
+      <div class="rdock" data-dock></div>
     </section>
 
 
@@ -623,6 +633,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:26px;borde
     <section class="view" id="v-monitor" hidden>
       <div class="row" style="justify-content:space-between"><h2>متابعة المجموعات</h2><span class="sync-st" id="monSt"></span></div>
       <p class="lede">عمل كل مجموعة لحظة بلحظة: المحطة، والمرحلة، والنقاط، وإجابات كل معلمة باسمها.</p>
+      <div class="box" style="margin-bottom:10px"><h3 style="margin:0 0 6px">👏 صفّقي للمجموعات المتميزة</h3><div id="monClap"></div></div>
       <div class="mon" id="mon"></div>
       <div class="live-d" id="monD"></div>
     </section>
@@ -632,7 +643,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:26px;borde
       <div class="guide-hero"><b>حيّاكم الله… أ. نورة المناعي وأساتذتنا في التوجيه</b><span>لوحة عرض لمتابعة الملتقى لحظة بلحظة، دون أدوات تحكم.</span></div>
       <div class="ggrid">
         <div class="box"><h3>الآن</h3><div id="gNow" class="gnow"></div></div>
-        <div class="box"><h3>ترتيب المجموعات</h3><div class="board" id="gBoard"></div></div>
+        <div class="box"><h3>ترتيب المجموعات</h3><div class="board" id="gBoard"></div><h3 style="margin-top:12px">👏 صفّقوا للمجموعات المتميزة</h3><div id="gClap"></div></div>
         <div class="box"><h3 id="gEvH">من جدار الشواهد <span class="sample">أمثلة</span></h3><ul class="ev" id="gEv"></ul></div>
         <div class="box"><h3>الأثر: القياس القبلي والبعدي <span class="sample">أمثلة</span></h3><div id="gImp"></div></div>
       </div>
@@ -713,8 +724,26 @@ let DONE={},TL={};try{DONE=JSON.parse(localStorage.getItem('aafaq-done')||'{}')}
 const doneKey=(g,r,k)=>`${g}:${r}:${k}:${(typeof C2!=='undefined'&&C2.z)||0}`;
 const STEPN=['التوقّع','التجربة','تحدّي القراءة','المهمة المتمايزة','تحقّق Copilot'],LVN=['الدعم','الأساسي','التمكّن'];
 const sNow=()=>Date.now()+SY.off;
-function api(q){const t0=Date.now();return fetch(SYNC_URL+'?'+new URLSearchParams(q).toString(),{cache:'no-store'}).then(r=>r.json()).then(j=>{const t1=Date.now();if(j.now)SY.off=j.now-(t0+t1)/2;SY.ok=Date.now();if(j.d)ingest(j.d);return j}).catch(e=>{SY.err++;return {ok:false}})}
+SY.inq=0;SY.seq=0;SY.applied=0;SY.pendMine=false;
+function api(q){const t0=Date.now(),id=++SY.seq;let ac=null,to=0;try{ac=new AbortController();to=setTimeout(()=>ac.abort(),12000)}catch(e){}SY.inq++;
+  return fetch(SYNC_URL+'?'+new URLSearchParams(q).toString(),ac?{cache:'no-store',signal:ac.signal}:{cache:'no-store'}).then(r=>r.json()).then(j=>{const t1=Date.now();if(j.now)SY.off=j.now-(t0+t1)/2;SY.ok=Date.now();if(j.d&&id>SY.applied){SY.applied=id;try{ingest(j.d)}catch(e){}}return j})
+  .catch(e=>{SY.err++;return {ok:false}}).finally(()=>{clearTimeout(to);SY.inq=Math.max(0,SY.inq-1);if(SY.pendMine&&SY.inq===0){SY.pendMine=false;poll(true)}})}
 function memKey(){return 'm'+S.g+'_'+S.i}
+/* ===== claps 👏 ===== */
+const CSRC={a:['أ. أريج أبو حاشية','🧭'],o:['التوجيه التربوي','🌟'],t:['المعلمات','👏']};
+let CLAPS={};try{if(!/^https:\/\/script\.google\.com\//.test(SYNC_URL))CLAPS=JSON.parse(localStorage.getItem('aafaq-claps')||'{}')}catch(e){}
+const clapOf=g=>Object.assign({a:0,o:0,t:0},CLAPS[g]||{}),clapTot=g=>{const c=clapOf(g);return c.a+c.o+c.t};
+function sendClap(g,src){const r=CLAPS[g]=CLAPS[g]||{};r[src]=(+r[src]||0)+1;clapFx(1);try{renderBoard();liveRefresh();renderDock()}catch(e){}
+  if(!SY.on){try{localStorage.setItem('aafaq-claps',JSON.stringify(CLAPS))}catch(e){};return}api({a:'clap',g,src,pin:src==='a'?SY.pin:''})}
+function clapFx(n,label){n=Math.min(n,10);if(label)boost(label);for(let i=0;i<n;i++)setTimeout(()=>{const h=document.createElement('div');h.textContent='👏';h.setAttribute('aria-hidden','true');
+  h.style.cssText=`position:fixed;bottom:-40px;left:${8+Math.random()*84}%;font-size:${26+Math.random()*18}px;z-index:90;pointer-events:none;transition:transform 2.4s cubic-bezier(.2,.7,.3,1),opacity 2.4s`;
+  document.body.appendChild(h);requestAnimationFrame(()=>{h.style.transform=`translate(${(Math.random()-.5)*90}px,-${50+Math.random()*30}vh) rotate(${(Math.random()-.5)*50}deg)`;h.style.opacity='0'});setTimeout(()=>h.remove(),2600)},i*150)}
+function clapChips(g){const c=clapOf(g);return `<span class="clp" title="تصفيق">👏 ${clapTot(g)}</span>`}
+function clapBtns(src){return `<div class="clapbar">${GROUPS.map((g,k)=>`<button type="button" class="btn ghost clapb" data-clap="${k}" data-src="${src}">👏 ${g.n} <small>${clapTot(k)}</small></button>`).join('')}</div>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-clap]');if(!b)return;const g=+b.dataset.clap,src=b.dataset.src;
+  if(src==='t'){let used={};try{used=JSON.parse(localStorage.getItem('aafaq-myclaps')||'{}')}catch(x){}const n=Object.values(used).reduce((a,v)=>a+v,0);if(g===S.g){boost('صفّقي لمجموعة أخرى 😊');return}if(n>=6){boost('استنفدتِ تصفيقاتكِ الست');return}used[g]=(used[g]||0)+1;try{localStorage.setItem('aafaq-myclaps',JSON.stringify(used))}catch(x){}}
+  if(src==='a'&&SY.on&&SY.mode!=='admin'){boost('يلزم الرمز السري');return}
+  sendClap(g,src)});
 /* roles: who acts in each step (index into TASKS) */
 const STEP_ROLE=[1,0,0,2,3];
 const ownerIdx=st=>(STEP_ROLE[st]-ROUND%4+8)%4;
@@ -748,17 +777,21 @@ function logEv(base,ok,gain){if(!SY.on)return;SY.ev.push({r:ROUND,k:curSt,s:step
 function mine(){return {st:curSt,s:step,p:S.pts,ev:SY.ev,r:ROUND,d:curSt!=null&&stDoneR(S.g,ROUND,curSt)?1:0}}
 let _pmT=0;function pushMine(){if(!SY.on||SY.mode!=='group')return;clearTimeout(_pmT);_pmT=setTimeout(()=>poll(true),300)}
 function poll(force){
-  if(!SY.on)return;
+  if(!SY.on)return Promise.resolve();
+  if(SY.inq>0){if(force&&SY.mode==='group')SY.pendMine=true;return Promise.resolve()}
   if(SY.mode==='group'){const v=JSON.stringify(Object.assign(mine(),{t:Math.round(sNow()/1000)})),core=JSON.stringify(mine());const w=core!==SY.sent?1:0;SY.sent=core;return api({a:'set',k:memKey(),v,w})}
   return api({a:'get'});
 }
 function ctlObj(){return {p:C2.phase,r:C2.round,d:C2.dur,e:C2.running?Math.round(C2.endAt+SY.off):0,m:C2.remain,run:C2.running?1:0,b:C2.boomed?1:0,a:C2.active.map(x=>x?1:0),n:C2.nextAt?Math.round(C2.nextAt+SY.off):0,au:C2.auto?1:0,z:C2.z||0}}
-function pushCtl(){if(!SY.on||SY.mode!=='admin')return;const o=ctlObj(),sig=JSON.stringify(o);if(sig===SY.ctlSig)return;SY.ctlSig=sig;api({a:'ctl',pin:SY.pin,v:sig}).then(j=>{if(j&&j.err==='pin'){SY.mode='view';SY.pin='';try{localStorage.removeItem('aafaq-pin')}catch(e){}renderAdmin()}})}
+function pushCtl(){if(!SY.on||SY.mode!=='admin')return;if(SY.ctlBusy)return;const o=ctlObj(),sig=JSON.stringify(o);if(sig===SY.ctlSig)return;SY.ctlSig=sig;SY.ctlBusy=true;api({a:'ctl',pin:SY.pin,v:sig}).then(j=>{SY.ctlBusy=false;if(!j||!j.ok&&j.err!=='pin')SY.ctlSig='';if(j&&j.err==='pin'){SY.mode='view';SY.pin='';try{localStorage.removeItem('aafaq-pin')}catch(e){}renderAdmin()}})}
 function applyCtl(o,adopt){
   C2.phase=o.p;C2.round=o.r;ROUND=o.r;C2.dur=o.d;C2.running=!!o.run;C2.endAt=o.e?o.e-SY.off:0;C2.remain=o.m;C2.boomed=!!o.b;C2.active=o.a.map(Boolean);C2.nextAt=o.n?o.n-SY.off:0;C2.auto=!!o.au;C2.z=o.z||0;
   if(o.b&&!C2.boomAt)C2.boomAt=Date.now()-(adopt?8000:0);if(!o.b)C2.boomAt=0;
 }
 function ingest(d){
+  if(d.claps!==undefined||SY.on){let nc={};try{nc=JSON.parse(d.claps||'{}')}catch(e){}
+    if(SY.mode==='group'&&SY.clapInit){const a=clapOf(S.g),b=Object.assign({a:0,o:0,t:0},nc[S.g]||{});Object.keys(CSRC).forEach(k=>{if(b[k]>a[k])clapFx(b[k]-a[k],`👏 تصفيق من ${CSRC[k][0]}`)})}
+    CLAPS=nc;SY.clapInit=true}
   SY.d=d;SY.m={};SY.g={};for(const k in d){if(k[0]==='m'){try{SY.m[k]=JSON.parse(d[k])}catch(e){}}if(k[0]==='G'){try{SY.g[+k.slice(1)]=JSON.parse(d[k])}catch(e){}}}
   if(d.ctl){let o;try{o=JSON.parse(d.ctl)}catch(e){}
     if(o){
@@ -846,8 +879,8 @@ function renderBoard(){
   const rows=GROUPS.map((g,k)=>({n:g.n,v:g.v,p:SY.on?(k===S.g&&SY.mode==='group'?Math.max(S.pts,grpPts(k)):grpPts(k)):(k===S.g?g.demo+S.pts:g.demo),me:k===S.g&&SY.mode!=='view'&&SY.mode!=='admin'})).sort((a,b)=>b.p-a.p);
   const bh=document.querySelector('#v-board .sample');if(bh)bh.hidden=SY.on;
   const max=Math.max(SY.on?20:60,...rows.map(r=>r.p));
-  $('#board').innerHTML=rows.map(r=>`<div class="lane ${r.me?'me':''}"><div class="nm">${r.n}<small>${r.v}</small></div>
-    <div class="track"><i style="width:${(r.p/max*100).toFixed(1)}%"></i></div><b>${r.p}</b></div>`).join('');
+  $('#board').innerHTML=rows.map(r=>{const k=GROUPS.findIndex(g=>g.n===r.n);return `<div class="lane ${r.me?'me':''}"><div class="nm">${r.n}<small>${r.v}</small></div>
+    <div class="track"><i style="width:${(r.p/max*100).toFixed(1)}%"></i></div><b>${r.p}</b><span class="clp">👏 ${clapTot(k)}</span>${SY.mode==='group'&&!r.me?`<button type="button" class="clapmini" data-clap="${k}" data-src="t" aria-label="تصفيق لمجموعة ${r.n}">👏</button>`:''}</div>`}).join('');
 }
 
 /* feedback helper: achieved + evidence + next step */
@@ -1208,24 +1241,38 @@ function startRound(r){
 function pause(){if(C2.phase!=='round')return;if(C2.running){C2.remain=remain();C2.running=false}else{C2.endAt=Date.now()+C2.remain*1000;C2.running=true}refreshAll()}
 function boomNow(){if(C2.phase!=='round')return;C2.remain=0;C2.endAt=Date.now();C2.running=true;}
 /* ===== voices: recorded or uploaded, kept on this device ===== */
-const VOICE={start:'«وقتكم يبدأ الآن»',end:'«انتهى الوقت»'};
+const VOICE={start:'«وقتكم يبدأ الآن»',boom:'الانفجار',end:'«انتهى الوقت»'};
+const SNDF={start:'snd-start.mp3',boom:'snd-boom.mp3',end:'snd-end.mp3'},SNDC={};
+function vol(){try{const v=parseFloat(localStorage.getItem('aafaq-vol'));return isNaN(v)?1.3:v}catch(e){return 1.3}}
+function ac(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume()}catch(e){}return audioCtx}
+function playURL(u,done){const c=ac();if(!c){try{const a=new Audio(u);a.volume=Math.min(1,vol());a.play().catch(()=>{})}catch(e){}return}
+  const go=buf=>{const s=c.createBufferSource(),g=c.createGain();g.gain.value=vol();s.buffer=buf;s.connect(g);g.connect(c.destination);s.start();if(done)s.onended=done};
+  if(SNDC[u])return go(SNDC[u]);fetch(u).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>c.decodeAudioData(b)).then(buf=>{SNDC[u]=buf;go(buf)}).catch(()=>{SNDC[u]=null;if(done)done(1)})}
+function hasFile(k){return SNDC[SNDF[k]]!==null}
 function vGet(k){try{return localStorage.getItem('aafaq-v-'+k)}catch(e){return null}}
 function vSet(k,v){try{v?localStorage.setItem('aafaq-v-'+k,v):localStorage.removeItem('aafaq-v-'+k);return true}catch(e){return false}}
 function chime(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const t=audioCtx.currentTime;[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,t+i*.12);g.gain.linearRampToValueAtTime(.22,t+i*.12+.02);g.gain.exponentialRampToValueAtTime(.001,t+i*.12+.9);o.connect(g);g.connect(audioCtx.destination);o.start(t+i*.12);o.stop(t+i*.12+1)})}catch(e){}}
-function playVoice(k){if(typeof SY!=='undefined'&&SY.mode==='group')return;const v=vGet(k);if(v){try{const a=new Audio(v);a.play().catch(()=>{})}catch(e){}}else if(k==='start')chime()}
+function playVoice(k,fb){if(typeof SY!=='undefined'&&SY.mode==='group')return;const v=vGet(k);if(v){playURL(v);return}playURL(SNDF[k],miss=>{if(miss===1){if(fb)fb();else if(k==='start')chime()}})}
 let _rec=null,_recK=null;
-function renderVoices(){const box=$('#vBox');if(!box)return;box.innerHTML=Object.keys(VOICE).map(k=>`<div class="vrow"><b>صوت ${VOICE[k]}</b><span class="vst">${vGet(k)?'✓ محفوظ على هذا الجهاز':(k==='start'?'الآن: نغمة افتتاح':'الآن: صوت الانفجار فقط')}</span>
+function renderVoices(){const box=$('#vBox');if(!box)return;box.innerHTML=`<div class="vrow"><b>🔊 مستوى الصوت</b><div class="row" style="gap:10px;align-items:center"><input type="range" id="vVol" min="0.2" max="2.5" step="0.1" value="${vol()}" style="flex:1"><span id="vVolT">${Math.round(vol()*100)}%</span><button class="btn ghost" type="button" data-play="boom">تجربة</button></div></div>`+Object.keys(VOICE).map(k=>`<div class="vrow"><b>صوت ${VOICE[k]}</b><span class="vst">${vGet(k)?'✓ محفوظ على هذا الجهاز':(k==='start'?'الآن: نغمة افتتاح':k==='boom'?'الآن: انفجار مركّب من المنصة':'الآن: دون صوت')}</span>
   <div class="row"><button class="btn ${_recK===k?'gold':''}" type="button" data-rec="${k}">${_recK===k?'■ إيقاف التسجيل':'● تسجيل بصوتي'}</button><label class="btn ghost" style="cursor:pointer">رفع ملف صوت<input type="file" accept="audio/*" data-up="${k}" hidden></label><button class="btn ghost" type="button" data-play="${k}">تجربة</button>${vGet(k)?`<button class="btn ghost" type="button" data-del="${k}">حذف</button>`:''}</div></div>`).join('')+'<div id="vMsg" class="sync-st"></div>';
   box.querySelectorAll('[data-rec]').forEach(b=>b.onclick=async()=>{const k=b.dataset.rec;if(_rec){_rec.stop();return}
     try{const st=await navigator.mediaDevices.getUserMedia({audio:true});const ch=[];_rec=new MediaRecorder(st);_recK=k;_rec.ondataavailable=e=>ch.push(e.data);
       _rec.onstop=()=>{st.getTracks().forEach(t=>t.stop());const bl=new Blob(ch,{type:_rec.mimeType||'audio/webm'});const fr=new FileReader();fr.onload=()=>{const ok=vSet(k,fr.result);$('#vMsg').textContent=ok?'تم حفظ الصوت':'الصوت طويل؛ يكفي تسجيل أقصر من 10 ثوانٍ';_rec=null;_recK=null;renderVoices()};fr.readAsDataURL(bl)};
       _rec.start();renderVoices();setTimeout(()=>{if(_rec&&_recK===k)_rec.stop()},12000)}catch(e){$('#vMsg').textContent='تعذّر الوصول إلى الميكروفون؛ يلزم السماح للمتصفح باستخدامه'}});
   box.querySelectorAll('[data-up]').forEach(i=>i.onchange=()=>{const f=i.files[0];if(!f)return;if(f.size>1500000){$('#vMsg').textContent='الملف كبير؛ اختاري مقطعاً أقصر';return}const fr=new FileReader();fr.onload=()=>{$('#vMsg').textContent=vSet(i.dataset.up,fr.result)?'تم حفظ الصوت':'تعذّر الحفظ';renderVoices()};fr.readAsDataURL(f)});
-  box.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const k=b.dataset.play;if(k==='end'){playBoom()}else playVoice(k)});
-  box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{vSet(b.dataset.del,null);renderVoices()});}
-function playBoom(){try{if(!audioCtx)return;const n=audioCtx.sampleRate*1.2,b=audioCtx.createBuffer(1,n,audioCtx.sampleRate),d=b.getChannelData(0);
-  for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.5);const s=audioCtx.createBufferSource(),f=audioCtx.createBiquadFilter();f.type='lowpass';f.frequency.value=900;
-  s.buffer=b;s.connect(f);f.connect(audioCtx.destination);s.start()}catch(e){}setTimeout(()=>playVoice('end'),1600)}
+  box.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const k=b.dataset.play;if(k==='boom'){const v=vGet('boom');if(v)playURL(v);else playURL(SNDF.boom,m=>{if(m===1)synthBoom()})}else playVoice(k)});
+  box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{vSet(b.dataset.del,null);renderVoices()});
+  const vv=$('#vVol');if(vv)vv.oninput=()=>{try{localStorage.setItem('aafaq-vol',vv.value)}catch(e){}$('#vVolT').textContent=Math.round(vv.value*100)+'%'};}
+function synthBoom(){try{const c=ac();if(!c)return;const t=c.currentTime,V=vol(),out=c.createGain();out.gain.value=V;out.connect(c.destination);
+  /* delay "room" */const dl=c.createDelay(1),fbk=c.createGain(),wet=c.createGain();dl.delayTime.value=.13;fbk.gain.value=.38;wet.gain.value=.35;dl.connect(fbk);fbk.connect(dl);dl.connect(wet);wet.connect(out);
+  /* sub thump */const o=c.createOscillator(),og=c.createGain();o.type='sine';o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(32,t+.9);og.gain.setValueAtTime(0,t);og.gain.linearRampToValueAtTime(1,t+.012);og.gain.exponentialRampToValueAtTime(.001,t+1.6);o.connect(og);og.connect(out);og.connect(dl);o.start(t);o.stop(t+1.7);
+  /* blast + rumble */const n=c.sampleRate*3,b=c.createBuffer(2,n,c.sampleRate);for(let ch=0;ch<2;ch++){const d=b.getChannelData(ch);let l=0;for(let i=0;i<n;i++){const w=Math.random()*2-1;l=l*.96+w*.04;const e=Math.pow(1-i/n,3);d[i]=(w*.55+l*3.2)*e+(Math.random()<.0009?(Math.random()*2-1)*e:0)}}
+  const s=c.createBufferSource(),f=c.createBiquadFilter(),sg=c.createGain();f.type='lowpass';f.frequency.setValueAtTime(5000,t);f.frequency.exponentialRampToValueAtTime(160,t+2.6);sg.gain.setValueAtTime(.95,t);sg.gain.exponentialRampToValueAtTime(.001,t+3);
+  s.buffer=b;s.connect(f);f.connect(sg);sg.connect(out);sg.connect(dl);s.start(t);
+  /* debris crackle */for(let i=0;i<14;i++){const tt=t+.25+Math.random()*1.6,cl=c.createOscillator(),cg=c.createGain();cl.type='square';cl.frequency.value=900+Math.random()*2400;cg.gain.setValueAtTime(.12*Math.random(),tt);cg.gain.exponentialRampToValueAtTime(.0001,tt+.03);cl.connect(cg);cg.connect(out);cl.start(tt);cl.stop(tt+.04)}
+}catch(e){}}
+function playBoom(){const v=vGet('boom');if(v)playURL(v);else playURL(SNDF.boom,miss=>{if(miss===1)synthBoom()});setTimeout(()=>playVoice('end'),2200)}
 
 function tick(){
   if(C2.phase==='round'){
@@ -1239,13 +1286,31 @@ function tick(){
   if(!$('#v-admin').hidden)$('#aState').textContent=stateText();
 }
 setInterval(tick,250);
+let dockClap=false,dockEnd=0;
+function renderDock(){const ds=document.querySelectorAll('[data-dock]');if(!ds.length)return;const ctl=!SY.on||SY.mode==='admin';
+  const st=C2.phase==='round'?`الجولة ${C2.round+1} من 5 · ${C2.boomed?'انتهى الوقت':(C2.running?'⏱ '+mmss(remain()):'⏸ متوقفة '+mmss(remain()))}`:'لم تبدأ الجولات';
+  const h=!ctl?'':`<div class="dk"><b class="dks">${st}</b>
+    ${C2.phase!=='round'?`<button type="button" class="btn gold" data-dk="start">🧭 فتح المعامل وبدء الجولة 1</button>`:`
+      ${C2.boomed?'':`<button type="button" class="btn ghost" data-dk="pause">${C2.running?'⏸ إيقاف مؤقت':'▶ استئناف'}</button><button type="button" class="btn ghost" data-dk="boom">⏹ إنهاء الوقت</button>`}
+      ${C2.round<4?`<button type="button" class="btn" data-dk="next">⏭ الجولة ${ORD[C2.round+1]}</button>`:''}
+      <button type="button" class="btn ghost" data-dk="end">${dockEnd?'تأكيد إنهاء الجولات':'✕ إنهاء الجولات'}</button>`}
+    <button type="button" class="btn ghost" data-dk="clap" aria-pressed="${dockClap}">👏 تصفيق</button></div>${dockClap?clapBtns('a'):''}`;
+  ds.forEach(d=>{if(d._h!==h){d._h=h;d.innerHTML=h}})}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-dk]');if(!b)return;const a=b.dataset.dk;
+  if(a==='start'){C2.active=C2.active.map(()=>true);startRound(0);if(!$('#v-show').hidden)document.querySelector('[data-v="screen"]').click()}
+  if(a==='pause')pause();if(a==='boom')boomNow();
+  if(a==='next'){window._ipMan=null;C2.nextAt=0;C2.active=C2.active.map(()=>true);startRound(C2.round+1)}
+  if(a==='end'){if(!dockEnd){dockEnd=1;setTimeout(()=>{dockEnd=0;renderDock()},5000)}else{dockEnd=0;endRounds()}}
+  if(a==='clap')dockClap=!dockClap;
+  renderDock();try{pushCtl()}catch(x){}});
+setInterval(renderDock,500);
 function stateText(){
   if(C2.phase==='idle')return 'لم تبدأ الجولات بعد';
   if(C2.phase==='present')return 'العرض التقديمي جارٍ';
   const r=remain();
   return `الجولة ${C2.round+1} من 5 · ${C2.boomed?(C2.nextAt?'انتهت · الانتقال بعد '+mmss((C2.nextAt-Date.now())/1000):'انتهى الوقت'):(C2.running?'متبقٍ '+mmss(r):'متوقفة عند '+mmss(r))}`;
 }
-function refreshAll(){renderScreen(true);if(!$('#v-lab').hidden)renderLab();if(!$('#v-admin').hidden)renderAdmin();}
+function refreshAll(){renderDock();renderScreen(true);if(!$('#v-lab').hidden)renderLab();if(!$('#v-admin').hidden)renderAdmin();}
 
 /* ---------- station screen ---------- */
 $('#scrSt').innerHTML=ST.map((s,k)=>`<option value="${k}">م${k+1}: ${s[0]}</option>`).join('');
@@ -1460,7 +1525,7 @@ function liveCards(box,dbox,openLab){
   dbox.querySelectorAll('.gtabs button').forEach(b=>b.onclick=()=>{SY.sel=+b.dataset.k;liveCards(box,dbox,openLab)});
   const ol=dbox.querySelector('#openLabK');if(ol)ol.onclick=()=>{viewGroup=k;document.querySelector('[data-v="lab"]').click()};
 }
-function renderMonitor(){
+function renderMonitor(){if($('#monClap'))$('#monClap').innerHTML=clapBtns('a');
   if(SY.on){$('#monSt').innerHTML=syncText();liveCards($('#mon'),$('#monD'),true);return}
   $('#mon').innerHTML=GROUPS.map((g,k)=>{const st=stationOf(k,ROUND),pr=groupProgress(k),pts=k===S.g?g.demo+S.pts:g.demo;
     return `<button class="mcard" data-k="${k}"><span class="nm">${g.n}</span><span class="meta">${C2.phase==='round'?'الجولة '+(C2.round+1)+' · ':''}م${st+1}: ${ST[st][0]}</span>
@@ -1468,7 +1533,7 @@ function renderMonitor(){
       <span class="meta">${C2.active[k]?'المعمل مفعّل':'المعمل مقفل'} · ${2+((k*3)%4)} شواهد</span><span class="pts">${pts} نقطة</span></button>`}).join('');
   document.querySelectorAll('.mcard').forEach(c=>c.onclick=()=>{viewGroup=+c.dataset.k;document.querySelector('[data-v="lab"]').click()});
 }
-function renderGuide(){
+function renderGuide(){if($('#gClap'))$('#gClap').innerHTML=clapBtns('o');
   $('#gLive').parentElement.hidden=!SY.on;if(SY.on){$('#gSt').innerHTML=syncText();liveCards($('#gLive'),$('#gLiveD'),false)}
   $('#gNow').innerHTML=C2.phase==='round'?`<span>الجولة ${C2.round+1} من 5</span><span class="big" id="gT">${mmss(remain())}</span><span>${C2.boomed?'انتهى وقت الجولة':'المحطات تعمل الآن'}</span>`:`<span>${C2.phase==='present'?'العرض التقديمي جارٍ':'لم تبدأ الجولات بعد'}</span>`;
   renderBoard();$('#gBoard').innerHTML=$('#board').innerHTML;
@@ -1494,7 +1559,7 @@ setInterval(()=>{if(!$('#v-guide').hidden&&$('#gT'))$('#gT').textContent=mmss(re
   if(h==='areej')setTimeout(()=>document.querySelector('[data-v="admin"]').click(),0);
   SY.mode=m?'group':(SY.pin?'admin':'view');
   if(m)sel.addEventListener('change',()=>{SY.ev=[];SY.sent='';pushMine()});
-  if(SY.on){poll();setInterval(()=>{if(!document.hidden)poll()},4000);setInterval(()=>{if(SY.mode==='admin')pushCtl()},800);}
+  if(SY.on){(function loop(){(document.hidden?Promise.resolve():poll()).finally(()=>setTimeout(loop,SY.mode==='group'?4500:3500))})();setInterval(()=>{if(SY.mode==='admin')pushCtl()},700);}
 })();
 
 /* ===== Interactive presentation ===== */
@@ -1538,6 +1603,11 @@ function demoLab(){const n=i=>`<span class="dl-n">${i+1}</span>`,B=(i,h,st='')=>
  </div>
  <div class="dl-side a2"><div class="dl-card" id="dlCard"></div>
   <div class="dl-nav"><button type="button" class="dl-arr" id="dlPrev" aria-label="السابق">→</button>${DEMO.map((d,i)=>`<button type="button" class="dl-dot" data-j="${i}">${i+1}</button>`).join('')}<button type="button" class="dl-arr" id="dlNext" aria-label="التالي">←</button></div></div>`}
+const GOASK=['أستاذتنا أريج أبو حاشية، يا بوصلة ورشتنا… الفضول يملأ القاعة، والأجهزة على أهبة الاستعداد؛ تفضّلي بفتح المعامل لننطلق في أولى رحلات الاستكشاف',
+ 'أحسنتنّ في المحطة الأولى… أستاذة أريج، تفضّلي بفتح المعامل لنواصل الرحلة في الجولة الثانية',
+ 'ثلاث خطوات نحو القمة… أستاذة أريج، نستأذنكِ بفتح المعامل للجولة الثالثة',
+ 'بقيت محطتان والحماس في ازدياد… أستاذة أريج، تفضّلي بفتح المعامل للجولة الرابعة',
+ 'الجولة الأخيرة… وحصاد اليوم كله فيها؛ أستاذة أريج، تفضّلي بفتح المعامل للجولة الخامسة'];
 const SLIDES=[
  ()=>`<div class="sl-title"><div class="s-sch">مدرسة الشيماء الثانوية للبنات · قسم الفيزياء · بإشراف الموجهة التربوية أ. نورة المناعي</div><div class="s-aafaq a1">آفاق</div>
    <div class="s-verse a2">﴿سَنُرِيهِمْ آيَاتِنَا فِي الْآفَاقِ وَفِي أَنفُسِهِمْ﴾</div><div class="s-ribbon a3">الاستراتيجية قوة ◆ والتغذية الراجعة تسارع</div><div class="s-day a4">يوم فيزيائي استثنائي</div></div>`,
@@ -1623,10 +1693,10 @@ const SLIDES=[
    <div><b>السرعة</b><span>تسليم المحطة قبل انتهاء الوقت</span><em>+1 لكل دقيقتين متبقيتين (حتى 3)</em></div></div>
    <p class="s-note" style="margin:0">تُجمع النقاط للمجموعة، وتُعلن الأفضل بعد كل جولة على الشاشة</p>`,
  ()=>`<div class="quipslide"><img src="lab-scene.jpg" alt=""><div class="qbubble">ترى نيوتن ما بيحلّها عنكم!</div></div>`,
- ()=>`<div class="go" id="goBox"><div class="go-t a1">الجولة الأولى</div>
-   <div class="go-lock a2"><span class="pulse"></span>المعامل مقفلة الآن على جوالاتكن… بانتظار إذن بوصلة الورشة</div>
-   <p class="go-ask a3">أ. أريج أبو حاشية، تفضّلي بفتح المعامل</p>
-   <button class="btn gold go-open a4" id="goOpen" type="button">🧭 فتح المعامل وبدء الجولة</button><div id="goMsg" class="go-msg"></div></div>`,
+ ...[0,1,2,3,4].map(r=>()=>`<div class="go" id="goBox" data-r="${r}"><div class="go-t a1">الجولة ${ORD[r]}</div>
+   <div class="go-lock a2"><span class="pulse"></span>${r?'تبدّلت الطاولات وتجدّدت المهام… والمعامل بانتظار بوصلة الورشة':'المحطات جاهزة، والمعامل مقفلة على جوالاتكنّ… بانتظار بوصلة الورشة'}</div>
+   <p class="go-ask a3">${GOASK[r]}</p>
+   <button class="btn gold go-open a4" id="goOpen" type="button">🧭 تفضّلي… افتحي المعامل لنبدأ الجولة ${ORD[r]}</button><div id="goMsg" class="go-msg"></div></div>`),
  ()=>`<div class="sl-title"><div class="s-sch a1">بعد انتهاء الجولات الخمس · 9:30</div><div class="s-aafaq a2" style="font-size:clamp(46px,8vw,104px)">منصة العرض</div><div class="s-day a3">نعود معاً إلى كل محطة: ربطها بالواقع، وبقطر، وبالاستدامة</div><div class="s-ribbon a4">ثم الجولة الحاسمة</div></div>`,
  ...[0,1,2,3,4].map(k=>()=>`<h3 class="s-h">المحطة ${k+1}: ${ST[k][0]} <small>أ. ${ST[k][1]}</small></h3>
    <div class="envs"><div class="gal">${ENV[k].img.map(s=>`<img src="${s}" alt="">`).join('')}</div>
@@ -1652,14 +1722,20 @@ function renderShow(){
     document.querySelectorAll('#dlS .dl-b').forEach(x=>x.onclick=()=>{stop();hi(+x.dataset.i)})}
   if($('#goOpen')){$('#goOpen').onclick=()=>{
     if(SY.on&&SY.mode!=='admin'){$('#goMsg').textContent='يلزم إدخال الرمز السري في لوحة أ. أريج أبو حاشية على هذا الجهاز أولاً';return}
-    C2.active=C2.active.map(()=>true);if(SY.on)pushCtl();
-    $('#goBox').innerHTML=`<div class="go-t">فُتحت المعامل!</div><div class="go-c" id="goC">3</div><p>وقتكم يبدأ الآن… ${C2.dur/60} دقائق في كل محطة، والقنبلة تشتغل من أول ثانية</p>`;
-    let c=3;goTimer=setInterval(()=>{c--;if($('#goC'))$('#goC').textContent=Math.max(c,0);if(c<=0){clearInterval(goTimer);launch()}},1000)}}
+    const R=+($('#goBox').dataset.r||0);C2.active=C2.active.map(()=>true);if(SY.on)pushCtl();
+    $('#goBox').innerHTML=`<div class="go-t">فُتحت المعامل… الجولة ${ORD[R]}</div><div class="go-c" id="goC">3</div><p>وقتكم يبدأ الآن… ${C2.dur/60} دقائق في كل محطة، والقنبلة تشتغل من أول ثانية</p>`;
+    let c=3;goTimer=setInterval(()=>{c--;if($('#goC'))$('#goC').textContent=Math.max(c,0);if(c<=0){clearInterval(goTimer);launch(R)}},1000)}}
 }
-function launch(){C2.active=C2.active.map(()=>true);startRound(0);document.querySelector('[data-v="screen"]').click();slide=Math.min(slide+1,SLIDES.length-1)}
+function launch(r){C2.active=C2.active.map(()=>true);startRound(r||0);document.querySelector('[data-v="screen"]').click();slide=Math.min(slide+1,SLIDES.length-1)}
 $('#sPrev').onclick=()=>{slide=Math.max(0,slide-1);renderShow()};
 $('#sNext').onclick=()=>{slide=Math.min(SLIDES.length-1,slide+1);renderShow()};
-document.addEventListener('keydown',e=>{if($('#v-show').hidden)return;if(e.key==='ArrowLeft'||e.key===' ')$('#sNext').click();if(e.key==='ArrowRight')$('#sPrev').click()});
+/* presenter clicker + keyboard: PageDown/PageUp (clicker), arrows (RTL), B = black screen */
+document.addEventListener('keydown',e=>{if($('#v-show').hidden||e.target.closest('input,textarea,select'))return;const k=e.key;
+  const nx=['PageDown','ArrowLeft',' ','Enter','ArrowDown','n','N'].includes(k),pv=['PageUp','ArrowRight','Backspace','ArrowUp','p','P'].includes(k);
+  if(['b','B','.','w','W'].includes(k)){e.preventDefault();let bk=$('#blk');if(!bk){bk=document.createElement('div');bk.id='blk';bk.style.cssText='position:fixed;inset:0;background:#000;z-index:999';bk.onclick=()=>bk.remove();(document.fullscreenElement||document.body).appendChild(bk)}else bk.remove();return}
+  if($('#blk')){$('#blk').remove();if(nx||pv){e.preventDefault();return}}
+  if(nx){e.preventDefault();const g=$('#goOpen');if(g&&!g.disabled){g.click();return}$('#sNext').click()}
+  if(pv){e.preventDefault();$('#sPrev').click()}});
 $('#sFull').onclick=()=>{const el=$('#v-show');(el.requestFullscreen?el.requestFullscreen():Promise.reject()).catch(()=>{})};
 
 /* "time for stage N" interstitial on every round start */
