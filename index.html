@@ -745,7 +745,7 @@ const STEPN=['التوقّع','التجربة','تحدّي القراءة','ال
 const sNow=()=>Date.now()+SY.off;
 SY.inq=0;SY.seq=0;SY.applied=0;SY.pendMine=false;
 function api(q){const t0=Date.now(),id=++SY.seq;let ac=null,to=0;try{ac=new AbortController();to=setTimeout(()=>ac.abort(),12000)}catch(e){}SY.inq++;
-  return fetch(SYNC_URL+'?'+new URLSearchParams(q).toString(),ac?{cache:'no-store',signal:ac.signal}:{cache:'no-store'}).then(r=>r.json()).then(j=>{const t1=Date.now();if(j.now)SY.off=j.now-(t0+t1)/2;SY.ok=Date.now();if(j.d&&id>SY.applied){SY.applied=id;try{ingest(j.d)}catch(e){}}return j})
+  return fetch(SYNC_URL+'?'+new URLSearchParams(q).toString(),ac?{cache:'no-store',signal:ac.signal}:{cache:'no-store'}).then(r=>r.json()).then(j=>{const t1=Date.now();if(j.now){const rt=t1-t0;if(rt<=(SY.rtt||1e9)){SY.rtt=rt;SY.off=j.now-(t0+t1)/2}}SY.ok=Date.now();if(j.d&&id>SY.applied){SY.applied=id;try{ingest(j.d)}catch(e){}}return j})
   .catch(e=>{SY.err++;return {ok:false}}).finally(()=>{clearTimeout(to);SY.inq=Math.max(0,SY.inq-1);if(SY.pendMine&&SY.inq===0){SY.pendMine=false;poll(true)}})}
 function memKey(){return 'm'+S.g+'_'+S.i}
 /* ===== claps 👏 ===== */
@@ -767,7 +767,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-clap]');if
 const STEP_ROLE=[1,0,0,2,3];
 const ownerIdx=st=>(STEP_ROLE[st]-ROUND%4+8)%4;
 const teamMode=()=>SY.on&&SY.mode==='group'&&viewGroup===null;
-const isOwner=()=>!teamMode()||S.i===ownerIdx(step);
+function actorIdx(st){const oi=ownerIdx(st);if(!SY.on)return oi;const on=memList(S.g).filter(x=>x.on).map(x=>x.i);if(!on.includes(S.i))on.push(S.i);if(on.includes(oi))return oi;return Math.min(...on)}
+const isOwner=()=>!teamMode()||S.i===actorIdx(step);
 function gState(){try{return SY.g&&SY.g[S.g]}catch(e){return null}}
 function pushGroup(extra){if(!teamMode()||!isOwnerAny())return;const gt=gTally();const o=Object.assign({ok:gt.ok,n:gt.n,k:curSt,s:step,p:S.pts,r:ROUND,d:curSt!=null&&stDoneR(S.g,ROUND,curSt)?1:0,t:Math.round(sNow()/1000)},extra||{});SY.gLast=o;api({a:'set',k:'G'+S.g,v:JSON.stringify(o),w:1})}
 function isOwnerAny(){return true}
@@ -783,7 +784,7 @@ function applyGroup(){
   if(gs.k===curSt&&gs.s!==step&&!stDoneR(S.g,ROUND,gs.k)){step=gs.s;runStation(curSt)}
 }
 function roleLock(el){
-  if(!teamMode())return;const oi=ownerIdx(step),G=GROUPS[S.g],who=G.m[oi],task=TASKS[STEP_ROLE[step]];
+  if(!teamMode())return;const oi=actorIdx(step),G=GROUPS[S.g],who=G.m[oi],task=TASKS[STEP_ROLE[step]];SY.lockMine=S.i===oi;SY.lockKey=ROUND+':'+curSt+':'+step;
   const mineT=TASKS[(S.i+ROUND)%4];
   if(S.i===oi){el.insertAdjacentHTML('afterbegin',`<div class="rolebar me"><b>دوركِ الآن (${task})</b><span>نفّذي هذه المرحلة على جوالكِ، وزميلاتكِ يتابعنكِ ويناقشنكِ.</span></div>`);return}
   el.classList.add('rolelock');
@@ -798,11 +799,12 @@ let _pmT=0;function pushMine(){if(!SY.on||SY.mode!=='group')return;clearTimeout(
 function poll(force){
   if(!SY.on)return Promise.resolve();
   if(SY.inq>0){if(force&&SY.mode==='group')SY.pendMine=true;return Promise.resolve()}
-  if(SY.mode==='group'){const v=JSON.stringify(Object.assign(mine(),{t:Math.round(sNow()/1000)})),core=JSON.stringify(mine());const w=core!==SY.sent?1:0;SY.sent=core;return api({a:'set',k:memKey(),v,w})}
+  if(SY.mode==='group'){const mk=memKey();if(SY.lastKey&&SY.lastKey!==mk){api({a:'set',k:SY.lastKey,v:JSON.stringify({t:0,gone:1}),w:1})}SY.lastKey=mk;const v=JSON.stringify(Object.assign(mine(),{t:Math.round(sNow()/1000)})),core=JSON.stringify(mine());const w=core!==SY.sent?1:0;SY.sent=core;return api({a:'set',k:memKey(),v,w})}
   return api({a:'get'});
 }
 function ctlObj(){return {p:C2.phase,r:C2.round,d:C2.dur,e:C2.running?Math.round(C2.endAt+SY.off):0,m:C2.remain,run:C2.running?1:0,b:C2.boomed?1:0,a:C2.active.map(x=>x?1:0),n:C2.nextAt?Math.round(C2.nextAt+SY.off):0,au:C2.auto?1:0,z:C2.z||0}}
-function pushCtl(){if(!SY.on||SY.mode!=='admin')return;if(SY.ctlBusy)return;const o=ctlObj(),sig=JSON.stringify(o);if(sig===SY.ctlSig)return;SY.ctlSig=sig;SY.ctlBusy=true;api({a:'ctl',pin:SY.pin,v:sig}).then(j=>{SY.ctlBusy=false;if(!j||!j.ok&&j.err!=='pin')SY.ctlSig='';if(j&&j.err==='pin'){SY.mode='view';SY.pin='';try{localStorage.removeItem('aafaq-pin')}catch(e){}renderAdmin()}})}
+SY.dev=Math.random().toString(36).slice(2,8);SY.ctlTs=0;
+function pushCtl(){if(!SY.on||SY.mode!=='admin')return;if(SY.ctlBusy)return;const o=ctlObj(),sig=JSON.stringify(o);if(sig===SY.ctlSig)return;SY.ctlSig=sig;SY.ctlTs=Math.round(sNow());SY.ctlBusy=true;api({a:'ctl',pin:SY.pin,v:JSON.stringify(Object.assign({},o,{ts:SY.ctlTs,dv:SY.dev}))}).then(j=>{SY.ctlBusy=false;if(!j||!j.ok&&j.err!=='pin')SY.ctlSig='';if(j&&j.err==='pin'){SY.mode='view';SY.pin='';try{localStorage.removeItem('aafaq-pin')}catch(e){}renderAdmin()}})}
 function applyCtl(o,adopt){
   C2.phase=o.p;C2.round=o.r;ROUND=o.r;C2.dur=o.d;C2.running=!!o.run;C2.endAt=o.e?o.e-SY.off:0;C2.remain=o.m;C2.boomed=!!o.b;C2.active=o.a.map(Boolean);C2.nextAt=o.n?o.n-SY.off:0;C2.auto=!!o.au;C2.z=o.z||0;
   if(o.b&&!C2.boomAt)C2.boomAt=Date.now()-(adopt?8000:0);if(!o.b)C2.boomAt=0;
@@ -814,7 +816,9 @@ function ingest(d){
   SY.d=d;SY.m={};SY.g={};for(const k in d){if(k[0]==='m'){try{SY.m[k]=JSON.parse(d[k])}catch(e){}}if(k[0]==='G'){try{SY.g[+k.slice(1)]=JSON.parse(d[k])}catch(e){}}}
   if(d.ctl){let o;try{o=JSON.parse(d.ctl)}catch(e){}
     if(o){
-      if(SY.mode==='admin'){if(!SY.adopted){SY.adopted=true;if(C2.phase==='idle'&&o.p!=='idle'){applyCtl(o,true);SY.ctlSig=JSON.stringify(ctlObj());renderMe();refreshAll();renderAgenda()}}}
+      if(SY.mode==='admin'){const ts=+o.ts||0;
+        if(ts&&o.dv!==SY.dev&&ts>SY.ctlTs&&!SY.ctlBusy){const pr=C2.round,pp=C2.phase;SY.adopted=true;applyCtl(o,true);SY.ctlTs=ts;SY.ctlSig=JSON.stringify(ctlObj());if(pr!==C2.round||pp!==C2.phase){window._endK=null;preloadEnd()}renderMe();refreshAll();renderAgenda()}
+        else if(!SY.adopted){SY.adopted=true;if(C2.phase==='idle'&&o.p!=='idle'){applyCtl(o,true);SY.ctlSig=JSON.stringify(ctlObj());renderMe();refreshAll();renderAgenda()}}}
       else{
         const prev={p:C2.phase,r:C2.round,a:C2.active.slice(),b:C2.boomed,run:C2.running};
         applyCtl(o);
@@ -830,13 +834,14 @@ function ingest(d){
     }
   }
   try{applyGroup()}catch(e){}
+  try{if(teamMode()&&C2.phase==='round'&&curSt!=null&&!$('#v-lab').hidden&&$('#lab-vd').querySelector('.rolebar')&&SY.lockKey===ROUND+':'+curSt+':'+step&&(S.i===actorIdx(step))!==SY.lockMine)runStation(curSt)}catch(e){}
   liveRefresh();
 }
 function liveRefresh(){
   try{if(!$('#v-monitor').hidden)renderMonitor();if(!$('#v-guide').hidden)renderGuide();if(!$('#v-board').hidden||SY.mode!=='group')renderBoard();if(!$('#v-admin').hidden)$('#aSync').innerHTML=syncText()}catch(e){}
 }
 function syncText(){if(!SY.on)return '';const a=SY.ok?Math.round((Date.now()-SY.ok)/1000):-1;return a<0?'جارٍ الاتصال…':(a<15?'<b>● متصل</b> · آخر تحديث قبل '+a+' ث':'انقطع الاتصال، تُعاد المحاولة تلقائياً')}
-function memList(g){const out=[];for(let i=0;i<4;i++){const v=SY.m['m'+g+'_'+i];if(v)out.push(Object.assign({i,on:(sNow()/1000-(v.t||0))<20},v))}return out}
+function memList(g){const out=[];for(let i=0;i<4;i++){const v=SY.m['m'+g+'_'+i];if(v&&!v.gone)out.push(Object.assign({i,on:(sNow()/1000-(v.t||0))<20},v))}return out}
 function grpPts(g){if(!SY.on)return null;const L=memList(g),gs=SY.g&&SY.g[g];return Math.max(gs&&gs.p||0,...(L.length?L.map(x=>x.p||0):[0]))}
 
 
@@ -1467,7 +1472,7 @@ function setPhrase(){const p=$('#sPh');if(!p)return;p.style.opacity=0;setTimeout
 /* ---------- admin ---------- */
 document.querySelectorAll('#durSeg button').forEach(b=>b.addEventListener('click',()=>{C2.dur=+b.dataset.d;if(C2.phase!=='round')C2.remain=C2.dur;renderAdmin()}));
 $('#aPresent').onclick=()=>{C2.phase='present';C2.running=false;refreshAll();renderAgenda();slide=0;document.querySelector('[data-v="show"]').click()};
-$('#aStart').onclick=()=>startRound(C2.phase==='round'?C2.round:0);
+$('#aStart').onclick=()=>{C2.active=C2.active.map(()=>true);startRound(C2.phase==='round'?C2.round:0)};
 $('#aPause').onclick=pause;
 $('#aNext').onclick=()=>{if(C2.round<4||C2.phase!=='round')startRound(C2.phase==='round'?C2.round+1:0)};
 $('#aBoom').onclick=boomNow;
