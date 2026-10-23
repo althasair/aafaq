@@ -541,6 +541,25 @@ body.noanno .cl{border-color:transparent;padding:0;margin:0}body.noanno .cl-tag{
 .donecard .q8{font-style:italic;color:var(--emerald)}
 .lock{text-align:center;padding:26px 12px;display:grid;gap:12px;justify-items:center;background:rgba(255,250,241,.9);border:1px dashed var(--gold);border-radius:6px}
 footer{text-align:center;color:var(--muted);font-size:13px;margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
+/* ===== theme: inventor's lab (amber glow · brass · teal · neon) ===== */
+:root{--emerald:#0F5566;--emerald-2:#178197;--rosso:#C2337A;--gold:#C9973F;--gold-2:#F2C46B;--leather:#14262E;--leather-2:#22404B;--card:#FBF8F1;--card-2:#F1ECE1;--line:#E3D6BD;--muted:#56656B;--ink:#1C2A30;--ok:#178197;--ok-bg:#E2F3F5}
+.bgfix{background:#0B1820 url(bg-lab.jpg) center 28%/cover no-repeat}
+.bgfix::after{background:radial-gradient(ellipse at 50% 16%,rgba(255,190,90,.32),transparent 55%),radial-gradient(ellipse at 85% 85%,rgba(79,214,232,.18),transparent 50%),linear-gradient(rgba(6,16,22,.30),rgba(6,16,22,.62))}
+.card{background:rgba(251,248,241,.74);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);border-color:var(--gold);outline-color:rgba(201,151,63,.55);box-shadow:0 0 0 1px rgba(79,214,232,.28),0 30px 80px -30px rgba(0,0,0,.85)}
+.ticker{background:linear-gradient(90deg,#0B2A35,#0F5566 50%,#0B2A35);border-bottom-color:#4FD6E8;box-shadow:0 3px 14px -4px rgba(79,214,232,.55)}
+.ticker .run b{color:#F2C46B}
+body::before{background:#0B2A35}
+.mast{background:radial-gradient(ellipse at center,rgba(255,250,240,.95) 40%,rgba(255,244,225,.6) 100%)}
+.mast .name{background:linear-gradient(180deg,#FFD991 0%,#E79A3B 50%,#9C5A1E 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 14px rgba(255,170,70,.45))}
+.mast .day{color:#0F5566}
+.web{background:linear-gradient(90deg,#4FD6E8 0 33%,#C2337A 33% 66%,#F2C46B 66%)}
+.tabs button[aria-selected="true"]{background:linear-gradient(135deg,#0F5566,#178197);border-color:#178197;box-shadow:0 0 0 2px rgba(79,214,232,.35),0 0 16px -4px rgba(79,214,232,.8)}
+.scorebar{background:linear-gradient(90deg,#14262E,#0F5566);box-shadow:0 -2px 18px -6px rgba(79,214,232,.6)}
+.stage{border-color:var(--gold);box-shadow:0 0 0 1px rgba(79,214,232,.3),0 20px 40px -24px rgba(0,0,0,.7)}
+.mast{position:relative;overflow:hidden}
+.mast>*:not(.mast-future){position:relative;z-index:1}
+.mast-future{position:absolute;left:14px;top:8px;bottom:8px;height:calc(100% - 16px);width:auto;max-width:30%;object-fit:contain;object-position:left top;opacity:.85;z-index:0;pointer-events:none;filter:drop-shadow(0 6px 14px rgba(20,38,46,.25))}
+@media (max-width:700px){.mast-future{height:auto;width:17%;bottom:auto;top:6px;left:4px;opacity:.85}}
 </style></head><body>
 
 <div class="ticker" aria-label="شريط الترحيب"><div class="run" id="run"></div></div>
@@ -553,7 +572,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:26px;borde
       <div class="sch-txt"><b>مدرسة الشيماء الثانوية للبنات</b><small>قسم الفيزياء</small></div>
       <span class="ln" aria-hidden="true"></span>
     </div>
-    <header class="mast">
+    <header class="mast"><img class="mast-future" src="future.webp" alt="من طفلة 2026 إلى عالمة 2030">
       <div class="name">آفاق</div>
       <div class="verse">﴿سَنُرِيهِمْ آيَاتِنَا فِي الْآفَاقِ وَفِي أَنفُسِهِمْ﴾<small>(فصلت: 53)</small></div>
       <div class="web" aria-hidden="true"></div>
