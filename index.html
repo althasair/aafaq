@@ -732,6 +732,25 @@ body{font-size:17px}
 .stage.mirror #goOpen,.stage.mirror .go-msg,.stage.mirror .dl-nav{display:none!important}
 @media (max-width:700px){.stage.mirror{aspect-ratio:auto;max-height:none;min-height:56vw}.stage.mirror .slide{position:relative;inset:auto;padding:14px 14px 18px;gap:10px;font-size:13px}
   .stage.mirror .slide img{max-width:100%}}
+/* home overview */
+body.nogroup #v-home .who,body.nogroup .scorebar{display:none!important}
+.ov{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.ov .ov-idea{grid-column:1/-1}
+.ov-fma{display:flex;justify-content:center;align-items:center;gap:clamp(4px,3vw,28px);flex-wrap:nowrap;direction:ltr;margin-top:6px}
+.ov-fma span{display:grid;justify-items:center;text-align:center;direction:rtl;flex:1;min-width:0;max-width:200px;font-weight:700;color:var(--ink)}
+.ov-fma b{font-size:clamp(40px,6vw,64px);line-height:1;color:var(--bu);font-family:Georgia,serif;font-style:italic}
+.ov-fma small{font-weight:500;color:var(--muted);font-size:clamp(11px,2.8vw,13.5px);line-height:1.4}
+.ov-fma i{font-style:normal;font-size:clamp(28px,4vw,44px);color:var(--cg)}
+.ov-st{display:grid;gap:8px}
+.ov-st>div{display:grid;grid-template-columns:auto 1fr;gap:0 10px;align-items:center;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.ov-st .n{grid-row:span 2;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#A3334F,#7A1F35);color:#fff;font-weight:800}
+.ov-st small{color:var(--muted)}
+.ov-ax{display:flex;flex-wrap:wrap;gap:8px}
+.ov-ax span{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid var(--line);font-weight:700;font-size:15px}
+.ov-ax i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--cg);color:#fff;font-size:12px}
+.ov-road{margin:0;padding-inline-start:22px;display:grid;gap:6px}.ov-road li::marker{color:var(--bu);font-weight:800}
+.ov-team{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:8px}
+.ov-team>div{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:12px;padding:8px 12px;display:grid}.ov-team small{color:var(--muted)}
 /* current sound toggle */
 .hum{position:fixed;left:14px;bottom:84px;z-index:20;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;
   color:var(--bu);border:1px solid rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(250,226,214,.6));
@@ -794,6 +813,7 @@ body{font-size:17px}
           </dl>
         </div>
       </div>
+      <div class="ov" id="ov"></div>
       <div class="box" style="margin-top:14px">
         <div class="row" style="justify-content:space-between"><h3 style="margin:0">برنامج اليوم</h3></div>
         <ol class="timeline" id="tl" style="margin-top:10px"></ol>
@@ -1854,6 +1874,16 @@ function playVoiceMsg(data,from,all){let c=$('#vcard');if(!c){c=document.createE
 /* ===== presentation mirror on group phones ===== */
 function mirrorHTML(){if(!SY.on)return '';let h='';try{h=SLIDES[Math.min(SY.sl||0,SLIDES.length-1)]()}catch(e){h=''}
   return `<div class="mir"><div class="mir-h"><span class="pulse"></span>العرض المباشر · يتابع شاشة أ. أريج أبو حاشية</div><div class="stage mirror"><div class="slide">${h}</div></div></div>`}
+
+/* ===== home overview: what the workshop is about (general devices; trainees see their own card via QR) ===== */
+function renderOverview(){const o=$('#ov');if(!o)return;
+  o.innerHTML=`<div class="box ov-idea"><h3>فكرة الورشة في معادلة</h3><div class="ov-fma"><span><b>F</b>القوة<small>الاستراتيجية التدريسية الفاعلة</small></span><i>=</i><span><b>m</b>الكتلة<small>المحتوى وخصائص الطالبات</small></span><i>·</i><span><b>a</b>التسارع<small>التغذية الراجعة البنّاءة</small></span></div>
+     <p class="lede" style="margin:8px 0 0;text-align:center">استراتيجية قوية مع تغذية راجعة سريعة… تُسرّع تعلّم الطالبات</p></div>
+   <div class="box"><h3>المحطات الخمس · من كتاب الصف الحادي عشر</h3><div class="ov-st">${ST.map((x,i)=>`<div><span class="n">${i+1}</span><b>${x[0]}</b><small>أ. ${x[1]} · صفحة ${x[2]}</small></div>`).join('')}</div>
+     <p class="lede" style="margin:8px 0 0">عشر دقائق لكل محطة، تمرّ فيها كل مجموعة بخمس مراحل: التوقّع ← التجربة ← تحدّي القراءة ← المهمة المتمايزة ← تحقّق Copilot.</p></div>
+   <div class="box"><h3>المحاور الثمانية</h3><div class="ov-ax">${AXES8.map((a,i)=>`<span><i>${i+1}</i>${a}</span>`).join('')}</div></div>
+   <div class="box"><h3>رحلة المتدربة اليوم</h3><ol class="ov-road">${["تصوّر باركود مجموعتها، وتختار اسمها مرة واحدة","تتابع العرض على جوالها حتى تُفتح المعامل","تدخل معمل محطتها، وتؤدي دورها في كل مرحلة","تُدار خمس جولات، وتنتقل المجموعات بين المحطات","تُعلن النتائج، ثم تحضر حصة الصف الحادي عشر","نقاش الأثر، والقياس البعدي، وجدار الالتزامات"].map(t=>`<li>${t}</li>`).join('')}</ol></div>
+   <div class="box"><h3>فريق الملتقى</h3><div class="ov-team">${TEAM.map(t=>`<div><b>${t[0]}</b><small>${t[1]}</small></div>`).join('')}</div></div>`}
 /* ===== entry by QR: #g1..#g5, #guide, #areej ===== */
 (function(){
   const h=(location.hash||'').slice(1),hide=v=>{const t=document.querySelector(`[data-v="${v}"]`);if(t)t.hidden=true};
@@ -1868,6 +1898,7 @@ function mirrorHTML(){if(!SY.on)return '';let h='';try{h=SLIDES[Math.min(SY.sl||
   if(h==='guide'){['home','lab','admin'].forEach(hide);setTimeout(()=>document.querySelector('[data-v="guide"]').click(),0)}
   if(h==='areej')setTimeout(()=>document.querySelector('[data-v="admin"]').click(),0);
   SY.mode=m?'group':(SY.pin?'admin':'view');
+  if(!m){document.body.classList.add('nogroup');setTimeout(renderOverview,0)}
   if(m)sel.addEventListener('change',()=>{SY.ev=[];SY.sent='';pushMine()});
   if(SY.on){(function loop(){(document.hidden?Promise.resolve():poll()).finally(()=>setTimeout(loop,SY.mode==='group'?4500:3500))})();setInterval(()=>{if(SY.mode==='admin')pushCtl()},700);}
 })();
