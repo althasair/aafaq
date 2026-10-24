@@ -724,6 +724,14 @@ body{font-size:17px}
   .vcard{top:60px;padding:10px 14px;min-width:0;max-width:86vw}.vcard b{font-size:15px}
   .rolebar{padding:8px 12px}.rolebar b{font-size:15px}.rolebar span{font-size:13.5px}
 }
+.mir{margin-top:12px;display:grid;gap:8px}
+.mir-h{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--bu);font-size:15px}
+.mir-h .pulse{width:10px;height:10px;border-radius:50%;background:#E9574A;box-shadow:0 0 0 0 rgba(233,87,74,.6);animation:mpulse 1.4s infinite}
+@keyframes mpulse{to{box-shadow:0 0 0 10px rgba(233,87,74,0)}}
+.stage.mirror{pointer-events:none}
+.stage.mirror #goOpen,.stage.mirror .go-msg,.stage.mirror .dl-nav{display:none!important}
+@media (max-width:700px){.stage.mirror{aspect-ratio:auto;max-height:none;min-height:56vw}.stage.mirror .slide{position:relative;inset:auto;padding:14px 14px 18px;gap:10px;font-size:13px}
+  .stage.mirror .slide img{max-width:100%}}
 /* current sound toggle */
 .hum{position:fixed;left:14px;bottom:84px;z-index:20;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;
   color:var(--bu);border:1px solid rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(250,226,214,.6));
@@ -987,11 +995,14 @@ function poll(force){
   return api({a:'get'});
 }
 function srvT(k,v){const c=C2._sv=C2._sv||{};if(!v)return 0;if(c[k]&&c[k][0]===v)return c[k][1];const o=Math.round(v+SY.off);c[k]=[v,o];return o}
-function ctlObj(){return {p:C2.phase,r:C2.round,d:C2.dur,e:C2.running?srvT('e',C2.endAt):0,m:C2.remain,run:C2.running?1:0,b:C2.boomed?1:0,a:C2.active.map(x=>x?1:0),n:C2.nextAt?srvT('n',C2.nextAt):0,au:C2.auto?1:0,z:C2.z||0}}
+function isPres(){const v=document.getElementById('v-show');return !!v&&!v.hidden&&!v.classList.contains('locked')}
+function presSl(){if(isPres())SY.sl=slide;return SY.sl||0}
+function presLv(){if(isPres())SY.lv=(typeof LIVE!=='undefined'&&LIVE.on)?1:0;return SY.lv||0}
+function ctlObj(){return {p:C2.phase,r:C2.round,d:C2.dur,e:C2.running?srvT('e',C2.endAt):0,m:C2.remain,run:C2.running?1:0,b:C2.boomed?1:0,a:C2.active.map(x=>x?1:0),n:C2.nextAt?srvT('n',C2.nextAt):0,au:C2.auto?1:0,z:C2.z||0,sl:presSl(),lv:presLv()}}
 SY.dev=Math.random().toString(36).slice(2,8);SY.ctlTs=0;
 function pushCtl(){if(!SY.on||SY.mode!=='admin')return;if(SY.ctlBusy)return;const o=ctlObj(),sig=JSON.stringify(o);if(sig===SY.ctlSig)return;SY.ctlSig=sig;SY.ctlTs=Math.round(sNow());SY.ctlBusy=true;api({a:'ctl',pin:SY.pin,v:JSON.stringify(Object.assign({},o,{ts:SY.ctlTs,dv:SY.dev}))}).then(j=>{SY.ctlBusy=false;if(!j||!j.ok&&j.err!=='pin')SY.ctlSig='';if(j&&j.err==='pin'){SY.mode='view';SY.pin='';try{localStorage.removeItem('aafaq-pin')}catch(e){}renderAdmin()}})}
 function applyCtl(o,adopt){
-  C2.phase=o.p;C2.round=o.r;ROUND=o.r;C2.dur=o.d;C2.running=!!o.run;C2.endAt=o.e?o.e-SY.off:0;C2._sv={e:o.e?[C2.endAt,o.e]:null};C2.remain=o.m;C2.boomed=!!o.b;C2.active=o.a.map(Boolean);C2.nextAt=o.n?o.n-SY.off:0;if(o.n)C2._sv.n=[C2.nextAt,o.n];C2.auto=!!o.au;C2.z=o.z||0;
+  if(!isPres()){SY.sl=o.sl||0;SY.lv=o.lv||0}C2.phase=o.p;C2.round=o.r;ROUND=o.r;C2.dur=o.d;C2.running=!!o.run;C2.endAt=o.e?o.e-SY.off:0;C2._sv={e:o.e?[C2.endAt,o.e]:null};C2.remain=o.m;C2.boomed=!!o.b;C2.active=o.a.map(Boolean);C2.nextAt=o.n?o.n-SY.off:0;if(o.n)C2._sv.n=[C2.nextAt,o.n];C2.auto=!!o.au;C2.z=o.z||0;
   if(o.b&&!C2.boomAt)C2.boomAt=Date.now()-(adopt?8000:0);if(!o.b)C2.boomAt=0;
 }
 function ingest(d){
@@ -1005,7 +1016,7 @@ function ingest(d){
         if(ts&&o.dv!==SY.dev&&ts>SY.ctlTs&&!SY.ctlBusy){const pr=C2.round,pp=C2.phase;SY.adopted=true;applyCtl(o,true);SY.ctlTs=ts;SY.ctlSig=JSON.stringify(ctlObj());if(pr!==C2.round||pp!==C2.phase){window._endK=null;preloadEnd()}renderMe();refreshAll();renderAgenda()}
         else if(!SY.adopted){SY.adopted=true;if(C2.phase==='idle'&&o.p!=='idle'){applyCtl(o,true);SY.ctlSig=JSON.stringify(ctlObj());renderMe();refreshAll();renderAgenda()}}}
       else{
-        const prev={p:C2.phase,r:C2.round,a:C2.active.slice(),b:C2.boomed,run:C2.running};
+        const prev={p:C2.phase,r:C2.round,a:C2.active.slice(),b:C2.boomed,run:C2.running,sl:SY.sl,lv:SY.lv};
         applyCtl(o);
         const g=S.g,mineChanged=prev.p!==C2.phase||prev.r!==C2.round||prev.a[g]!==C2.active[g];
         if(prev.r!==C2.round&&C2.phase==='round'&&prev.p==='round')stageBanner(C2.round);
@@ -1013,6 +1024,7 @@ function ingest(d){
         if(mineChanged){renderMe();renderAgenda();
           if(SY.mode==='group'){if((!prev.a[g]&&C2.active[g])||(prev.p!=='round'&&C2.phase==='round'&&C2.active[g]&&$('#v-lab').hidden)){const t=document.querySelector('[data-v="lab"]');boost('فُتح معملكنّ');if($('#v-lab').hidden)t.click();else renderLab()}else if(!$('#v-lab').hidden)renderLab()}}
         if(mineChanged||prev.b!==C2.boomed||prev.run!==C2.running)renderScreen(true);
+        if(SY.mode==='group'&&!mineChanged&&(prev.sl!==SY.sl||prev.lv!==SY.lv||prev.b!==C2.boomed)&&!$('#v-lab').hidden&&viewGroup===null)renderLab();
         if(!mineChanged&&prev.b!==C2.boomed&&!$('#v-lab').hidden&&viewGroup===null)renderLab();
         if(!$('#v-admin').hidden)renderAdmin();
       }
@@ -1705,8 +1717,8 @@ function renderLabHead(){
 function renderLab(){if(window.GLOCK!=null)viewGroup=null;
   const g=viewGroup??S.g,st=stationOf(g,ROUND);
   renderLabHead();
-  if(window.GLOCK!=null&&C2.phase!=='round'){clearInterval(timerId);$('#lab-list').hidden=true;$('#lab-vd').hidden=true;
-    $('#lab-mine').innerHTML+=`<div class="lock wait" style="margin-top:12px"><span class="pulse"></span><b>بانتظار إذن أ. أريج أبو حاشية</b><span class="lede" style="margin:0">انتظري، ولا تغلقي الصفحة؛ يُفتح المعمل على محطتكم مباشرة لحظة بدء الجولة.</span></div><div class="box" style="margin-top:12px;display:grid;gap:8px"><h3 style="margin:0">مسار مجموعتكِ في الجولات الخمس</h3>
+  if(window.GLOCK!=null&&(C2.phase!=='round'||(C2.boomed&&!SY.lv&&SY.on))){clearInterval(timerId);$('#lab-list').hidden=true;$('#lab-vd').hidden=true;
+    $('#lab-mine').innerHTML+=mirrorHTML()+`<div class="lock wait" style="margin-top:12px"><span class="pulse"></span><b>${C2.phase==='round'?'انتهى وقت الجولة… بانتظار الجولة التالية':'بانتظار إذن أ. أريج أبو حاشية'}</b><span class="lede" style="margin:0">انتظري، ولا تغلقي الصفحة؛ يُفتح المعمل على محطتكم مباشرة لحظة بدء الجولة.</span></div><div class="box" style="margin-top:12px;display:grid;gap:8px"><h3 style="margin:0">مسار مجموعتكِ في الجولات الخمس</h3>
       ${[0,1,2,3,4].map(r=>{const k=stationOf(g,r),dn=stDone(g,k);return `<div class="row" style="justify-content:space-between;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:rgba(255,250,241,.9)"><span><b>الجولة ${r+1}</b> · المحطة ${k+1}: ${ST[k][0]}</span><span style="font-size:13px;color:var(--muted)">أ. ${ST[k][1]}${dn?' · ✓ أنجزتها مجموعتكِ':''}</span></div>`}).join('')}
       <p class="lede" style="margin:0;font-size:13px">في كل جولة تمرّ المجموعة بالمراحل الخمس: التوقّع ← التجربة ← تحدّي القراءة ← المهمة المتمايزة ← تحقّق Copilot. ويبدأ العدّ حين تطلق أ. أريج أبو حاشية الجولة، فتُفتح محطتكِ على هذه الشاشة تلقائياً.</p></div>`;return}
   if(SY.on&&SY.mode==='group'&&!C2.active[g]){clearInterval(timerId);$('#lab-list').hidden=true;$('#lab-vd').hidden=true;
@@ -1838,6 +1850,10 @@ function playVoiceMsg(data,from,all){let c=$('#vcard');if(!c){c=document.createE
   c.innerHTML=`<b>🎙 رسالة صوتية من ${from}</b><small>${all?'لجميع المعامل':'لمعملكنّ'}</small><div class="row" style="justify-content:center;gap:8px;margin-top:6px"><button type="button" class="btn gold" id="vplay">▶ تشغيل</button><button type="button" class="btn ghost" id="vclose">إغلاق</button></div>`;
   c.classList.add('on');const a=new Audio(data);a.volume=1;$('#vplay').onclick=()=>{a.currentTime=0;a.play().catch(()=>{})};$('#vclose').onclick=()=>{a.pause();c.classList.remove('on')};
   a.play().catch(()=>{});a.onended=()=>setTimeout(()=>c.classList.remove('on'),2500)}
+
+/* ===== presentation mirror on group phones ===== */
+function mirrorHTML(){if(!SY.on)return '';let h='';try{h=SLIDES[Math.min(SY.sl||0,SLIDES.length-1)]()}catch(e){h=''}
+  return `<div class="mir"><div class="mir-h"><span class="pulse"></span>العرض المباشر · يتابع شاشة أ. أريج أبو حاشية</div><div class="stage mirror"><div class="slide">${h}</div></div></div>`}
 /* ===== entry by QR: #g1..#g5, #guide, #areej ===== */
 (function(){
   const h=(location.hash||'').slice(1),hide=v=>{const t=document.querySelector(`[data-v="${v}"]`);if(t)t.hidden=true};
