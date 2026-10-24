@@ -1926,7 +1926,7 @@ const AXI=[
 document.addEventListener('click',e=>{const c=e.target.closest('.axcard');if(!c)return;const o=c.getAttribute('aria-expanded')==='true';c.setAttribute('aria-expanded',String(!o))});
 /* ===== home overview: what the workshop is about (general devices; trainees see their own card via QR) ===== */
 function renderOverview(){const o=$('#ov');if(!o)return;
-  o.innerHTML=`<div class="box ov-why"><b class="why-t">لماذا نحن هنا اليوم؟</b><p class="why-s">لنُصحّح مفاهيم شائعة في التدريس، ونضع مكانها ممارساتٍ صحيحة… تُريح المعلّمة، وتُمتع الطالبة، وتُسرّع تعلّمها.</p><p class="why-w">في جعبتنا الكثير من الممتع… <b>حيّاكم الله ومرحباً بكم</b></p></div>
+  o.innerHTML=`<div class="box ov-why"><b class="why-t">لماذا نحن هنا اليوم؟</b><p class="why-s">لنُصحّح مفاهيم شائعة في التدريس، ونضع مكانها ممارساتٍ صحيحة… تُريح المعلّمة، وتُمتع الطالبة، وتُسرّع تعلّمها.</p><p class="why-w">في جعبتنا الكثير والممتع… <b>حيّاكم الله ومرحباً بكم</b></p></div>
    <div class="box ov-idea"><h3>فكرة الورشة في معادلة</h3><div class="ov-fma"><span><b>F</b>القوة<small>الاستراتيجية التدريسية الفاعلة</small></span><i>=</i><span><b>m</b>الكتلة<small>المحتوى وخصائص الطالبات</small></span><i>·</i><span><b>a</b>التسارع<small>التغذية الراجعة البنّاءة</small></span></div>
      <p class="lede" style="margin:8px 0 0;text-align:center">استراتيجية قوية مع تغذية راجعة سريعة… تُسرّع تعلّم الطالبات</p></div>
    <div class="box ov-axbox"><h3>المحاور الثمانية</h3><div class="ov-ax8">${AXD.map((a,i)=>`<button type="button" class="axcard" aria-expanded="false"><span class="axic">${AXI[i]}</span><b>${a[0]}</b><span class="axin">${a[1]}<br><i>في آفاق:</i> ${a[2]}</span></button>`).join('')}</div></div>
