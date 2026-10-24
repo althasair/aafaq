@@ -753,6 +753,24 @@ body.nogroup #v-home .who,body.nogroup .scorebar{display:none!important}
 .ov-team>div{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:12px;padding:8px 12px;display:grid}.ov-team small{color:var(--muted)}
 .reset-box{border:1.5px solid #E9A08F!important;background:linear-gradient(180deg,rgba(255,244,240,.92),rgba(255,236,230,.85))!important}
 .reset-box #aReset{background:linear-gradient(180deg,#E9574A 0%,#C0392B 48%,#A93226 52%,#C44A3E 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -4px 8px rgba(60,10,10,.3),0 3px 0 #7E2219,0 10px 18px -8px rgba(120,20,20,.5)}
+.ov-axbox{grid-column:1/-1}
+.ov-ax8{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:6px}
+.axcard{font:inherit;text-align:center;cursor:pointer;display:grid;justify-items:center;align-content:start;gap:6px;position:relative;padding:18px 12px 14px;border-radius:16px;color:var(--ink);
+  background:linear-gradient(160deg,rgba(255,255,255,.9),rgba(255,242,236,.7));border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1px 0 #fff,0 10px 22px -16px rgba(90,30,40,.6);transition:transform .25s,box-shadow .25s}
+.axcard:hover{transform:translateY(-3px);box-shadow:inset 0 1px 0 #fff,0 16px 26px -14px rgba(122,31,53,.5)}
+.axic{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;color:#F6DDB2;background:radial-gradient(circle at 35% 30%,#B8456A,#7A1F35 65%,#561326);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.3),0 0 0 3px rgba(232,192,138,.55),0 8px 16px -6px rgba(90,20,35,.55)}
+.axic svg{width:34px;height:34px}
+.axcard:nth-child(8) .axic svg{width:38px;height:28px}
+.axn{position:absolute;top:10px;inset-inline-start:12px;font-size:12px;font-weight:800;color:var(--cg)}
+.axcard b{font-size:16px;color:var(--bu);line-height:1.35}
+.axds{font-size:13.5px;color:var(--muted);line-height:1.55}
+.axin{display:none;font-size:13px;line-height:1.55;color:var(--ink);background:rgba(255,255,255,.85);border:1px dashed var(--cg);border-radius:10px;padding:6px 8px;margin-top:2px}
+.axin i{font-style:normal;font-weight:800;color:var(--bu)}
+.axcard[aria-expanded="true"] .axin{display:block}
+.axcard[aria-expanded="true"]{box-shadow:inset 0 1px 0 #fff,0 0 0 2px rgba(232,192,138,.8),0 16px 26px -14px rgba(122,31,53,.5)}
+@media (max-width:900px){.ov-ax8{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.axic{width:52px;height:52px}.axic svg{width:28px;height:28px}.axcard{padding:14px 8px 12px}.axcard b{font-size:14px}.axds{font-size:12.5px}}
 /* current sound toggle */
 .hum{position:fixed;left:14px;bottom:84px;z-index:20;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;
   color:var(--bu);border:1px solid rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(250,226,214,.6));
@@ -1878,13 +1896,26 @@ function playVoiceMsg(data,from,all){let c=$('#vcard');if(!c){c=document.createE
 function mirrorHTML(){if(!SY.on)return '';let h='';try{h=SLIDES[Math.min(SY.sl||0,SLIDES.length-1)]()}catch(e){h=''}
   return `<div class="mir"><div class="mir-h"><span class="pulse"></span>العرض المباشر · يتابع شاشة أ. أريج أبو حاشية</div><div class="stage mirror"><div class="slide">${h}</div></div></div>`}
 
+
+/* line icons for the eight axes */
+const _ic=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const AXI=[
+ _ic('<circle cx="6" cy="9" r="2.2"/><circle cx="12" cy="6.5" r="2.6"/><circle cx="18" cy="9" r="2.2"/><path d="M2.8 18c.4-2.6 1.6-4 3.2-4s2.6.8 3 2"/><path d="M8 19c.3-3.4 1.8-5.5 4-5.5s3.7 2.1 4 5.5"/><path d="M15 16c.4-1.2 1.4-2 3-2s2.8 1.4 3.2 4"/>'),
+ _ic('<path d="M3 20h18"/><rect x="4" y="13" width="4" height="7" rx=".8"/><rect x="10" y="9" width="4" height="11" rx=".8"/><rect x="16" y="4.5" width="4" height="15.5" rx=".8"/><path d="m16.5 3 1.5-1.2L19.5 3"/>'),
+ _ic('<path d="M4 5.5h16v10H11l-4.5 3.5v-3.5H4z"/><path d="m8.5 10.5 2.3 2.2 4.7-4.7"/>'),
+ _ic('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.8h6V4"/><path d="m8 9 1.2 1.2L11.5 8"/><path d="M13.5 9.2H16"/><path d="m8 14.5 1.2 1.2 2.3-2.2"/><path d="M13.5 14.7H16"/>'),
+ _ic('<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2.5V6M15 2.5V6M9 18v3.5M15 18v3.5M2.5 9H6M2.5 15H6M18 9h3.5M18 15h3.5"/><path d="m12 8.8.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"/>'),
+ _ic('<path d="M9 17.5h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/><path d="M12 7v3l1.5 1.5"/>'),
+ _ic('<path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19l7-7"/><path d="M3 21l2-2"/>'),
+ `<svg viewBox="0 0 28 20" aria-hidden="true"><rect x=".5" y=".5" width="27" height="19" rx="2.5" fill="#8A1538" stroke="#E8C08A"/><path d="M.5 3A2.5 2.5 0 0 1 3 .5h6.2l2.3 1.06L9.2 2.6l2.3 1.06L9.2 4.7l2.3 1.06L9.2 6.8l2.3 1.06L9.2 8.9l2.3 1.06L9.2 11l2.3 1.06L9.2 13.1l2.3 1.06L9.2 15.2l2.3 1.06L9.2 17.3l2.3 1.06-2.3 1.14H3A2.5 2.5 0 0 1 .5 17z" fill="#fff"/></svg>`];
+document.addEventListener('click',e=>{const c=e.target.closest('.axcard');if(!c)return;const o=c.getAttribute('aria-expanded')==='true';c.setAttribute('aria-expanded',String(!o))});
 /* ===== home overview: what the workshop is about (general devices; trainees see their own card via QR) ===== */
 function renderOverview(){const o=$('#ov');if(!o)return;
   o.innerHTML=`<div class="box ov-idea"><h3>فكرة الورشة في معادلة</h3><div class="ov-fma"><span><b>F</b>القوة<small>الاستراتيجية التدريسية الفاعلة</small></span><i>=</i><span><b>m</b>الكتلة<small>المحتوى وخصائص الطالبات</small></span><i>·</i><span><b>a</b>التسارع<small>التغذية الراجعة البنّاءة</small></span></div>
      <p class="lede" style="margin:8px 0 0;text-align:center">استراتيجية قوية مع تغذية راجعة سريعة… تُسرّع تعلّم الطالبات</p></div>
    <div class="box"><h3>المحطات الخمس · من كتاب الصف الحادي عشر</h3><div class="ov-st">${ST.map((x,i)=>`<div><span class="n">${i+1}</span><b>${x[0]}</b><small>أ. ${x[1]} · صفحة ${x[2]}</small></div>`).join('')}</div>
      <p class="lede" style="margin:8px 0 0">عشر دقائق لكل محطة، تمرّ فيها كل مجموعة بخمس مراحل: التوقّع ← التجربة ← تحدّي القراءة ← المهمة المتمايزة ← تحقّق Copilot.</p></div>
-   <div class="box"><h3>المحاور الثمانية</h3><div class="ov-ax">${AXES8.map((a,i)=>`<span><i>${i+1}</i>${a}</span>`).join('')}</div></div>
+   <div class="box ov-axbox"><h3>المحاور الثمانية</h3><div class="ov-ax8">${AXD.map((a,i)=>`<button type="button" class="axcard" aria-expanded="false"><span class="axic">${AXI[i]}</span><span class="axn">${i+1}</span><b>${a[0]}</b><span class="axds">${a[1]}</span><span class="axin"><i>في آفاق:</i> ${a[2]}</span></button>`).join('')}</div><p class="lede" style="margin:8px 0 0;font-size:13px;text-align:center">اضغطي على أي محور لتري كيف يظهر في المنصة</p></div>
    <div class="box"><h3>رحلة المتدربة اليوم</h3><ol class="ov-road">${["تصوّر باركود مجموعتها، وتختار اسمها مرة واحدة","تتابع العرض على جوالها حتى تُفتح المعامل","تدخل معمل محطتها، وتؤدي دورها في كل مرحلة","تُدار خمس جولات، وتنتقل المجموعات بين المحطات","تُعلن النتائج، ثم تحضر حصة الصف الحادي عشر","نقاش الأثر، والقياس البعدي، وجدار الالتزامات"].map(t=>`<li>${t}</li>`).join('')}</ol></div>
    <div class="box"><h3>فريق الملتقى</h3><div class="ov-team">${TEAM.map(t=>`<div><b>${t[0]}</b><small>${t[1]}</small></div>`).join('')}</div></div>`}
 
