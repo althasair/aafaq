@@ -792,6 +792,9 @@ body.nogroup #v-home .who,body.nogroup .scorebar{display:none!important}
 .fixg4 .fx-ic{width:clamp(34px,4.4vw,60px);height:clamp(34px,4.4vw,60px)}
 .fx .exm{background:rgba(232,192,138,.18);border-inline-start:3px solid var(--cg);border-radius:8px;padding:.35em .6em;color:var(--ink)}
 .fx .exm i{font-style:normal;font-weight:800;color:var(--bu)}
+.sb-me{font-weight:800;color:#F6DDB2}
+.lh-me{display:block;margin-top:4px;font-family:var(--f-ui);font-size:15px;font-weight:700;color:var(--ink)}
+body.personal #v-home .who{display:none}
 /* current sound toggle */
 .hum{position:fixed;left:14px;bottom:84px;z-index:20;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;
   color:var(--bu);border:1px solid rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(250,226,214,.6));
@@ -956,7 +959,7 @@ body.nogroup #v-home .who,body.nogroup .scorebar{display:none!important}
     </section>
 
     <div class="scorebar" aria-live="polite">
-      <span>مجموعتي</span><span class="g" id="sg"></span>
+      <span class="sb-me" id="sbMe"></span><span id="sbLbl">مجموعتي</span><span class="g" id="sg"></span>
       <span class="pts"><span id="sp">0</span> نقطة</span>
       <span class="mult" id="sm" hidden>تسارع ×2</span>
     </div>
@@ -1120,7 +1123,7 @@ function renderMe(){
   $('#ml').textContent=LENS[i][0];$('#ma').textContent=LENS[i][1];
   $('#mt').textContent=TASKS[(i+ROUND)%4];
   const st=(g+ROUND)%5;$('#ms').textContent=`م${st+1}: ${ST[st][0]}`;
-  $('#sg').textContent=G.n;renderBoard();
+  $('#sg').textContent=G.n;try{const gm=SY.mode==='group';$('#sbMe').textContent=gm?G.m[i]:'';$('#sbLbl').textContent=gm?'· مجموعة':'مجموعتي'}catch(e){}renderBoard();
   try{localStorage.setItem('aafaq-me',sel.value)}catch(e){}
 }
 sel.addEventListener('change',renderMe);
@@ -1769,7 +1772,7 @@ function renderAdmin(){
 let viewGroup=null,curLabKey='';
 function renderLabHead(){
   const g=viewGroup??S.g,G=GROUPS[g],st=stationOf(g,ROUND);
-  $('#lab-mine').innerHTML=`<div class="labhead"><div class="grp">معمل مجموعة ${G.n}<small>${G.v}</small></div>
+  $('#lab-mine').innerHTML=`<div class="labhead"><div class="grp">معمل مجموعة ${G.n}<small>${G.v}</small>${SY.mode==='group'&&viewGroup===null?`<span class="lh-me">👤 ${G.m[S.i]}</span>`:''}</div>
     <div>${C2.phase==='round'?`الجولة ${C2.round+1} · محطتكِ الآن: م${st+1} ${ST[st][0]}`:(window.GLOCK!=null?'تبدأ الجولات بإشارة أ. أريج أبو حاشية':'اختاري المحطة التي تعملين عليها')}${viewGroup!==null?' · <span class="sample">عرض أ. أريج أبو حاشية</span>':''}</div></div>`;
   $('#stations').innerHTML=ST.map((s,k)=>{const dn=viewGroup===null&&stDone(g,k);return `<button type="button" class="st ${C2.phase==='round'&&k===st?'live':''} ${dn?'passed':''}" data-k="${k}" ${dn?'disabled':''}>
     <span class="n">المحطة ${k+1}</span><b>${s[0]}</b><span>أ. ${s[1]} · صفحة ${s[2]}</span><span>${dn?'✓ اجتازتها مجموعتكِ':(C2.phase==='round'&&k===st?'محطة مجموعتكِ الآن':'افتحي المعمل')}</span></button>`}).join('');
@@ -1940,7 +1943,7 @@ function renderOverview(){const o=$('#ov');if(!o)return;
    <div class="box ov-axbox"><h3>المحاور الثمانية</h3><div class="ov-ax8">${AXD.map((a,i)=>`<button type="button" class="axcard" aria-expanded="false"><span class="axic">${AXI[i]}</span><b>${a[0]}</b><span class="axin">${a[1]}<br><i>في آفاق:</i> ${a[2]}</span></button>`).join('')}</div></div>
    <div class="box"><h3>المحطات الخمس · من كتاب الصف الحادي عشر</h3><div class="ov-st">${ST.map((x,i)=>`<div><span class="n">${i+1}</span><b>${x[0]}</b><small>أ. ${x[1]} · صفحة ${x[2]}</small></div>`).join('')}</div>
      <p class="lede" style="margin:8px 0 0">عشر دقائق لكل محطة، تمرّ فيها كل مجموعة بخمس مراحل: التوقّع ← التجربة ← تحدّي القراءة ← المهمة المتمايزة ← تحقّق Copilot.</p></div>
-   <div class="box"><h3>رحلة المتدربة اليوم</h3><ol class="ov-road">${["تصوّر باركود مجموعتها، وتختار اسمها مرة واحدة","تتابع العرض على جوالها حتى تُفتح المعامل","تدخل معمل محطتها، وتؤدي دورها في كل مرحلة","تُدار خمس جولات، وتنتقل المجموعات بين المحطات","تُعلن النتائج، ثم تحضر حصة الصف الحادي عشر","نقاش الأثر، والقياس البعدي، وجدار الالتزامات"].map(t=>`<li>${t}</li>`).join('')}</ol></div>
+   <div class="box"><h3>رحلة المتدربة اليوم</h3><ol class="ov-road">${["تصوّر الباركود الذي على بطاقتها، فيفتح باسمها ومجموعتها","تتابع العرض على جوالها حتى تُفتح المعامل","تدخل معمل محطتها، وتؤدي دورها في كل مرحلة","تُدار خمس جولات، وتنتقل المجموعات بين المحطات","تُعلن النتائج، ثم تحضر حصة الصف الحادي عشر","نقاش الأثر، والقياس البعدي، وجدار الالتزامات"].map(t=>`<li>${t}</li>`).join('')}</ol></div>
    <div class="box ov-teambox"><h3>فريق الملتقى</h3><div class="ov-team">${TEAM.map(t=>`<div><b>${t[0]}</b><small>${t[1]}</small></div>`).join('')}</div></div>`}
 
 /* ===== full reset: wipe this device's leftovers too ===== */
@@ -1950,14 +1953,18 @@ function wipeLocal(z){try{localStorage.setItem('aafaq-z',String(z||0));['aafaq-d
 /* ===== entry by QR: #g1..#g5, #guide, #areej ===== */
 (function(){
   const h=(location.hash||'').slice(1),hide=v=>{const t=document.querySelector(`[data-v="${v}"]`);if(t)t.hidden=true};
-  const m=/^g([1-5])$/.exec(h);
+  const m=/^g([1-5])(?:-([1-4]))?$/.exec(h);
   if(m){const g=+m[1]-1;['monitor','guide','admin','screen','show'].forEach(hide);window.GLOCK=g;
     [...sel.querySelectorAll('optgroup')].forEach((og,k)=>{if(k!==g)og.remove()});
+    if(m[2]){sel.value=g+':'+(+m[2]-1);try{localStorage.setItem('aafaq-me',sel.value)}catch(e){}document.body.classList.add('personal');
+      const nm=GROUPS[g].m[+m[2]-1],hl=document.createElement('div');hl.className='hello';hl.innerHTML=`أهلاً <b>${nm}</b><br><span style="font-size:15px">مجموعة ${GROUPS[g].n}</span>`;$('#v-home').prepend(hl);
+      setTimeout(()=>document.querySelector('[data-v="lab"]').click(),0)}
+    else{
     if(!sel.value.startsWith(g+':'))sel.value=g+':0';
     const hl=document.createElement('div');hl.className='hello';hl.innerHTML=`أهلاً بمجموعة<br><b>${GROUPS[g].n}</b><br><span style="font-size:14px">اختاري اسمكِ مرة واحدة، ويحفظه جوالكِ لبقية اليوم</span><br><button type="button" class="btn gold" id="goLab" style="margin-top:10px">اخترتُ اسمي… إلى المعمل ←</button>`;
     $('#v-home').prepend(hl);$('#goLab').onclick=()=>document.querySelector('[data-v="lab"]').click();
     sel.addEventListener('change',()=>setTimeout(()=>document.querySelector('[data-v="lab"]').click(),400));
-    try{if(localStorage.getItem('aafaq-me'))setTimeout(()=>document.querySelector('[data-v="lab"]').click(),0)}catch(e){}}
+    try{if(localStorage.getItem('aafaq-me'))setTimeout(()=>document.querySelector('[data-v="lab"]').click(),0)}catch(e){}}}
   if(h==='guide'){['home','lab','admin'].forEach(hide);setTimeout(()=>document.querySelector('[data-v="guide"]').click(),0)}
   if(h==='areej')setTimeout(()=>document.querySelector('[data-v="admin"]').click(),0);
   SY.mode=m?'group':(SY.pin?'admin':'view');
@@ -2086,8 +2093,8 @@ const SLIDES=[
    <p class="s-note" style="margin:0">التدوير بعد كل جولة: 1 ← 2 ← 3 ← 4 ← 5 ← ثم إلى 1</p>`,
  ()=>`<h3 class="s-h">تعليمات الدخول إلى المعمل</h3><ol class="en">${[
    ["توجّهي مع مجموعتكِ إلى طاولتكِ","حسب خريطة القاعة"],
-   ["صوّري باركود المجموعة","الموجود على الطاولة، بكاميرا الجوال"],
-   ["اختاري اسمكِ","مرة واحدة، ويحفظه الجوال لبقية اليوم"],
+   ["صوّري الباركود الذي على بطاقتكِ","بكاميرا الجوال، فيفتح باسمكِ ومجموعتكِ مباشرة"],
+   ["تابعي العرض على جوالكِ","يتغيّر مع شاشة القاعة حتى تُفتح المعامل"],
    ["تظهر رسالة «بانتظار إذن أ. أريج أبو حاشية»","انتظري، ولا تغلقي الصفحة"],
    ["يُفتح المعمل على محطتكم مباشرة","وأول ما يظهر: سؤال التوقّع"],
    [`${C2.dur/60} دقائق للمحطة`,"المؤقت والقنبلة على الشاشة"],
