@@ -1912,7 +1912,8 @@ function liveStep(d){if(C2.phase!=='round'||C2.boomed){const S2=liveStages(),i=M
 function renderLive(full){if($('#v-show').hidden)return;$('#sBack').hidden=false;$('#sNum').textContent='متابعة المعامل';
   const ended=C2.phase!=='round'||C2.boomed,T=$('#liveT');
   if(!full&&T&&!ended&&!$('#slide').querySelector('.lv-end')){T.textContent=mmss(remain());const k=LIVE.gi,b=$('#liveBody');if(b){const h=liveGroup(k);if(b._h!==h){b._h=h;b.innerHTML=h}}return}
-  if(!full&&ended&&$('#slide').querySelector('.lv-end'))return;
+  if(!full&&ended&&$('#slide').dataset.lst===LIVE.stage+':'+C2.round)return;
+  $('#slide').dataset.lst=ended?LIVE.stage+':'+C2.round:'';
   if(!ended)LIVE.stage='rank';
   const rows=GROUPS.map((g,k)=>({k,n:g.n,p:grpPts(k)||0})).sort((a,b)=>b.p-a.p);
   $('#slide').innerHTML=ended?(LIVE.stage==='data'?roundFeedback():LIVE.stage!=='rank'?livePanel(LIVE.stage):`<div class="lv lv-end"><h3 class="s-h">نتيجة الجولة ${ORD[C2.round]} <small>${C2.phase==='round'?'انتهى الوقت':'انتهت الجولات'}</small></h3>
