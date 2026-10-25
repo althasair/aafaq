@@ -785,6 +785,13 @@ body.nogroup #v-home .who,body.nogroup .scorebar{display:none!important}
 .fx p{margin:0;font-size:clamp(10px,1.08vw,14.5px);line-height:1.45}
 .fx .was{color:#9a8b86;text-decoration:line-through;text-decoration-color:rgba(179,38,30,.45)}
 .fx .now{color:var(--ink);font-weight:700}
+.fixg4{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:1.8%}
+.fixg4 .fx{align-items:start;padding:1.4% 2%;overflow:hidden}
+.fixg4 .fx b{font-size:clamp(12px,1.45vw,20px)}
+.fixg4 .fx p{font-size:clamp(10px,1.07vw,14.5px);line-height:1.45;margin-top:.25em}
+.fixg4 .fx-ic{width:clamp(34px,4.4vw,60px);height:clamp(34px,4.4vw,60px)}
+.fx .exm{background:rgba(232,192,138,.18);border-inline-start:3px solid var(--cg);border-radius:8px;padding:.35em .6em;color:var(--ink)}
+.fx .exm i{font-style:normal;font-weight:800;color:var(--bu)}
 /* current sound toggle */
 .hum{position:fixed;left:14px;bottom:84px;z-index:20;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;
   color:var(--bu);border:1px solid rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(250,226,214,.6));
@@ -1911,6 +1918,7 @@ function mirrorHTML(){if(!SY.on)return '';let h='';try{h=SLIDES[Math.min(SY.sl||
   return `<div class="mir"><div class="mir-h"><span class="pulse"></span>العرض المباشر · يتابع شاشة أ. أريج أبو حاشية</div><div class="stage mirror"><div class="slide">${h}</div></div></div>`}
 
 
+const FIXE=["في مجزئ الجهد: تحرّك الطالبة المنزلق وتشاهد الجهد يتغيّر (محسوس)، ثم تحسبه بالقانون، ثم تفسّر السبب (مجرد).", "الجميع يحسب جهد المخرج: الدعم بقانون مكتوب ومثال محلول، والأساسي حساب مباشر، والتمكّن تصميم دائرة لراديو 6V من بطارية 12V.", "بدل «خطأ»: «حسبتِ التيار صحيحاً ✓، لكنكِ ضربتِ في R1 بدل R2؛ حدّدي المقاومة التي يُقاس عليها الجهد وأعيدي».", "توقّع قبل تجربة الدايود (قبلي)، وقراءة الأميتر بوقت محدد أثناء التجربة (تكويني)، وبطاقة خروج في النهاية (ختامي).", "يقول Copilot إن بوابة AND تعطي 1 إذا كان أحد المدخلين 1؛ تختبره الطالبة بجدول الصواب في المعمل وتصحّحه بالدليل.", "نبدأ بسؤال: كيف تضيء إنارة كورنيش الدوحة وحدها عند الغروب؟ ثم ندرس المقاومة الضوئية لنجيب.", "تحسب الطالبة كم كيلوواط ساعة توفّره إنارة شارع تعمل بالمقاومة الضوئية في شهر، مقارنةً بالتشغيل اليدوي.", "تبريد استاد البيت بحساسات حرارية (الثرمستور) مدخلٌ لدرس المقاومة الحرارية، مع قيمة الإتقان التي ظهرت في تنظيم كأس العالم."];
 const FIXC=[["ورقة أسهل للضعيفة، وتبقى عند مستواها", "نبدأ من مستواها ونرفعها: من المحسوس إلى المجرد، ومن البسيط إلى التفكير المنطقي"], ["ثلاث أوراق لثلاث فئات ثابتة", "هدف واحد للجميع بمداخل متعددة، والطالبة تنتقل وترتقي"], ["«صح أو خطأ»، أو «ممتاز» ودرجة", "ما تحقق + الدليل + الخطوة التالية… فوراً"], ["اختبار في النهاية لرصد الدرجة", "تقويم قبل وأثناء وبعد، يوجّه التدريس"], ["نمنعه خوفاً من الغش، أو ننسخ إجاباته", "أداة نحاورها، ونتحقق من إجاباتها بالتجربة والدليل"], ["مثال في آخر الدرس: «وين نشوفه؟»", "نبدأ بمشكلة حقيقية، والمفهوم أداة لحلّها"], ["نصيحة عامة «لا تهدري الكهرباء»", "نحسب ونصمّم بالعلم حلولاً توفّر الطاقة"], ["ذكر اسم قطر أو صورة العلم في مثال", "مشروعات قطر وإنجازاتها سياق حيّ للمفهوم، وقيمها في السلوك"]];
 /* line icons for the eight axes */
 const _ic=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -2021,7 +2029,8 @@ const SLIDES=[
    <div class="pages">${[5,6,7,8,9,10,11].map(n=>`<img src="i${n}.jpg" alt="صفحة من كتاب الفيزياء">`).join('')}</div>`,
  ()=>`<h3 class="s-h">المحاور الثمانية… وعدساتكِ</h3><div class="axes" id="axGrid">${AXES8.map((a,i)=>`<div class="a${1+i%4}" data-i="${i}" role="button" tabindex="0"><span>${i+1}</span>${a}</div>`).join('')}</div>
    <div class="axd" id="axD"><b>لكل متدربة عدسة ترصد بها محورين طوال اليوم</b></div>`,
- ()=>`<h3 class="s-h">مفاهيم نصحّحها اليوم <small>كان… وصار</small></h3><div class="fixg">${AXES8.map((a,i)=>`<div class="fx a${1+i%4}"><span class="fx-ic">${AXI[i]}</span><div><b>${a}</b><p class="was">✗ ${FIXC[i][0]}</p><p class="now">✓ ${FIXC[i][1]}</p></div></div>`).join('')}</div>`,
+ ()=>`<h3 class="s-h">مفاهيم نصحّحها اليوم <small>كان… وصار · 1 من 2</small></h3><div class="fixg fixg4">${[0,1,2,3].map(i=>`<div class="fx a${1+i%4}"><span class="fx-ic">${AXI[i]}</span><div><b>${AXES8[i]}</b><p class="was">✗ ${FIXC[i][0]}</p><p class="now">✓ ${FIXC[i][1]}</p><p class="exm"><i>مثال:</i> ${FIXE[i]}</p></div></div>`).join('')}</div>`,
+ ()=>`<h3 class="s-h">مفاهيم نصحّحها اليوم <small>كان… وصار · 2 من 2</small></h3><div class="fixg fixg4">${[4,5,6,7].map(i=>`<div class="fx a${1+i%4}"><span class="fx-ic">${AXI[i]}</span><div><b>${AXES8[i]}</b><p class="was">✗ ${FIXC[i][0]}</p><p class="now">✓ ${FIXC[i][1]}</p><p class="exm"><i>مثال:</i> ${FIXE[i]}</p></div></div>`).join('')}</div>`,
  ()=>`<h3 class="s-h">الفروق الفردية والتمايز… ما الفرق؟</h3>
    <div class="fdd"><div class="fd-col a1"><small>الواقع</small><b>الفروق الفردية</b><p>طالباتنا مختلفات في سرعة الفهم، وطريقة التعلم، والمعرفة السابقة، والميول.</p><em>«بماذا تختلف طالباتي؟»</em></div>
    <div class="fd-arrow a2" aria-hidden="true">⟵</div>
