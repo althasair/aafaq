@@ -795,6 +795,18 @@ body.nogroup #v-home .who,body.nogroup .scorebar{display:none!important}
 .sb-me{font-weight:800;color:#F6DDB2}
 .lh-me{display:block;margin-top:4px;font-family:var(--f-ui);font-size:15px;font-weight:700;color:var(--ink)}
 body.personal #v-home .who{display:none}
+/* pinned personal bar on trainee phones: name · group · task · points */
+body.gmode{padding-bottom:96px}
+body.gmode .scorebar{position:fixed;left:8px;right:8px;bottom:8px;margin:0;z-index:60;max-width:760px;margin-inline:auto;
+  display:grid!important;grid-template-columns:1fr auto;grid-template-areas:"me pts" "task pts";gap:2px 12px;padding:8px 14px;border-radius:16px}
+body.gmode .scorebar>span:not(.sb-me):not(#sbLbl):not(.g):not(.pts):not(.sb-task):not(.mult){display:none}
+body.gmode .scorebar .sb-me{grid-area:me;display:inline}
+body.gmode .scorebar #sbLbl,body.gmode .scorebar .g{display:none}
+body.gmode .scorebar .sb-me::after{content:" · مجموعة " attr(data-g);font-weight:700;color:#E8C08A}
+body.gmode .scorebar .sb-task{grid-area:task;justify-self:start;font-size:13.5px;font-weight:700;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(232,192,138,.6);border-radius:999px;padding:1px 10px}
+body.gmode .scorebar .pts{grid-area:pts;align-self:center;font-size:24px;line-height:1.1;text-align:center}
+body.gmode .scorebar .mult{position:absolute;top:-12px;inset-inline-end:12px;font-size:12px}
+body.gmode .hum{bottom:110px}
 /* current sound toggle */
 .hum{position:fixed;left:14px;bottom:84px;z-index:20;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;
   color:var(--bu);border:1px solid rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(250,226,214,.6));
@@ -959,7 +971,7 @@ body.personal #v-home .who{display:none}
     </section>
 
     <div class="scorebar" aria-live="polite">
-      <span class="sb-me" id="sbMe"></span><span id="sbLbl">مجموعتي</span><span class="g" id="sg"></span>
+      <span class="sb-me" id="sbMe"></span><span id="sbLbl">مجموعتي</span><span class="g" id="sg"></span><span class="sb-task" id="sbTask" hidden></span>
       <span class="pts"><span id="sp">0</span> نقطة</span>
       <span class="mult" id="sm" hidden>تسارع ×2</span>
     </div>
@@ -1123,7 +1135,7 @@ function renderMe(){
   $('#ml').textContent=LENS[i][0];$('#ma').textContent=LENS[i][1];
   $('#mt').textContent=TASKS[(i+ROUND)%4];
   const st=(g+ROUND)%5;$('#ms').textContent=`م${st+1}: ${ST[st][0]}`;
-  $('#sg').textContent=G.n;try{const gm=SY.mode==='group';$('#sbMe').textContent=gm?G.m[i]:'';$('#sbLbl').textContent=gm?'· مجموعة':'مجموعتي'}catch(e){}renderBoard();
+  $('#sg').textContent=G.n;try{const gm=SY.mode==='group';$('#sbMe').textContent=gm?G.m[i]:'';$('#sbMe').dataset.g=G.n;$('#sbLbl').textContent=gm?'· مجموعة':'مجموعتي';const tk=$('#sbTask');tk.hidden=!gm;tk.textContent='مهمتي: '+TASKS[(i+ROUND)%4]}catch(e){}renderBoard();
   try{localStorage.setItem('aafaq-me',sel.value)}catch(e){}
 }
 sel.addEventListener('change',renderMe);
@@ -1967,7 +1979,7 @@ function wipeLocal(z){try{localStorage.setItem('aafaq-z',String(z||0));['aafaq-d
     try{if(localStorage.getItem('aafaq-me'))setTimeout(()=>document.querySelector('[data-v="lab"]').click(),0)}catch(e){}}}
   if(h==='guide'){['home','lab','admin'].forEach(hide);setTimeout(()=>document.querySelector('[data-v="guide"]').click(),0)}
   if(h==='areej')setTimeout(()=>document.querySelector('[data-v="admin"]').click(),0);
-  SY.mode=m?'group':(SY.pin?'admin':'view');
+  SY.mode=m?'group':(SY.pin?'admin':'view');if(m){document.body.classList.add('gmode');setTimeout(renderMe,0)}
   if(!m){document.body.classList.add('nogroup');setTimeout(renderOverview,0)}
   if(m)sel.addEventListener('change',()=>{SY.ev=[];SY.sent='';pushMine()});
   if(SY.on){(function loop(){(document.hidden?Promise.resolve():poll()).finally(()=>setTimeout(loop,SY.mode==='group'?4500:3500))})();setInterval(()=>{if(SY.mode==='admin')pushCtl()},700);}
