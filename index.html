@@ -819,6 +819,17 @@ body.gmode .hum{bottom:110px}
 .fbg .bar{height:.7em;border-radius:99px;background:#EFE3D6;overflow:hidden}.fbg .bar s{display:block;height:100%;background:linear-gradient(90deg,#C9A06A,#7A1F35);text-decoration:none}
 .fbg em{font-style:normal;font-weight:800;color:var(--bu)}.fbg u{text-decoration:none;color:#2E7D52;font-weight:800}
 .fb-q{margin:0;text-align:center;font-weight:700;color:var(--ink);font-size:clamp(13px,1.6vw,21px)}
+.ip-live{background:none;border:0;box-shadow:none;padding:0;display:flex;flex-direction:column;gap:2%;height:100%}
+.ip-live .ip-body{flex:1;min-height:0;overflow:hidden}
+.lv-hint .ip-dots{display:inline-flex;gap:5px;vertical-align:middle}.lv-hint .ip-dots i{width:8px;height:8px;border-radius:50%;background:#E3CDBA}.lv-hint .ip-dots i.on{background:var(--bu)}
+.ip-live .ip-body{zoom:.82}
+.axtalk{display:grid;grid-template-columns:1fr 1fr;gap:2%;margin:1.5% 0}
+.axt{background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:14px;padding:2.4% 3%;display:grid;gap:6px;text-align:start}
+.axt-h{display:flex;align-items:center;gap:10px}.axt-h b{font-size:1.25em;color:var(--bu)}
+.axt .fx-ic{width:46px;height:46px}
+.axt p{margin:0;line-height:1.55;font-size:.95em}.axt .was{color:#9a8b86;text-decoration:line-through;text-decoration-color:rgba(179,38,30,.45)}.axt .now{font-weight:700}
+.axt-in{background:rgba(232,192,138,.18);border-inline-start:3px solid var(--cg);border-radius:8px;padding:.35em .6em}.axt-in i{font-style:normal;font-weight:800;color:var(--bu)}
+.axall{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:2% 0}.axall>div{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:12px;padding:8px 10px}.axall b{color:var(--bu)}.axall .fx-ic{width:38px;height:38px;flex:none}
 /* current sound toggle */
 .hum{position:fixed;left:14px;bottom:84px;z-index:20;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;
   color:var(--bu);border:1px solid rgba(255,255,255,.85);background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(250,226,214,.6));
@@ -1660,11 +1671,7 @@ const REMIND=[
 const PANEL_MS=25000;
 function interPanels(){const r=C2.round;return r>=4?['res','fb','close','coffee']:['res','fb','rem','next']}
 function interIdx(){const P=interPanels();if(window._ipMan!=null&&window._ipR===C2.round)return Math.min(P.length-1,window._ipMan);return Math.max(0,Math.min(P.length-1,Math.floor((Date.now()-C2.boomAt-7000)/PANEL_MS)))}
-function interlude(){
-  const r=C2.round,last=r>=4,P=interPanels(),ip=interIdx(),kind=P[ip];
-  const rp=GROUPS.map((g,k)=>({k,n:g.n,p:SY.on?roundPts(k,r):totalPts(k)})).sort((a,b)=>b.p-a.p);
-  const tot=GROUPS.map((g,k)=>({k,n:g.n,p:totalPts(k)})).sort((a,b)=>b.p-a.p),max=Math.max(10,...tot.map(x=>x.p));
-  const w=last?tot[0]:rp[0],ctl=!SY.on||SY.mode==='admin';
+function ipBody(kind,r,rp,tot,max,w,last){
   let body='';
   if(kind==='res')body=`<div class="ip-t">${last?'النتائج النهائية للمحطات':'نتائج الجولة '+ORD[r]}</div>
     <div class="win"><span class="cup" aria-hidden="true">🏆</span><div><small>${last?'المجموعة المتصدّرة بعد الجولات الخمس':'الأفضل في هذه الجولة'}</small><strong>${w.n}</strong><small>${w.p} نقطة</small></div></div>
@@ -1676,6 +1683,13 @@ function interlude(){
     <div class="ip-go">وقتكم يبدأ بعد <span id="iCd2">${mmss(C2.nextAt?(C2.nextAt-Date.now())/1000:0)}</span></div>`;
   if(kind==='close')body=`<div class="ip-t">للأسف… انتهى لقائي معكم</div><div class="ip-pts big"><p>كنت سعيدة جداً بلقائكم، وجاهزة للرد على كل استفساراتكم.</p><p>أتمنى أني أفدتكم اليوم… والإفادة الكبيرة أكيد في حصة أ. سارة خالد.</p><p>سنستمتع معاً بحضور حصة استثنائية بتفعيل الذكاء الاصطناعي بشكل مميز.</p></div><div class="ip-sign">أ. أريج أبو حاشية · بوصلة الورشة</div>`;
   if(kind==='coffee')body=`<div class="ip-t">تفضّلوا على «قهوة نيوتن» ☕</div><div class="ip-big">تعبنا نيوتن وأينشتاين اليوم… خلّونا نتقهوى معهم</div><div class="ip-q">بريك خفيف لطيف، وبعدها ندخل حصة أ. سارة خالد، ونلتقي ببناتنا الطالبات</div>`;
+  return body}
+function interlude(){
+  const r=C2.round,last=r>=4,P=interPanels(),ip=interIdx(),kind=P[ip];
+  const rp=GROUPS.map((g,k)=>({k,n:g.n,p:SY.on?roundPts(k,r):totalPts(k)})).sort((a,b)=>b.p-a.p);
+  const tot=GROUPS.map((g,k)=>({k,n:g.n,p:totalPts(k)})).sort((a,b)=>b.p-a.p),max=Math.max(10,...tot.map(x=>x.p));
+  const w=last?tot[0]:rp[0],ctl=!SY.on||SY.mode==='admin';
+  const body=ipBody(kind,r,rp,tot,max,w,last);
   return `<div class="inter box ip"><div class="ih"><span class="ip-dots">${P.map((_,i)=>`<i class="${i===ip?'on':''}"></i>`).join('')}</span>${last?'':`<span class="cd">المحطة ${ORD[r+1]} بعد <span id="iCd">${mmss(C2.nextAt?(C2.nextAt-Date.now())/1000:0)}</span></span>`}</div>
     <div class="ip-body">${body}</div>
     ${ctl?`<div class="ip-ctl"><button class="btn ghost" type="button" id="ipPrev">→ السابقة</button><button class="btn ghost" type="button" id="ipNext">التالية ←</button>${last?'':`<button class="btn ghost" type="button" id="ipMore">+ دقيقة</button><button class="btn gold" type="button" id="ipGo">بدء المحطة ${ORD[r+1]} الآن</button>`}</div>`:''}</div>`;
@@ -1893,16 +1907,17 @@ function enterLive(){LIVE.on=true;LIVE.gi=0;LIVE.stage='rank';LIVE.t=Date.now();
   if(C2.phase==='round'&&!C2.boomed&&Date.now()-LIVE.t>=8000){LIVE.gi=(LIVE.gi+1)%5;LIVE.t=Date.now();renderLive(true)}else renderLive(false)},1000);renderLive(true)}
 function goSlideOf(r){const b=SLIDES.findIndex(f=>String(f).includes('goOpen'));return b<0?slide:b+r}
 function exitLive(){LIVE.on=false;clearInterval(LIVE.tm);if(C2.phase==='round'&&C2.boomed)slide=C2.round<4?goSlideOf(C2.round+1):Math.min(goSlideOf(4)+1,SLIDES.length-1);renderShow()}
-function liveStep(d){if(C2.phase!=='round'||C2.boomed){if(d>0){if(LIVE.stage==='rank'){LIVE.stage='fb';renderLive(true)}else exitLive()}else if(LIVE.stage==='fb'){LIVE.stage='rank';renderLive(true)}return}LIVE.gi=(LIVE.gi+d+5)%5;LIVE.t=Date.now();renderLive(true)}
+function liveStages(){return C2.round>=4?['rank','data','fb','axes','close','coffee']:['rank','data','fb','axes','rem','next']}
+function liveStep(d){if(C2.phase!=='round'||C2.boomed){const S2=liveStages(),i=Math.max(0,S2.indexOf(LIVE.stage));const j=i+d;if(j>=S2.length){exitLive();return}if(j<0)return;LIVE.stage=S2[j];renderLive(true);return}LIVE.gi=(LIVE.gi+d+5)%5;LIVE.t=Date.now();renderLive(true)}
 function renderLive(full){if($('#v-show').hidden)return;$('#sBack').hidden=false;$('#sNum').textContent='متابعة المعامل';
   const ended=C2.phase!=='round'||C2.boomed,T=$('#liveT');
   if(!full&&T&&!ended&&!$('#slide').querySelector('.lv-end')){T.textContent=mmss(remain());const k=LIVE.gi,b=$('#liveBody');if(b){const h=liveGroup(k);if(b._h!==h){b._h=h;b.innerHTML=h}}return}
   if(!full&&ended&&$('#slide').querySelector('.lv-end'))return;
   if(!ended)LIVE.stage='rank';
   const rows=GROUPS.map((g,k)=>({k,n:g.n,p:grpPts(k)||0})).sort((a,b)=>b.p-a.p);
-  $('#slide').innerHTML=ended?(LIVE.stage==='fb'?roundFeedback():`<div class="lv lv-end"><h3 class="s-h">نتيجة الجولة ${ORD[C2.round]} <small>${C2.phase==='round'?'انتهى الوقت':'انتهت الجولات'}</small></h3>
+  $('#slide').innerHTML=ended?(LIVE.stage==='data'?roundFeedback():LIVE.stage!=='rank'?livePanel(LIVE.stage):`<div class="lv lv-end"><h3 class="s-h">نتيجة الجولة ${ORD[C2.round]} <small>${C2.phase==='round'?'انتهى الوقت':'انتهت الجولات'}</small></h3>
       <div class="lv-rank">${rows.map((r,i)=>`<div><span class="lv-i">${i+1}</span><b>${r.n}</b><span class="lv-p">${r.p} نقطة</span></div>`).join('')}</div>
-      <p class="lv-hint">اضغطي «التالي» للتغذية الراجعة</p></div>`)
+      <p class="lv-hint">${liveDots()} · اضغطي «التالي» للتغذية الراجعة</p></div>`)
    :`<div class="lv"><div class="lv-top"><span>الجولة ${ORD[C2.round]} · متابعة المعامل مباشرة</span><b id="liveT">${mmss(remain())}</b></div>
       <div id="liveBody">${liveGroup(LIVE.gi)}</div>
       <div class="lv-chips">${GROUPS.map((g,k)=>`<button type="button" data-lg="${k}" class="${k===LIVE.gi?'on':''}">${g.n}<small>${grpPts(k)||0}</small></button>`).join('')}</div></div>`;
@@ -1991,7 +2006,29 @@ function roundFeedback(){const r=C2.round,st=[0,1,2,3,4].map(()=>({n:0,ok:0})),G
    <div class="f-ev"><i>📊 الدليل</i><div class="fbg">${GROUPS.map((g,k)=>`<div><b>${g.n}</b><span class="bar"><s style="width:${pct(G[k])}%"></s></span><em>${G[k].n?pct(G[k])+'%':'—'}</em>${G[k].d?'<u>✓</u>':''}</div>`).join('')}</div></div>
    <div class="f-nx"><i>➜ الخطوة التالية</i><p>${nxt}</p></div></div>
    <p class="fb-q">💬 سؤال للنقاش (دقيقة): ما الدليل الذي غيّر توقّعكِ في هذه الجولة؟</p>
-   <p class="lv-hint">اضغطي «التالي» ${r<4?'للانتقال إلى الجولة '+ORD[r+1]:'لمتابعة الشرائح'}</p></div>`}
+   <p class="lv-hint">${liveDots()} · اضغطي «التالي» للتغذية الراجعة للمجموعات</p></div>`}
+function liveDots(){const S2=liveStages();return `<span class="ip-dots">${S2.map(k=>`<i class="${k===LIVE.stage?'on':''}"></i>`).join('')}</span>`}
+const LVNEXT={fb:'لوقفة مع المحاور',axes:'للمتابعة',rem:'للانتقال إلى الطاولات',next:'لفتح الجولة التالية',close:'',coffee:'لمتابعة الشرائح'};
+function livePanel(kind){const r=C2.round,last=r>=4,tot=GROUPS.map((g,k)=>({k,n:g.n,p:totalPts(k)})).sort((a,b)=>b.p-a.p),rp=GROUPS.map((g,k)=>({k,n:g.n,p:SY.on?roundPts(k,r):totalPts(k)})).sort((a,b)=>b.p-a.p),max=Math.max(10,...tot.map(x=>x.p)),w=last?tot[0]:rp[0];
+  let body=kind==='axes'?axesTalk(r):ipBody(kind,r,rp,tot,max,w,last);if(kind==='next')body=body.replace(/<div class="ip-go">[\s\S]*?<\/div>/,'');
+  if(kind==='fb')body=body.replace('تغذية راجعة سريعة','تغذية راجعة للمجموعات');if(kind==='rem')body=body.replace('<div class="ip-t">','<div class="ip-t">تغذية راجعة للورشة · ');
+  const nx=kind==='axes'?(last?'لكلمة الختام':'لتذكير الورشة'):(LVNEXT[kind]||(kind==='close'?'لاستراحة القهوة':''));
+  return `<div class="lv ip ip-live"><div class="ip-body">${body}</div><p class="lv-hint">${liveDots()}${nx?' · اضغطي «التالي» '+nx:''}</p></div>`}
+
+/* ===== after every round: discuss the broad concept of two axes (كان… وصار) ===== */
+const AXPAIR=[[0,1],[2,3],[4,5],[6,7]];
+const AXQ=[["هل لاحظتنّ كيف بدأت كل عضوة من مدخل يناسبها، ثم ارتقت؟","كيف تنقلين طالبتكِ من المحسوس إلى المجرد في درسكِ القادم؟"],
+ ["هل شعرتنّ بالفرق بين «خطأ» وبين «ما تحقق · الدليل · الخطوة التالية»؟","متى قوّمنا اليوم قبل التعلم، وأثناءه، وبعده؟"],
+ ["هل كشفتنّ خطأ Copilot بالقياس قبل أن تعتمدن إجابته؟","أي جهاز من الحياة جعل المفهوم أقرب لطالبتكِ؟"],
+ ["كيف حسبنا التوفير بالعلم بدل النصيحة العامة؟","أين ظهرت قطر في المحطة سياقاً حيّاً لا صورةً فقط؟"]];
+function axesTalk(r){
+  if(r>=4)return `<div class="ip-t">وقفة ختامية مع المحاور الثمانية</div><div class="axall">${AXES8.map((a,i)=>`<div><span class="fx-ic">${AXI[i]}</span><b>${a}</b></div>`).join('')}</div>
+    <ul class="ip-qs"><li>أي محور شعرتِ اليوم أنكِ تمكّنتِ منه أكثر؟</li><li>وأي مفهوم تغيّر عندكِ: كيف كان… وكيف صار؟</li></ul>`;
+  const pr=AXPAIR[r]||AXPAIR[0];
+  return `<div class="ip-t">وقفة مع المحاور · بعد الجولة ${ORD[r]}</div>
+    <div class="axtalk">${pr.map(i=>`<div class="axt"><div class="axt-h"><span class="fx-ic">${AXI[i]}</span><b>${AXES8[i]}</b></div>
+      <p class="was">✗ كان: ${FIXC[i][0]}</p><p class="now">✓ صار: ${FIXC[i][1]}</p><p class="axt-in"><i>شاهدتِه اليوم:</i> ${AXD[i][2]}</p></div>`).join('')}</div>
+    <ul class="ip-qs">${AXQ[r].map(q=>`<li>${q}</li>`).join('')}</ul>`}
 /* ===== entry by QR: #g1..#g5, #guide, #areej ===== */
 (function(){
   const h=(location.hash||'').slice(1),hide=v=>{const t=document.querySelector(`[data-v="${v}"]`);if(t)t.hidden=true};
