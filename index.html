@@ -849,6 +849,7 @@ body.gmode .hum{bottom:110px}
 .wtab{display:grid;gap:2px;font-size:clamp(10px,1.1vw,15px);padding:0 4%}.wrow{display:grid;grid-template-columns:1.6fr repeat(5,1fr) 1.1fr;gap:4px;text-align:center;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:8px;padding:1px 6px;line-height:1.5}
 .wrow span:first-child{text-align:start;font-weight:700}.wh{background:var(--emerald);color:#fff;font-weight:700}.w1{background:#FFF4D6;border-color:#E8C26A}
 .coffsl .cof-ic{font-size:clamp(48px,7vw,96px);animation:beat 2.4s ease-in-out infinite}
+.steps .on.here{animation:stHere .7s ease-in-out 3;box-shadow:0 0 0 3px rgba(232,192,138,.9)}@keyframes stHere{50%{transform:scale(1.12)}}
 </style></head><body>
 
 <div class="ticker" aria-label="شريط الترحيب"><div class="run" id="run"></div></div>
@@ -1077,7 +1078,7 @@ function applyGroup(){
   if(typeof gs.p==='number'&&gs.p>S.pts-(S.ind||0)){S.pts=gs.p+(S.ind||0);$('#sp').textContent=S.pts;}
   if(gs.k==null||$('#v-lab').hidden)return;
   if(gs.d&&!stDoneR(S.g,ROUND,gs.k)){markDone(S.g,ROUND,gs.k);if(curSt===gs.k||C2.phase==='round'){clearInterval(timerId);const el=$('#lab-vd');el.hidden=false;$('#lab-list').hidden=true;el.innerHTML=doneCard(gs.k,false)}return}
-  if(gs.k===curSt&&gs.s!==step&&!stDoneR(S.g,ROUND,gs.k)){step=gs.s;runStation(curSt)}
+  if(gs.k===curSt&&gs.s!==step&&!stDoneR(S.g,ROUND,gs.k)){step=gs.s;runStation(curSt);focusStep()}
 }
 function roleLock(el){
   el.classList.remove('rolelock','rolemine');
@@ -1435,6 +1436,8 @@ const REFL=[
  ["هدف واحد بثلاثة مستويات، والارتقاء من مستوى إلى أعلى منه مفتوح؛ هذا <i>تمايز في المهمة</i>، ولكل مستوى نقاطه.","حضّري لكل هدف سؤال دعم، وسؤالاً أساسياً، وسؤال تمكّن، واتركي للطالبة حرية الارتقاء.","بأي مستوى بدأت كل واحدة منكن؟ ولماذا؟ وهل ارتقت؟"],
  ["الحكم للتجربة لا للذكاء الاصطناعي؛ وربط المفهوم بقطر وبالاستدامة يعطيه معنى، وهذا <i>تقويم ختامي</i> للمحطة.","اعرضي على طالباتكِ إجابة ذكاء اصطناعي فيها خطأ، واطلبي منهن تصحيحها بالدليل من التجربة.","ما الممارسة التي ستنقلينها من هذه المحطة إلى حصتكِ القادمة؟"]];
 function reflectCard(st){const r=REFL[st];return `<div class="reflect"><b>وقفة تأمل للمعلمة · ${STEPN[st]}</b><p><i>ماذا حدث هنا؟ </i>${r[0]}</p><p><i>في صفكِ: </i>${r[1]}</p><div class="rq">سؤال للنقاش: ${r[2]}</div></div>`}
+function focusStep(){setTimeout(()=>{const bar=document.querySelector('#lab-vd .steps');if(!bar)return;let off=10;const tk=document.querySelector('.ticker');if(tk){const r=tk.getBoundingClientRect();if(getComputedStyle(tk).display!=='none')off+=r.height}const y=bar.getBoundingClientRect().top+window.scrollY-off;window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+  const on=bar.querySelector('.on');if(on){on.classList.remove('here');void on.offsetWidth;on.classList.add('here');setTimeout(()=>on.classList.remove('here'),3000)}},60)}
 function addReflect(st){const el=$('#lab-vd');if(el&&!el.querySelector('.reflect'))el.insertAdjacentHTML('beforeend',reflectCard(st))}
 function runStation(k){
   clearInterval(timerId);curSt=k;pushMine();if(!LABS[4].sim._o)LABS[4].sim._o=LABS[4].sim.out;LABS[4].sim.out=LABS[4].sim._o;
@@ -1442,7 +1445,7 @@ function runStation(k){
   const head=`<div class="row" style="justify-content:space-between"><div><h2>المحطة ${k+1}: ${L.name}</h2><p class="lede">المضيفة: أ. ${L.host} · كتاب الصف الحادي عشر صفحة ${L.page}</p></div>
     <div class="row"><button class="btn ghost" id="annT" type="button">${document.body.classList.contains('noanno')?'إظهار أسهم المحاور':'إخفاء أسهم المحاور'}</button><button class="btn ghost" id="back" type="button">كل المحطات</button></div></div>${stepsBar()}`;
   const next=l=>`<button class="btn" id="nx" style="margin-top:10px" type="button">${l}</button>`;
-  const bindNext=to=>{const b=el.querySelector('#nx');if(b)b.onclick=()=>{step=to;runStation(k);pushGroup()}};
+  const bindNext=to=>{const b=el.querySelector('#nx');if(b)b.onclick=()=>{step=to;runStation(k);pushGroup();focusStep()}};
   const mcq=(box,q,base,onDone)=>{box.innerHTML+=`<div class="opts" id="qo">${q.o.map((x,i)=>`<button type="button" data-i="${i}">${x}</button>`).join('')}</div><div id="qf"></div>`;
     let d=false;box.querySelectorAll('#qo button').forEach(b=>b.onclick=()=>{if(d)return;d=true;const ok=+b.dataset.i===q.a;b.classList.add(ok?'right':'wrong');if(!ok)box.querySelector(`#qo [data-i="${q.a}"]`).classList.add('right');onDone(ok)});return ()=>d};
   if(step===0){
