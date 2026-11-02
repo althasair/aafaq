@@ -850,6 +850,8 @@ body.gmode .hum{bottom:110px}
 .wrow span:first-child{text-align:start;font-weight:700}.wh{background:var(--emerald);color:#fff;font-weight:700}.w1{background:#FFF4D6;border-color:#E8C26A}
 .coffsl .cof-ic{font-size:clamp(48px,7vw,96px);animation:beat 2.4s ease-in-out infinite}
 .steps .on.here{animation:stHere .7s ease-in-out 3;box-shadow:0 0 0 3px rgba(232,192,138,.9)}@keyframes stHere{50%{transform:scale(1.12)}}
+.rg{line-height:1.2}.rg .m{margin-bottom:1px}.rg .gn{font-size:1.7em}
+.groups .gm{margin:0;font-size:clamp(9px,1.05vw,13.5px);line-height:1.45}.groups span.gmem{font-size:clamp(8.5px,.9vw,11.5px);line-height:1.5}.groups div{gap:2px}
 </style></head><body>
 
 <div class="ticker" aria-label="شريط الترحيب"><div class="run" id="run"></div></div>
@@ -1020,13 +1022,14 @@ body.gmode .hum{bottom:110px}
 <script>
 const $=s=>document.querySelector(s);
 const GROUPS=[
- {n:"السابقات",v:"﴿فَالسَّابِقَاتِ سَبْقًا﴾",m:["هيفاء أبو راس","شذى نوافله","هديل الحايك","أسماء بكر"],demo:34},
- {n:"الذاريات",v:"﴿وَالذَّارِيَاتِ ذَرْوًا﴾",m:["ريهام إبراهيم","رجوى أحمد","حنان حتاملة","بيان بلال"],demo:41},
- {n:"الفارقات",v:"﴿فَالْفَارِقَاتِ فَرْقًا﴾",m:["أمنية محمد سيد","حليمة مصطفى","ردينة عطية","مريم حيدوري"],demo:27},
- {n:"العاديات",v:"﴿وَالْعَادِيَاتِ ضَبْحًا﴾",m:["انتصار فريحات","عائشة البكري","رانيا طالب","أسماء سلمان"],demo:38},
- {n:"الموريات",v:"﴿فَالْمُورِيَاتِ قَدْحًا﴾",m:["ياسمين يعاقبة","زينب القاضي","عبير النجرس","أسماء يوسف"],demo:30}];
+ {n:"السابقات",v:"﴿فَالسَّابِقَاتِ سَبْقًا﴾",m:["هيفاء أبو راس","شذى نوافله","هديل الحايك","أسماء بكر","كوثر الخوالدة","عبير السيد"],demo:34},
+ {n:"الذاريات",v:"﴿وَالذَّارِيَاتِ ذَرْوًا﴾",m:["ريهام إبراهيم","رجوى أحمد","حنان حتاملة","بيان بلال","إيمان حسن مبرور","مها محمد النونو"],demo:41},
+ {n:"الفارقات",v:"﴿فَالْفَارِقَاتِ فَرْقًا﴾",m:["أمنية محمد سيد","حليمة مصطفى","ردينة عطية","مريم حيدوري","روان منصور","بثينة الخزعلي"],demo:27},
+ {n:"العاديات",v:"﴿وَالْعَادِيَاتِ ضَبْحًا﴾",m:["انتصار فريحات","عائشة البكري","رانيا طالب","أسماء سلمان","مريم القرني","ابتسام اليامي"],demo:38},
+ {n:"الموريات",v:"﴿فَالْمُورِيَاتِ قَدْحًا﴾",m:["ياسمين يعاقبة","زينب القاضي","عبير النجرس","أسماء يوسف","باسمة القضاة","مروة خيري"],demo:30}];
 const LENS=[["مهندسة التمايز","الفروق الفردية + التمايز"],["خبيرة التقويم والتغذية الراجعة","أساليب التقويم + التغذية الراجعة"],["سفيرة الواقع والاستدامة","ربط المحتوى بالواقع + التنمية المستدامة"],["رائدة الهوية والذكاء الاصطناعي","الهوية القطرية + الذكاء الاصطناعي"]];
-const TASKS=["قائدة التجربة","المسجّلة","ضابطة الوقت","المتحدثة"];
+const TASKS=["قائدة التجربة","المسجّلة","ضابطة الوقت","المتحدثة","المدقّقة","الموثّقة"];
+const TASKD={"المدقّقة":"تراجع الإجابة والوحدات والأرقام قبل الإرسال، وتنبّه المجموعة لأي خطأ","الموثّقة":"تلتقط صور التجربة وتوثّق أقوى شاهد على المحاور لتعرضه المتحدثة"};
 const ST=[["الدايود والترانزستور","إسراء بركات","92–93"],["دائرة مجزئ الجهد","سمر رشيد","98"],["مقياس الجهد الانزلاقي","مريم ماشه","101"],["المقاومة الضوئية والحرارية","سارة خالد","102–103"],["البوابات المنطقية","نهى محسن","109–111"]];
 const AG=[["8:00 – 8:15","الاستقبال والقياس القبلي"],["8:15 – 8:30","الافتتاح والمحاور الثمانية"],["8:30 – 9:30","تدوير المحطات الخمس"],["9:30 – 9:50","منصة العرض والجولة الحاسمة"],["9:50 – 10:00","التهيئة لحضور الحصة"],["10:00 – 10:15","قهوة نيوتن",1],["10:15 – 11:00","حصة سارة خالد للصف الحادي عشر"],["11:00 – 11:30","فطور مع أينشتاين",1],["11:30 – 12:15","نقاش الأثر"],["12:15 – 12:45","القياس البعدي وجدار الالتزامات"],["12:45 – 1:00","الختام وإعلان المجموعة الفائزة"]];
 let ROUND=0;
@@ -1062,7 +1065,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-clap]');if
   sendClap(g,src)});
 /* roles: who acts in each step (index into TASKS) */
 const STEP_ROLE=[1,0,0,2,3];
-const ownerIdx=st=>(STEP_ROLE[st]-ROUND%4+8)%4;
+const ownerIdx=st=>(STEP_ROLE[st]-ROUND%6+12)%6;
 const teamMode=()=>SY.on&&SY.mode==='group'&&viewGroup===null;
 function actorIdx(st){const oi=ownerIdx(st);if(!SY.on)return oi;const on=memList(S.g).map(x=>x.i);if(!on.includes(S.i))on.push(S.i);if(on.includes(oi))return oi;return Math.min(...on)}
 const isOwner=()=>!teamMode()||S.i===actorIdx(step);
@@ -1080,18 +1083,22 @@ function applyGroup(){
   if(gs.d&&!stDoneR(S.g,ROUND,gs.k)){markDone(S.g,ROUND,gs.k);if(curSt===gs.k||C2.phase==='round'){clearInterval(timerId);const el=$('#lab-vd');el.hidden=false;$('#lab-list').hidden=true;el.innerHTML=doneCard(gs.k,false)}return}
   if(gs.k===curSt&&gs.s!==step&&!stDoneR(S.g,ROUND,gs.k)){step=gs.s;runStation(curSt);focusStep()}
 }
+function isLead(){return teamMode()&&S.i===(12-ROUND%6)%6}
+function canAct(st){return S.i===actorIdx(st)||isLead()}
 function roleLock(el){
   el.classList.remove('rolelock','rolemine');
-  if(!teamMode())return;const oi=actorIdx(step),G=GROUPS[S.g],who=G.m[oi],task=TASKS[STEP_ROLE[step]];SY.lockMine=S.i===oi;SY.lockKey=ROUND+':'+curSt+':'+step;
-  const mineT=TASKS[(S.i+ROUND)%4],fn=n=>String(n).split(' ')[0],tag=w=>`<small class="forwho">لـ ${w}</small>`;
+  if(!teamMode())return;const oi=actorIdx(step),G=GROUPS[S.g],who=G.m[oi],task=TASKS[STEP_ROLE[step]];SY.lockMine=canAct(step);const LD=isLead()&&S.i!==oi;SY.lockKey=ROUND+':'+curSt+':'+step;
+  const mineT=TASKS[(S.i+ROUND)%6],fn=n=>String(n).split(' ')[0],tag=w=>`<small class="forwho">لـ ${w}</small>`;
   if(step===3){el.classList.add('rolemine');
     el.insertAdjacentHTML('afterbegin',`<div class="rolebar me"><b>المهمة المتمايزة فردية · لكلّ عضوة إجابتها</b><span>${S.i===oi?'أجيبي بنفسكِ على جوالكِ؛ فالتقويم البنائي فردي. وأنتِ من ينقل المجموعة إلى «تحقّقي من Copilot» بعد أن تنتهي زميلاتكِ.':'أجيبي بنفسكِ على جوالكِ؛ فالتقويم البنائي فردي، ونقاطكِ تُضاف لمجموعتكِ. والانتقال للمرحلة التالية بيد '+fn(who)+'.'}</span></div>`);
-    if(S.i!==oi){const nx=el.querySelector('#nx');if(nx){nx.disabled=true;nx.classList.add('notmine');nx.insertAdjacentHTML('beforebegin',tag(fn(who)))}}
+    if(LD)el.insertAdjacentHTML('afterbegin',`<div class="rolebar me lead"><b>👑 أنتِ قائدة المجموعة</b><span>يمكنكِ نقل المجموعة إلى المرحلة التالية متى انتهت الزميلات.</span></div>`);
+    if(S.i!==oi&&!LD){const nx=el.querySelector('#nx');if(nx){nx.disabled=true;nx.classList.add('notmine');nx.insertAdjacentHTML('beforebegin',tag(fn(who)))}}
     return}
+  if(LD){el.classList.add('rolemine');el.insertAdjacentHTML('afterbegin',`<div class="rolebar me lead"><b>👑 أنتِ قائدة المجموعة · لكِ صلاحية كل الأدوار</b><span>هذه المرحلة دور ${fn(who)} (${task})، ويمكنكِ تنفيذها أو مساندتها من جوالكِ حتى تسليم المحطة.</span></div>`);return}
   if(S.i===oi)el.classList.add('rolemine');
   if(S.i===oi){el.insertAdjacentHTML('afterbegin',`<div class="rolebar me"><b>دوركِ الآن (${task})</b><span>نفّذي هذه المرحلة على جوالكِ، وزميلاتكِ يتابعنكِ ويناقشنكِ.</span></div>`);return}
   el.classList.add('rolelock');
-  el.insertAdjacentHTML('afterbegin',`<div class="rolebar"><b>هذه المرحلة على جوال ${who} · ${task}</b><span>مهمتكِ في هذه الجولة: ${mineT}. تابعي معها وناقشيها، ودوّني في دليلكِ؛ وتنتقل الشاشة تلقائياً مع كل مرحلة.</span></div>`);
+  el.insertAdjacentHTML('afterbegin',`<div class="rolebar"><b>هذه المرحلة على جوال ${who} · ${task}</b><span>مهمتكِ في هذه الجولة: ${mineT}${TASKD[mineT]?' ('+TASKD[mineT]+')':''}. تابعي معها وناقشيها، ودوّني في دليلكِ؛ وتنتقل الشاشة تلقائياً مع كل مرحلة.</span></div>`);
   el.querySelectorAll('button,input,select,a.btn').forEach(x=>{if(!['back','annT'].includes(x.id))x.disabled=true});
   el.querySelectorAll('.opts,.num,.levels,#nx,.ctl .row,.ctl input[type=range]').forEach(x=>{if(!x.previousElementSibling||!x.previousElementSibling.classList.contains('forwho'))x.insertAdjacentHTML('beforebegin',tag(fn(who)))});
 }
@@ -1144,14 +1151,14 @@ function ingest(d){
   }
   try{applyGroup()}catch(e){}
   try{handleVix(d.vix||'{}')}catch(e){}
-  try{if(teamMode()&&C2.phase==='round'&&curSt!=null&&!$('#v-lab').hidden&&$('#lab-vd').querySelector('.rolebar')&&SY.lockKey===ROUND+':'+curSt+':'+step&&(S.i===actorIdx(step))!==SY.lockMine)runStation(curSt)}catch(e){}
+  try{if(teamMode()&&C2.phase==='round'&&curSt!=null&&!$('#v-lab').hidden&&$('#lab-vd').querySelector('.rolebar')&&SY.lockKey===ROUND+':'+curSt+':'+step&&canAct(step)!==SY.lockMine)runStation(curSt)}catch(e){}
   liveRefresh();
 }
 function liveRefresh(){
   try{if(!$('#v-monitor').hidden)renderMonitor();if(!$('#v-guide').hidden)renderGuide();if(!$('#v-board').hidden||SY.mode!=='group')renderBoard();if(!$('#v-admin').hidden)$('#aSync').innerHTML=syncText()}catch(e){}
 }
 function syncText(){if(!SY.on)return '';const a=SY.ok?Math.round((Date.now()-SY.ok)/1000):-1;return a<0?'جارٍ الاتصال…':(a<15?'<b>● متصل</b> · آخر تحديث قبل '+a+' ث':'انقطع الاتصال، تُعاد المحاولة تلقائياً')}
-function memList(g){const out=[];for(let i=0;i<4;i++){const v=SY.m['m'+g+'_'+i];if(v&&!v.gone)out.push(Object.assign({i,on:(sNow()/1000-(v.t||0))<20},v))}return out}
+function memList(g){const out=[];for(let i=0;i<6;i++){const v=SY.m['m'+g+'_'+i];if(v&&!v.gone)out.push(Object.assign({i,on:(sNow()/1000-(v.t||0))<20},v))}return out}
 function grpPts(g){if(!SY.on)return null;const L=memList(g),gs=SY.g&&SY.g[g],own=SY.mode==='group'&&g===S.g;
   const base=Math.max(gs&&gs.p||0,...L.map(x=>(x.p||0)-(x.ind||0)),own?S.pts-(S.ind||0):0);
   let ind=L.reduce((a,x)=>a+(own&&x.i===S.i?0:(x.ind||0)),0);if(own)ind+=S.ind||0;return base+ind}
@@ -1168,10 +1175,10 @@ try{const sv=localStorage.getItem('aafaq-me');if(sv)sel.value=sv}catch(e){}
 function renderMe(){
   const [g,i]=sel.value.split(':').map(Number);S.g=g;S.i=i;
   const G=GROUPS[g];$('#mg').textContent=G.n;$('#mv').textContent=G.v;
-  $('#ml').textContent=LENS[i][0];$('#ma').textContent=LENS[i][1];
-  $('#mt').textContent=TASKS[(i+ROUND)%4];
+  $('#ml').textContent=LENS[i%4][0];$('#ma').textContent=LENS[i%4][1];
+  $('#mt').textContent=TASKS[(i+ROUND)%6];
   const st=(g+ROUND)%5;$('#ms').textContent=`م${st+1}: ${ST[st][0]}`;
-  $('#sg').textContent=G.n;try{const gm=SY.mode==='group';$('#sbMe').textContent=gm?G.m[i]:'';$('#sbMe').dataset.g=G.n;$('#sbLbl').textContent=gm?'· مجموعة':'مجموعتي';const tk=$('#sbTask');tk.hidden=!gm;tk.textContent='مهمتي: '+TASKS[(i+ROUND)%4]}catch(e){}renderBoard();
+  $('#sg').textContent=G.n;try{const gm=SY.mode==='group';$('#sbMe').textContent=gm?G.m[i]:'';$('#sbMe').dataset.g=G.n;$('#sbLbl').textContent=gm?'· مجموعة':'مجموعتي';const tk=$('#sbTask');tk.hidden=!gm;tk.textContent='مهمتي: '+TASKS[(i+ROUND)%6]}catch(e){}renderBoard();
   try{localStorage.setItem('aafaq-me',sel.value)}catch(e){}
 }
 sel.addEventListener('change',renderMe);
@@ -1694,7 +1701,7 @@ function ipBody(kind,r,rp,tot,max,w,last){
   if(kind==='fb'){const q=FBQ[r];body=`<div class="ip-t">تغذية راجعة سريعة</div><div class="ip-big">${q[0]}</div><div class="ip-q">${q[1]}</div><div class="ip-joke">${q[2]}</div>`}
   if(kind==='rem'){const m=REMIND[r];body=`<div class="ip-t">${m.h}</div><ul class="ip-qs">${m.q.map(x=>`<li>${x}</li>`).join('')}</ul><div class="ip-pts">${m.p.map(x=>`<p>${x}</p>`).join('')}</div>`}
   if(kind==='next')body=`<div class="ip-t">يلا نبدأ المحطة ${ORD[r+1]}… انتقلن إلى الطاولة التالية، وتبدّلت المهام</div>
-    <div class="nxt">${GROUPS.map((g,k)=>{const st=stationOf(k,r+1);return `<div><span class="gn">${g.n}</span><span class="to">إلى الطاولة ${st+1}: ${ST[st][0]}</span><ul>${g.m.map((m,i)=>`<li>${m}: <b>${TASKS[(i+r+1)%4]}</b></li>`).join('')}</ul></div>`}).join('')}</div>
+    <div class="nxt">${GROUPS.map((g,k)=>{const st=stationOf(k,r+1);return `<div><span class="gn">${g.n}</span><span class="to">إلى الطاولة ${st+1}: ${ST[st][0]}</span><ul>${g.m.map((m,i)=>`<li>${m}: <b>${TASKS[(i+r+1)%6]}</b></li>`).join('')}</ul></div>`}).join('')}</div>
     <div class="ip-go">وقتكم يبدأ بعد <span id="iCd2">${mmss(C2.nextAt?(C2.nextAt-Date.now())/1000:0)}</span></div>`;
   if(kind==='close')body=`<div class="ip-t">للأسف… انتهى لقائي معكم</div><div class="ip-pts big"><p>كنت سعيدة جداً بلقائكم، وجاهزة للرد على كل استفساراتكم.</p><p>أتمنى أني أفدتكم اليوم… والإفادة الكبيرة أكيد في حصة أ. سارة خالد.</p><p>سنستمتع معاً بحضور حصة استثنائية بتفعيل الذكاء الاصطناعي بشكل مميز.</p></div><div class="ip-sign">أ. أريج أبو حاشية · بوصلة الورشة</div>`;
   if(kind==='coffee')body=`<div class="ip-t">تفضّلوا على «قهوة نيوتن» ☕</div><div class="ip-big">تعبنا نيوتن وأينشتاين اليوم… خلّونا نتقهوى معهم</div><div class="ip-q">بريك خفيف لطيف، وبعدها ندخل حصة أ. سارة خالد، ونلتقي ببناتنا الطالبات</div>`;
@@ -1913,7 +1920,7 @@ function gateOn(v,kind){const sec=$('#v-'+v);if(!sec)return false;const open=!SY
 function curStepOf(k){const st=stationOf(k,ROUND),gs=SY.g&&SY.g[k],L=memList(k).filter(x=>x.st===st&&x.r===ROUND);
   if(gs&&gs.r===ROUND&&gs.k===st)return gs.s||0;return L.length?Math.max(...L.map(x=>x.s||0)):0}
 function workerOf(k){const s=curStepOf(k),G=GROUPS[k];if(s===3)return 'كل العضوات · المهمة الفردية';
-  const oi=(STEP_ROLE[s]-ROUND%4+8)%4,reg=memList(k).map(x=>x.i);const who=reg.length&&!reg.includes(oi)?Math.min(...reg):oi;
+  const oi=(STEP_ROLE[s]-ROUND%6+12)%6,reg=memList(k).map(x=>x.i);const who=reg.length&&!reg.includes(oi)?Math.min(...reg):oi;
   return `${G.m[who]} <small>(${STEPN[s]})</small>`}
 
 /* ===== live labs inside the presentation during a round ===== */
@@ -2048,7 +2055,7 @@ function axesTalk(r){
 /* ===== entry by QR: #g1..#g5, #guide, #areej ===== */
 (function(){
   const h=(location.hash||'').slice(1),hide=v=>{const t=document.querySelector(`[data-v="${v}"]`);if(t)t.hidden=true};
-  const m=/^g([1-5])(?:-([1-4]))?$/.exec(h);
+  const m=/^g([1-5])(?:-([1-6]))?$/.exec(h);
   if(m){const g=+m[1]-1;['monitor','guide','admin','screen','show'].forEach(hide);window.GLOCK=g;
     [...sel.querySelectorAll('optgroup')].forEach((og,k)=>{if(k!==g)og.remove()});
     if(m[2]){sel.value=g+':'+(+m[2]-1);try{localStorage.setItem('aafaq-me',sel.value)}catch(e){}document.body.classList.add('personal');
@@ -2139,9 +2146,9 @@ const SLIDES=[
  ()=>`<h3 class="s-h">كيف تعمل المحطة؟ <small>معمل تجريبي للتوضيح، غير المحطات الخمس</small></h3><div class="dl" id="dlS">${demoLab()}</div>`,
  ()=>`<h3 class="s-h">أدواركنّ في المحطات</h3>
    <div class="rl"><div class="a1"><b>العدسة · ثابتة طوال اليوم</b><span>ترصد كل معلمة محورين من المحاور الثمانية.</span><div class="rot4">${LENS.map(l=>`<span>${l[0]}</span>`).join('')}</div></div>
-   <div class="a2"><b>المهمة · تتبدّل كل جولة</b><span>تنتقل كل معلمة إلى المهمة التالية مع كل جولة.</span><div class="rot4">${TASKS.map((t,i)=>`<span>${t}</span>${i<3?'<i>←</i>':''}`).join('')}</div></div></div>
-   <div class="rg a3">${GROUPS.map(g=>`<div><span class="gn">${g.n}</span>${g.m.map((m,i)=>`<div class="m"><b>${m}</b> · <span>${TASKS[i%4]}</span><small>${LENS[i][0]}</small></div>`).join('')}</div>`).join('')}</div>
-   <p class="s-note">ابحثي عن اسمكِ: <span style="color:var(--rosso)">مهمتكِ بالأحمر</span>، و<span style="color:var(--muted)">عدستكِ تحتها</span> · وتُعرض المهام الجديدة على الشاشة قبل كل جولة</p>`,
+   <div class="a2"><b>المهمة · تتبدّل كل جولة</b><span>تنتقل كل معلمة إلى المهمة التالية مع كل جولة.</span><div class="rot4">${TASKS.map((t,i)=>`<span>${t}</span>${i<TASKS.length-1?'<i>←</i>':''}`).join('')}</div></div></div>
+   <div class="rg a3">${GROUPS.map(g=>`<div><span class="gn">${g.n}</span>${g.m.map((m,i)=>`<div class="m"><b>${m}</b> · <span>${TASKS[i%6]}</span><small>${LENS[i%4][0]}</small></div>`).join('')}</div>`).join('')}</div>
+   <p class="s-note" style="margin:0;font-size:clamp(11px,1.4vw,19px)">ابحثي عن اسمكِ: <span style="color:var(--rosso)">مهمتكِ بالأحمر</span>، و<span style="color:var(--muted)">عدستكِ تحتها</span> · وتُعرض المهام الجديدة على الشاشة قبل كل جولة</p>`,
  ()=>`<h3 class="s-h">الآن: كيف تدوّنين في دليل المتدربة؟</h3><div class="gd">
    <ol class="gd-st a1">${[
     ["افتحي الدليل على صفحة المحطة","المحطة التي تقفين عندها الآن، مثلاً: «المحطة 1: الدايود والترانزستور»"],
