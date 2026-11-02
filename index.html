@@ -852,6 +852,9 @@ body.gmode .hum{bottom:110px}
 .steps .on.here{animation:stHere .7s ease-in-out 3;box-shadow:0 0 0 3px rgba(232,192,138,.9)}@keyframes stHere{50%{transform:scale(1.12)}}
 .rg{line-height:1.2}.rg .m{margin-bottom:1px}.rg .gn{font-size:1.7em}
 .groups .gm{margin:0;font-size:clamp(9px,1.05vw,13.5px);line-height:1.45}.groups span.gmem{font-size:clamp(8.5px,.9vw,11.5px);line-height:1.5}.groups div{gap:2px}
+.gx{grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:1.2%}.gx>div{min-height:0;overflow:hidden}
+.rb6>div{font-size:clamp(9px,1.08vw,15px);line-height:1.45;gap:3px;padding:2.4% 4%}.rb6 b{font-size:1.35em}
+.gx>div{font-size:clamp(7.5px,.86vw,12px);line-height:1.35;gap:2px;padding:2.6% 4.5%}.gx-h b{font-size:1.25em}.gx .hw{font-size:1em;line-height:1.35}.gx-l{padding:1.5% 4%}
 </style></head><body>
 
 <div class="ticker" aria-label="شريط الترحيب"><div class="run" id="run"></div></div>
@@ -2173,7 +2176,9 @@ const SLIDES=[
     ["هيفاء أبو راس","قائدة التجربة","مهندسة التمايز","عُرض الدايود بالرسم وباليد وبالأرقام، وبدأنا بالمستوى الأساسي ثم ارتقينا للتمكّن.","أعدّ سؤال الترانزستور بثلاثة مستويات لطالباتي."],
     ["شذى نوافله","المسجّلة","خبيرة التقويم والتغذية الراجعة","سؤال التوقّع كشف أن اثنتين منا توقعتا زيادة السطوع؛ والتغذية الراجعة ذكرت الدليل والخطوة التالية.","أبدأ درس الدايود بسؤال توقّع على السبورة."],
     ["هديل الحايك","ضابطة الوقت","سفيرة الواقع والاستدامة","رُبط الدايود بألواح الطاقة الشمسية وترشيد تشغيل الأجهزة.","أعرض صورة الألواح الشمسية في مدرستنا قبل الشرح."],
-    ["أسماء بكر","المتحدثة","رائدة الهوية والذكاء الاصطناعي","قال Copilot إن الدايود يمرّر التيار في الاتجاهين، فأثبتنا خطأه بالتجربة؛ ومثال من مشروعات قطر الذكية.","أعطي الطالبات ادّعاءً من الذكاء الاصطناعي ليصحّحنه بالدليل."]]
+    ["أسماء بكر","المتحدثة","رائدة الهوية والذكاء الاصطناعي","قال Copilot إن الدايود يمرّر التيار في الاتجاهين، فأثبتنا خطأه بالتجربة؛ ومثال من مشروعات قطر الذكية.","أعطي الطالبات ادّعاءً من الذكاء الاصطناعي ليصحّحنه بالدليل."],
+    ["كوثر الخوالدة","المدقّقة","مهندسة التمايز","راجعتُ قراءة التيار ووحدتها قبل الإرسال، فصحّحنا 15 A إلى 15 mA؛ ومستويات المهمة ناسبت كل واحدة منا.","أخصّص في مجموعات صفي «مدقّقة» تراجع الوحدات قبل الإجابة."],
+    ["عبير السيد","الموثّقة","خبيرة التقويم والتغذية الراجعة","صوّرتُ لحظة إضاءة المصباح في الانحياز الأمامي، وكانت شاهداً على أن التغذية الراجعة ذكرت الدليل.","أطلب من طالباتي توثيق التجربة بصورة قبل كتابة الاستنتاج."]]
     .map((x,i)=>`<div class="a${1+i%4}"><div class="gx-h"><b>${x[0]}</b><span>${x[1]}</span></div><div class="gx-l">العدسة: ${x[2]}</div><div class="gx-r"><i>الشاهد الذي رصدته</i><span class="hw">${x[3]}</span></div><div class="gx-r"><i>فكرة أنقلها إلى صفي</i><span class="hw">${x[4]}</span></div></div>`).join('')}</div>
    <p class="s-note" style="margin:0;font-size:clamp(11px,1.4vw,19px)">مثال من مجموعة السابقات في المحطة 1 · كل معلمة تكتب في صف عدستها فقط، والمتحدثة تقرأ أقوى شاهد على المضيفة</p>`,
  ()=>`<h3 class="s-h">خريطة القاعة <small>منظر علوي · المحطات الخمس ومكان بوصلة الورشة</small></h3><div class="hm1 a1"><img src="hall-map.jpg?v=2" alt="خريطة القاعة من أعلى: خمس طاولات مرقمة، ومكان أ. أريج أبو حاشية عند السبورة"></div>
@@ -2190,7 +2195,7 @@ const SLIDES=[
  ()=>`<h3 class="s-h">العمل الجماعي: مَن تعمل في كل مرحلة؟</h3>
    <p class="lede a1" style="margin:0;font-size:clamp(12px,1.4vw,19px)">تمسح كل معلمة الباركود على جوالها، فتظهر المرحلة على جوال صاحبة الدور، وتتابعها الزميلات على جوالاتهن ويناقشنها ويدوّنّ في الدليل؛ وتنتقل الجوالات معاً إلى المرحلة التالية.</p>
    <div class="rmap a2">${STEPN.map((n,i)=>`<div><b>${i+1}. ${n}</b>${TASKS[STEP_ROLE[i]]}</div>`).join('')}</div>
-   <div class="rb a3" style="grid-template-columns:repeat(4,1fr)">${TASKS.map((t,i)=>`<div><b>${t}</b><span>${["تنفّذ التجربة وتقرأ من الجهاز","تسجّل توقّع المجموعة بعد النقاش","تختار مستوى المهمة وتراقب الوقت","تحكم على ادّعاء Copilot وتسلّم المحطة"][i]}</span></div>`).join('')}</div>
+   <div class="rb rb6 a3" style="grid-template-columns:repeat(3,1fr)">${TASKS.map((t,i)=>`<div><b>${t}</b><span>${["تنفّذ التجربة وتقرأ من الجهاز","تسجّل توقّع المجموعة بعد النقاش","تختار مستوى المهمة وتراقب الوقت","تحكم على ادّعاء Copilot وتسلّم المحطة","تراجع الإجابة والوحدات والأرقام قبل الإرسال، وتنبّه المجموعة لأي خطأ","تصوّر التجربة وتوثّق أقوى شاهد على المحاور لتعرضه المتحدثة"][i]}</span></div>`).join('')}</div>
    <p class="s-note" style="margin:0">وتتبدّل الأدوار مع كل جولة… فكل معلمة تمرّ على المراحل كلها</p>`,
  ()=>`<h3 class="s-h">كيف تُقيَّم المجموعات؟</h3><div class="rb a1">
    <div><b>صحة الإجابات</b><span>التوقّع: نقطة</span><span>التحدي العملي: نقطتان</span><span>تحدّي القراءة: 3 نقاط</span><span>المستويات: نقطة، ونقطتان، و3 نقاط</span><span>تحقّق Copilot: نقطتان</span></div>
@@ -2282,11 +2287,13 @@ function stageBanner(r){const b=$('#stageBanner');b.innerHTML=`<div><small>صا�
 renderMe();fillVBoxes();try{const rb=$('#resetBox'),adm=document.querySelector('#v-admin .adm'),gr=adm&&adm.querySelector(':scope>.grid');if(rb&&gr)adm.insertBefore(rb,gr)}catch(e){}
 </script>
 
-<script>(function(){const sp=document.getElementById('sp');if(!sp||!window.MutationObserver)return;let shown=+sp.textContent||0,busy=false,raf=0;
-new MutationObserver(()=>{if(busy)return;const to=+sp.textContent;if(isNaN(to)||to<=shown){shown=to;return}const from=shown,t0=performance.now();shown=to;cancelAnimationFrame(raf);
- const pts=sp.closest('.pts');if(pts){pts.classList.add('up');setTimeout(()=>pts.classList.remove('up'),900)}
- const st=n=>{busy=true;sp.textContent=n;busy=false};st(from);
- (function f(t){const k=Math.min(1,(t-t0)/700);st(Math.round(from+(to-from)*(1-Math.pow(1-k,3))));if(k<1)raf=requestAnimationFrame(f)})(t0)}).observe(sp,{childList:true,characterData:true,subtree:true})})();</script><button type="button" class="hum" id="humBtn" aria-pressed="false" title="صوت التيار الكهربائي" aria-label="صوت التيار الكهربائي">⚡</button>
+<script>(function(){const sp=document.getElementById('sp');if(!sp||!window.MutationObserver)return;let shown=+sp.textContent||0,raf=0,fin=0;const O={childList:true,characterData:true,subtree:true};
+ const ob=new MutationObserver(()=>{const to=+sp.textContent;if(isNaN(to)||to<=shown){shown=isNaN(to)?shown:to;return}const from=shown,t0=performance.now();shown=to;cancelAnimationFrame(raf);clearTimeout(fin);
+  const pts=sp.closest('.pts');if(pts){pts.classList.add('up');setTimeout(()=>pts.classList.remove('up'),900)}
+  const st=n=>{ob.disconnect();sp.textContent=n;ob.observe(sp,O)};st(from);
+  (function f(t){const k=Math.min(1,(t-t0)/700);st(Math.round(from+(to-from)*(1-Math.pow(1-k,3))));if(k<1)raf=requestAnimationFrame(f)})(t0);
+  fin=setTimeout(()=>{cancelAnimationFrame(raf);st(to)},900)});
+ ob.observe(sp,O)})();</script><button type="button" class="hum" id="humBtn" aria-pressed="false" title="صوت التيار الكهربائي" aria-label="صوت التيار الكهربائي">⚡</button>
 <script>(function(){const btn=document.getElementById('humBtn');let H=null;
 const isGroup=/^#g[1-5]$/.test(location.hash);
 function pref(){try{const v=localStorage.getItem('aafaq-hum');return v===null?!isGroup:v==='1'}catch(e){return !isGroup}}
