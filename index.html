@@ -1068,7 +1068,7 @@ const STEP_ROLE=[1,0,0,2,3];
 const ownerIdx=st=>(STEP_ROLE[st]-ROUND%6+12)%6;
 const teamMode=()=>SY.on&&SY.mode==='group'&&viewGroup===null;
 function actorIdx(st){const oi=ownerIdx(st);if(!SY.on)return oi;const on=memList(S.g).map(x=>x.i);if(!on.includes(S.i))on.push(S.i);if(on.includes(oi))return oi;return Math.min(...on)}
-const isOwner=()=>!teamMode()||S.i===actorIdx(step);
+const isOwner=()=>!teamMode()||canAct(step);
 function gState(){try{return SY.g&&SY.g[S.g]}catch(e){return null}}
 function pushGroup(extra){if(!teamMode()||!isOwnerAny())return;const gt=gTally();const o=Object.assign({ok:gt.ok,n:gt.n,k:curSt,s:step,p:S.pts-(S.ind||0),r:ROUND,d:curSt!=null&&stDoneR(S.g,ROUND,curSt)?1:0,t:Math.round(sNow()/1000)},extra||{});SY.gLast=o;api({a:'set',k:'G'+S.g,v:JSON.stringify(o),w:1})}
 function isOwnerAny(){return true}
@@ -1110,18 +1110,18 @@ let _pmT=0;function pushMine(){if(!SY.on||SY.mode!=='group')return;clearTimeout(
 function poll(force){
   if(!SY.on)return Promise.resolve();
   if(SY.inq>0){if(force&&SY.mode==='group')SY.pendMine=true;return Promise.resolve()}
-  if(SY.mode==='group'){const mk=memKey();if(SY.lastKey&&SY.lastKey!==mk){api({a:'set',k:SY.lastKey,v:JSON.stringify({t:0,gone:1}),w:1})}SY.lastKey=mk;const v=JSON.stringify(Object.assign(mine(),{t:Math.round(sNow()/1000)})),core=JSON.stringify(mine());const w=core!==SY.sent?1:0;SY.sent=core;return api({a:'set',k:memKey(),v,w})}
+  if(SY.mode==='group'&&SY.picked){const mk=memKey();if(SY.lastKey&&SY.lastKey!==mk){api({a:'set',k:SY.lastKey,v:JSON.stringify({t:0,gone:1}),w:1})}SY.lastKey=mk;const v=JSON.stringify(Object.assign(mine(),{t:Math.round(sNow()/1000)})),core=JSON.stringify(mine());const w=core!==SY.sent?1:0;SY.sent=core;return api({a:'set',k:memKey(),v,w})}
   return api({a:'get'});
 }
 function srvT(k,v){const c=C2._sv=C2._sv||{};if(!v)return 0;if(c[k]&&c[k][0]===v)return c[k][1];const o=Math.round(v+SY.off);c[k]=[v,o];return o}
 function isPres(){const v=document.getElementById('v-show');return !!v&&!v.hidden&&!v.classList.contains('locked')}
 function presSl(){if(isPres())SY.sl=slide;return SY.sl||0}
 function presLv(){if(isPres())SY.lv=(typeof LIVE!=='undefined'&&LIVE.on)?1:0;return SY.lv||0}
-function ctlObj(){return {p:C2.phase,r:C2.round,d:C2.dur,e:C2.running?srvT('e',C2.endAt):0,m:C2.remain,run:C2.running?1:0,b:C2.boomed?1:0,a:C2.active.map(x=>x?1:0),n:C2.nextAt?srvT('n',C2.nextAt):0,au:C2.auto?1:0,z:C2.z||0,sl:presSl(),lv:presLv()}}
+function ctlObj(){return {p:C2.phase,r:C2.round,d:C2.dur,e:C2.running?srvT('e',C2.endAt):0,m:C2.remain,run:C2.running?1:0,b:C2.boomed?1:0,a:C2.active.map(x=>x?1:0),n:C2.nextAt?srvT('n',C2.nextAt):0,au:C2.auto?1:0,z:C2.z||0,sl:presSl(),lv:presLv(),sn:C2.sn||[]}}
 SY.dev=Math.random().toString(36).slice(2,8);SY.ctlTs=0;
 function pushCtl(){if(!SY.on||SY.mode!=='admin')return;if(SY.ctlBusy)return;const o=ctlObj(),sig=JSON.stringify(o);if(sig===SY.ctlSig)return;SY.ctlSig=sig;SY.ctlTs=Math.round(sNow());SY.ctlBusy=true;api({a:'ctl',pin:SY.pin,v:JSON.stringify(Object.assign({},o,{ts:SY.ctlTs,dv:SY.dev}))}).then(j=>{SY.ctlBusy=false;if(!j||!j.ok&&j.err!=='pin')SY.ctlSig='';if(j&&j.err==='pin'){SY.mode='view';SY.pin='';try{localStorage.removeItem('aafaq-pin')}catch(e){}renderAdmin()}})}
 function applyCtl(o,adopt){try{const lz=localStorage.getItem('aafaq-z');if(lz===null)localStorage.setItem('aafaq-z',String(o.z||0));else if(+lz!==(o.z||0))wipeLocal(o.z||0)}catch(e){}
-  if(!isPres()){SY.sl=o.sl||0;SY.lv=o.lv||0}C2.phase=o.p;C2.round=o.r;ROUND=o.r;C2.dur=o.d;C2.running=!!o.run;C2.endAt=o.e?o.e-SY.off:0;C2._sv={e:o.e?[C2.endAt,o.e]:null};C2.remain=o.m;C2.boomed=!!o.b;C2.active=o.a.map(Boolean);C2.nextAt=o.n?o.n-SY.off:0;if(o.n)C2._sv.n=[C2.nextAt,o.n];C2.auto=!!o.au;C2.z=o.z||0;
+  if(!isPres()){SY.sl=o.sl||0;SY.lv=o.lv||0}C2.phase=o.p;C2.round=o.r;ROUND=o.r;C2.dur=o.d;C2.running=!!o.run;C2.endAt=o.e?o.e-SY.off:0;C2._sv={e:o.e?[C2.endAt,o.e]:null};C2.remain=o.m;C2.boomed=!!o.b;C2.active=o.a.map(Boolean);C2.nextAt=o.n?o.n-SY.off:0;if(o.n)C2._sv.n=[C2.nextAt,o.n];C2.auto=!!o.au;C2.z=o.z||0;if(Array.isArray(o.sn))C2.sn=o.sn;
   if(o.b&&!C2.boomAt)C2.boomAt=Date.now()-(adopt?8000:0);if(!o.b)C2.boomAt=0;
 }
 function ingest(d){
@@ -1578,6 +1578,7 @@ const mmss=t=>{t=Math.max(0,Math.ceil(t));return String(Math.floor(t/60)).padSta
 function remain(){return C2.running?Math.max(0,(C2.endAt-Date.now())/1000):C2.remain}
 
 function startRound(r){
+  try{C2.sn=Array.isArray(C2.sn)?C2.sn:[];C2.sn[r]=GROUPS.map((g,k)=>grpPts(k)||0);for(let j=r+1;j<5;j++)C2.sn[j]=null}catch(e){}
   window._ipMan=null;window._endK=null;preloadEnd();playVoice('start');
   ROUND=r;C2.round=r;C2.phase='round';C2.boomAt=0;C2.remain=C2.dur;C2.endAt=Date.now()+C2.dur*1000;C2.running=true;C2.boomed=false;C2.nextAt=0;
   try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
@@ -1677,7 +1678,8 @@ const PH=[
 const QUIPS=["يلا… نبي طاقة، مو مقاومة!","لا تخلّون الحماس يوصل للصفر!","قوة التركيز عندكم اليوم غير!","الوقت يتسارع… وإنتوا للحين تتوقعون؟","ترى نيوتن ما بيحلّها عنكم!","واضح إن الجاذبية اليوم جاذبة الكل للتجربة!"];
 let curPhase=-1,phLast=0,phI=0;
 function tiles(t){t=Math.max(0,Math.ceil(t));const m=String(Math.floor(t/60)).padStart(2,'0'),s=String(t%60).padStart(2,'0');return [m[0],m[1],s[0],s[1]]}
-function roundPts(g,r){if(!SY.on)return null;const L=memList(g);return L.length?Math.max(...L.map(x=>(x.ev||[]).filter(e=>e.r===r).reduce((a,e)=>a+(e.g||0),0))):0}
+function roundPts(g,r){if(!SY.on)return null;const sn=C2.sn||[];if(sn[r]&&sn[r][g]!=null){const nx=sn[r+1]&&r+1<=C2.round&&sn[r+1][g]!=null?sn[r+1][g]:(grpPts(g)||0);return Math.max(0,nx-sn[r][g])}
+  const L=memList(g);return L.reduce((a,x)=>a+(x.ev||[]).filter(e=>e.r===r).reduce((b,e)=>b+(e.g||0),0),0)}
 function totalPts(g){return SY.on?grpPts(g):(g===S.g?GROUPS[g].demo+S.pts:GROUPS[g].demo)}
 const FBQ=[
  ["كيف كانت أول محطة؟","واجهتوا أي مشكلة في المعمل أو في الجوال؟ ولا أموركم تمام؟","«اللي ما ضبطت معاها… لا تحاتي، أينشتاين نفسه احتاج أكثر من محاولة!»"],
@@ -1691,7 +1693,7 @@ const REMIND=[
  {h:"من الدعم… إلى الأساسي… إلى التمكّن",q:["أي مستوى بدأتم به؟ وهل ارتقيتم؟"],p:["ننقل الطالبة من الدعم إلى الأساسي إلى التمكّن؛ لا تبقى طالبة في الدعم، فكل طالبة قادرة على أن تتمكّن وتتطور.","مستوى «الدعم» هنا للتدريب فقط، لتعرفي متى تحتاج الطالبة إلى دعم؛ ولن نسمّيه للطالبات.","وفي حصة أ. سارة خالد سترون الأمر مختلفاً تماماً، والمنصة نفسها مختلفة تبعاً للمرحلة العمرية والخبرة: إثارة دافعية أكثر، وتفاعل أكثر."]},
  {h:"تذكير: التغذية الراجعة والذكاء الاصطناعي",q:["هل لاحظتوا شكل التغذية الراجعة بعد كل إجابة؟","وهل كشفتوا خطأ Copilot بالتجربة؟"],p:["التغذية الراجعة البنّاءة: ما تحقق، والدليل، والخطوة التالية.","والذكاء الاصطناعي بعد التجربة لا قبلها… والحكم دائماً للدليل."]}];
 const PANEL_MS=25000;
-function interPanels(){const r=C2.round;return r>=4?['res','fb','close']:['res','fb','rem','next']}
+function interPanels(){const r=C2.round;return r>=4?['res','fb']:['res','fb','rem','next']}
 function interIdx(){const P=interPanels();if(window._ipMan!=null&&window._ipR===C2.round)return Math.min(P.length-1,window._ipMan);return Math.max(0,Math.min(P.length-1,Math.floor((Date.now()-C2.boomAt-7000)/PANEL_MS)))}
 function ipBody(kind,r,rp,tot,max,w,last){
   let body='';
@@ -1812,7 +1814,7 @@ $('#aAllOff').onclick=()=>{C2.active=C2.active.map(()=>false);renderAdmin()};
 $('#pinGo').onclick=()=>{const v=$('#pinIn').value.trim();if(!v)return;$('#pinMsg').textContent='جارٍ التحقق…';
   api({a:'pin',pin:v}).then(j=>{if(j&&j.ok){SY.pin=v;SY.mode='admin';SY.adopted=false;try{localStorage.setItem('aafaq-pin',v)}catch(e){}$('#pinMsg').textContent='';poll();renderAdmin()}else $('#pinMsg').textContent='الرمز غير صحيح'})};
 $('#aReset').onclick=()=>{if(!SY.on){$('#aResetMsg').textContent='المزامنة غير مفعّلة';return}if($('#aReset').dataset.c!=='1'){$('#aReset').dataset.c='1';$('#aReset').textContent='⚠ اضغطي مرة ثانية للتأكيد';$('#aResetMsg').textContent='لا يمكن التراجع بعد المسح';setTimeout(()=>{if($('#aReset').dataset.c==='1'){$('#aReset').dataset.c='';$('#aReset').textContent='مسح كل البيانات والبدء من جديد';$('#aResetMsg').textContent=''}},6000);return}
-  $('#aReset').dataset.c='';$('#aReset').textContent='مسح كل البيانات والبدء من جديد';C2.z=Date.now();wipeLocal(C2.z);C2.phase='idle';C2.round=0;ROUND=0;C2.running=false;C2.boomed=false;C2.boomAt=0;C2.nextAt=0;C2.remain=C2.dur;C2.active=C2.active.map(()=>false);try{renderMe();refreshAll();renderAgenda();renderAdmin();renderScreen(true)}catch(e){}api({a:'reset',pin:SY.pin}).then(j=>{$('#aResetMsg').textContent=j&&j.ok?'تم المسح':'تعذّر المسح';SY.ctlSig='';pushCtl()})};
+  $('#aReset').dataset.c='';$('#aReset').textContent='مسح كل البيانات والبدء من جديد';C2.z=Date.now();C2.sn=[];wipeLocal(C2.z);C2.phase='idle';C2.round=0;ROUND=0;C2.running=false;C2.boomed=false;C2.boomAt=0;C2.nextAt=0;C2.remain=C2.dur;C2.active=C2.active.map(()=>false);try{renderMe();refreshAll();renderAgenda();renderAdmin();renderScreen(true)}catch(e){}api({a:'reset',pin:SY.pin}).then(j=>{$('#aResetMsg').textContent=j&&j.ok?'تم المسح':'تعذّر المسح';SY.ctlSig='';pushCtl()})};
 function renderAdmin(){
   renderVoices();
   const locked=SY.on&&SY.mode!=='admin';$('#pinBox').hidden=!locked;
@@ -1865,7 +1867,7 @@ function liveCards(box,dbox,openLab){
   box.innerHTML=GROUPS.map((g,k)=>{const st=stationOf(k,ROUND),L=memList(k),dn=C2.phase==='round'&&L.some(x=>x.d&&x.st===st&&x.r===ROUND),on=L.filter(x=>x.on).length,cur=L.filter(x=>x.st===(C2.phase==='round'?st:x.st)),stp=cur.length?Math.max(...cur.map(x=>(x.s||0)+1)):0,last=L.flatMap(x=>(x.ev||[]).map(e=>Object.assign({who:GROUPS[k].m[x.i]},e))).map((e,j)=>Object.assign(e,{j})).sort((a,b)=>b.t-a.t||b.j-a.j)[0];
     return `<button class="mcard" data-k="${k}" aria-pressed="${SY.sel===k}" style="${SY.sel===k?'outline:2px solid var(--emerald)':''}"><span class="nm">${g.n}</span><span class="meta">${C2.phase==='round'?'الجولة '+(C2.round+1)+' · م'+(st+1)+': '+ST[st][0]:'قبل بدء الجولات'}</span>
       <span class="prog">${[0,1,2,3,4].map(i=>`<i class="${i<(dn?5:stp)?'on':''}"></i>`).join('')}</span>${dn?'<span class="meta" style="color:var(--emerald);font-weight:800">✓ أنجزت المحطة</span>':''}
-      ${C2.phase==='round'&&!dn?`<span class="meta worker">✍️ تعمل الآن: <b>${workerOf(k)}</b></span>`:''}<span class="meta"><span class="dot ${on?'on':''}"></span>${on} من 4 متصلات · ${C2.active[k]?'المعمل مفتوح':'المعمل مقفل'}</span>
+      ${C2.phase==='round'&&!dn?`<span class="meta worker">✍️ تعمل الآن: <b>${workerOf(k)}</b></span>`:''}<span class="meta"><span class="dot ${on?'on':''}"></span>${on} من ${g.m.length} متصلات · ${C2.active[k]?'المعمل مفتوح':'المعمل مقفل'}</span>
       <span class="meta">${last?`آخر إجابة: ${last.who} · ${STEPN[last.s]}${last.l>=0?' ('+LVN[last.l]+')':''} ${last.o?'✓':'✗'}`:'لا إجابات بعد'}</span><span class="pts">${grpPts(k)} نقطة</span></button>`}).join('');
   box.querySelectorAll('.mcard').forEach(c=>c.onclick=()=>{const k=+c.dataset.k;SY.sel=SY.sel===k?null:k;liveCards(box,dbox,openLab)});
   if(SY.sel===null){dbox.innerHTML='';return}
@@ -1929,7 +1931,7 @@ function enterLive(){LIVE.on=true;LIVE.gi=0;LIVE.stage='rank';LIVE.t=Date.now();
   if(C2.phase==='round'&&!C2.boomed&&Date.now()-LIVE.t>=8000){LIVE.gi=(LIVE.gi+1)%5;LIVE.t=Date.now();renderLive(true)}else renderLive(false)},1000);renderLive(true)}
 function goSlideOf(r){const b=SLIDES.findIndex(f=>String(f).includes('goOpen'));return b<0?slide:b+r}
 function exitLive(){LIVE.on=false;clearInterval(LIVE.tm);if(C2.phase==='round'&&C2.boomed)slide=C2.round<4?goSlideOf(C2.round+1):Math.min(goSlideOf(4)+1,SLIDES.length-1);renderShow()}
-function liveStages(){return C2.round>=4?['rank','data','fb','axes','close']:['rank','data','fb','axes','rem','next']}
+function liveStages(){return C2.round>=4?['rank','data','fb','axes']:['rank','data','fb','axes','rem','next']}
 function liveStep(d){if(C2.phase!=='round'||C2.boomed){const S2=liveStages(),i=Math.max(0,S2.indexOf(LIVE.stage));const j=i+d;if(j>=S2.length){exitLive();return}if(j<0)return;LIVE.stage=S2[j];renderLive(true);return}LIVE.gi=(LIVE.gi+d+5)%5;LIVE.t=Date.now();renderLive(true)}
 function renderLive(full){if($('#v-show').hidden)return;$('#sBack').hidden=false;$('#sNum').textContent='متابعة المعامل';
   const ended=C2.phase!=='round'||C2.boomed,T=$('#liveT');
@@ -2035,7 +2037,7 @@ const LVNEXT={fb:'لوقفة مع المحاور',axes:'للمتابعة',rem:'�
 function livePanel(kind){const r=C2.round,last=r>=4,tot=GROUPS.map((g,k)=>({k,n:g.n,p:totalPts(k)})).sort((a,b)=>b.p-a.p),rp=GROUPS.map((g,k)=>({k,n:g.n,p:SY.on?roundPts(k,r):totalPts(k)})).sort((a,b)=>b.p-a.p),max=Math.max(10,...tot.map(x=>x.p)),w=last?tot[0]:rp[0];
   let body=kind==='axes'?axesTalk(r):ipBody(kind,r,rp,tot,max,w,last);if(kind==='next')body=body.replace(/<div class="ip-go">[\s\S]*?<\/div>/,'');
   if(kind==='fb')body=body.replace('تغذية راجعة سريعة','تغذية راجعة للمجموعات');if(kind==='rem')body=body.replace('<div class="ip-t">','<div class="ip-t">تغذية راجعة للورشة · ');
-  const nx=kind==='axes'?(last?'لكلمة الختام':'لتذكير الورشة'):(LVNEXT[kind]||(kind==='close'?'للعودة إلى الشرائح':''));
+  const nx=kind==='axes'?(last?'للعودة إلى الشرائح':'لتذكير الورشة'):(LVNEXT[kind]||(kind==='close'?'للعودة إلى الشرائح':''));
   return `<div class="lv ip ip-live"><div class="ip-body">${body}</div><p class="lv-hint">${liveDots()}${nx?' · اضغطي «التالي» '+nx:''}</p></div>`}
 
 /* ===== after every round: discuss the broad concept of two axes (كان… وصار) ===== */
@@ -2058,13 +2060,14 @@ function axesTalk(r){
   const m=/^g([1-5])(?:-([1-6]))?$/.exec(h);
   if(m){const g=+m[1]-1;['monitor','guide','admin','screen','show'].forEach(hide);window.GLOCK=g;
     [...sel.querySelectorAll('optgroup')].forEach((og,k)=>{if(k!==g)og.remove()});
-    if(m[2]){sel.value=g+':'+(+m[2]-1);try{localStorage.setItem('aafaq-me',sel.value)}catch(e){}document.body.classList.add('personal');
+    if(m[2]){sel.value=g+':'+(+m[2]-1);S.g=g;S.i=+m[2]-1;SY.picked=true;try{localStorage.setItem('aafaq-me',sel.value)}catch(e){}document.body.classList.add('personal');
       const nm=GROUPS[g].m[+m[2]-1],hl=document.createElement('div');hl.className='hello';hl.innerHTML=`أهلاً <b>${nm}</b><br><span style="font-size:15px">مجموعة ${GROUPS[g].n}</span>`;$('#v-home').prepend(hl);
       setTimeout(()=>document.querySelector('[data-v="lab"]').click(),0)}
     else{
-    if(!sel.value.startsWith(g+':'))sel.value=g+':0';
+    if(!sel.value.startsWith(g+':'))sel.value=g+':0';else{try{if(localStorage.getItem('aafaq-me')===sel.value){SY.picked=true;const q=sel.value.split(':').map(Number);S.g=q[0];S.i=q[1]}}catch(e){}}
+    sel.addEventListener('change',()=>{SY.picked=true});
     const hl=document.createElement('div');hl.className='hello';hl.innerHTML=`أهلاً بمجموعة<br><b>${GROUPS[g].n}</b><br><span style="font-size:14px">اختاري اسمكِ مرة واحدة، ويحفظه جوالكِ لبقية اليوم</span><br><button type="button" class="btn gold" id="goLab" style="margin-top:10px">اخترتُ اسمي… إلى المعمل ←</button>`;
-    $('#v-home').prepend(hl);$('#goLab').onclick=()=>document.querySelector('[data-v="lab"]').click();
+    $('#v-home').prepend(hl);$('#goLab').onclick=()=>{SY.picked=true;renderMe();document.querySelector('[data-v="lab"]').click()};
     sel.addEventListener('change',()=>setTimeout(()=>document.querySelector('[data-v="lab"]').click(),400));
     try{if(localStorage.getItem('aafaq-me'))setTimeout(()=>document.querySelector('[data-v="lab"]').click(),0)}catch(e){}}}
   if(h==='guide'){['home','lab','admin'].forEach(hide);setTimeout(()=>document.querySelector('[data-v="guide"]').click(),0)}
@@ -2226,6 +2229,7 @@ const SLIDES=[
    <p class="s-note">نفس الهدف… طرق مختلفة للوصول (فروق فردية)، ومهام بمستويات مختلفة (تمايز)</p>`,
   ()=>`<div class="winsl"><h3 class="s-h">تكريم المجموعة الفائزة 🏆 <small>المجموع الكلي لنقاط الجولات الخمس</small></h3><div id="winBox">${winHTML()}</div></div>`,
  ()=>`<div class="sl-title"><div class="s-aafaq a1">شكراً لكم</div><div class="s-day a2">الموجهة التربوية أ. نورة المناعي · مكتب توجيه العلوم · إدارة مدرسة الشيماء · معلمات قسم الفيزياء · محضرة المختبر · جميع الحضور</div><div class="s-ribbon a3">الاستراتيجية قوة ◆ والتغذية الراجعة تسارع</div></div>`,
+  ()=>`<div class="sl-title closesl"><div class="ip-t a1">للأسف… انتهى لقائي معكم</div><div class="ip-pts big a2"><p>كنت سعيدة جداً بلقائكم، وجاهزة للرد على كل استفساراتكم.</p><p>أتمنى أني أفدتكم اليوم… والإفادة الكبيرة أكيد في حصة أ. سارة خالد.</p><p>سنستمتع معاً بحضور حصة استثنائية بتفعيل الذكاء الاصطناعي بشكل مميز.</p></div><div class="ip-sign a3">أ. أريج أبو حاشية · بوصلة الورشة</div></div>`,
   ()=>`<div class="sl-title coffsl"><div class="cof-ic a1">☕</div><div class="ip-t a1">تفضّلوا على «قهوة نيوتن»</div><div class="ip-big a2">تعبنا نيوتن وأينشتاين اليوم… خلّونا نتقهوى معهم</div><div class="ip-q a3">بريك خفيف لطيف، وبعدها ندخل حصة أ. سارة خالد، ونلتقي ببناتنا الطالبات</div></div>`];
 
 /* ===== تكريم المجموعة الفائزة: المجموع الكلي ===== */
