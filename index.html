@@ -855,6 +855,7 @@ body.gmode .hum{bottom:110px}
 .gx{grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:1.2%}.gx>div{min-height:0;overflow:hidden}
 .rb6>div{font-size:clamp(9px,1.08vw,15px);line-height:1.45;gap:3px;padding:2.4% 4%}.rb6 b{font-size:1.35em}
 .gx>div{font-size:clamp(7.5px,.86vw,12px);line-height:1.35;gap:2px;padding:2.6% 4.5%}.gx-h b{font-size:1.25em}.gx .hw{font-size:1em;line-height:1.35}.gx-l{padding:1.5% 4%}
+.nxt ul{margin:0;padding-inline-start:1.1em;line-height:1.35}.nxt li small{white-space:nowrap}
 </style></head><body>
 
 <div class="ticker" aria-label="شريط الترحيب"><div class="run" id="run"></div></div>
@@ -905,7 +906,7 @@ body.gmode .hum{bottom:110px}
           <dl class="kv" style="margin-top:10px">
             <dt>عدستي</dt><dd id="ml"></dd>
             <dt>محوراي</dt><dd id="ma"></dd>
-            <dt>مهمتي الآن</dt><dd id="mt"></dd>
+            <dt>دوري الآن</dt><dd id="mt"></dd>
             <dt>محطتي الآن</dt><dd id="ms"></dd>
           </dl>
         </div>
@@ -1068,7 +1069,10 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-clap]');if
   sendClap(g,src)});
 /* roles: who acts in each step (index into TASKS) */
 const STEP_ROLE=[1,0,0,2,3];
-const ownerIdx=st=>(STEP_ROLE[st]-ROUND%6+12)%6;
+const LEADI=r=>(6-r%6)%6;
+const STEPK={0:0,1:1,2:2,4:3};
+function ownerOf(st,r){const L=LEADI(r);if(st===3)return L;return (L+1+((STEPK[st]+r)%5))%6}
+const ownerIdx=st=>ownerOf(st,ROUND);
 const teamMode=()=>SY.on&&SY.mode==='group'&&viewGroup===null;
 function actorIdx(st){const oi=ownerIdx(st);if(!SY.on)return oi;const on=memList(S.g).map(x=>x.i);if(!on.includes(S.i))on.push(S.i);if(on.includes(oi))return oi;return Math.min(...on)}
 const isOwner=()=>!teamMode()||canAct(step);
@@ -1086,22 +1090,22 @@ function applyGroup(){
   if(gs.d&&!stDoneR(S.g,ROUND,gs.k)){markDone(S.g,ROUND,gs.k);if(curSt===gs.k||C2.phase==='round'){clearInterval(timerId);const el=$('#lab-vd');el.hidden=false;$('#lab-list').hidden=true;el.innerHTML=doneCard(gs.k,false)}return}
   if(gs.k===curSt&&gs.s!==step&&!stDoneR(S.g,ROUND,gs.k)){step=gs.s;runStation(curSt);focusStep()}
 }
-function isLead(){return teamMode()&&S.i===(12-ROUND%6)%6}
+function isLead(){return teamMode()&&S.i===LEADI(ROUND)}
 function canAct(st){return S.i===actorIdx(st)||isLead()}
 function roleLock(el){
   el.classList.remove('rolelock','rolemine');
-  if(!teamMode())return;const oi=actorIdx(step),G=GROUPS[S.g],who=G.m[oi],task=TASKS[STEP_ROLE[step]];SY.lockMine=canAct(step);const LD=isLead()&&S.i!==oi;SY.lockKey=ROUND+':'+curSt+':'+step;
-  const mineT=TASKS[(S.i+ROUND)%6],fn=n=>String(n).split(' ')[0],tag=w=>`<small class="forwho">لـ ${w}</small>`;
+  if(!teamMode())return;const oi=actorIdx(step),G=GROUPS[S.g],who=G.m[oi],task='';SY.lockMine=canAct(step);const LD=isLead()&&S.i!==oi;SY.lockKey=ROUND+':'+curSt+':'+step;
+  const mineT='',fn=n=>String(n).split(' ')[0],tag=w=>`<small class="forwho">لـ ${w}</small>`;
   if(step===3){el.classList.add('rolemine');
     el.insertAdjacentHTML('afterbegin',`<div class="rolebar me"><b>المهمة المتمايزة فردية · لكلّ عضوة إجابتها</b><span>${S.i===oi?'أجيبي بنفسكِ على جوالكِ؛ فالتقويم البنائي فردي. وأنتِ من ينقل المجموعة إلى «تحقّقي من Copilot» بعد أن تنتهي زميلاتكِ.':'أجيبي بنفسكِ على جوالكِ؛ فالتقويم البنائي فردي، ونقاطكِ تُضاف لمجموعتكِ. والانتقال للمرحلة التالية بيد '+fn(who)+'.'}</span></div>`);
     if(LD)el.insertAdjacentHTML('afterbegin',`<div class="rolebar me lead"><b>👑 أنتِ قائدة المجموعة</b><span>يمكنكِ نقل المجموعة إلى المرحلة التالية متى انتهت الزميلات.</span></div>`);
     if(S.i!==oi&&!LD){const nx=el.querySelector('#nx');if(nx){nx.disabled=true;nx.classList.add('notmine');nx.insertAdjacentHTML('beforebegin',tag(fn(who)))}}
     return}
-  if(LD){el.classList.add('rolemine');el.insertAdjacentHTML('afterbegin',`<div class="rolebar me lead"><b>👑 أنتِ قائدة المجموعة · لكِ صلاحية كل الأدوار</b><span>هذه المرحلة دور ${fn(who)} (${task})، ويمكنكِ تنفيذها أو مساندتها من جوالكِ حتى تسليم المحطة.</span></div>`);return}
+  if(LD){el.classList.add('rolemine');el.insertAdjacentHTML('afterbegin',`<div class="rolebar me lead"><b>👑 أنتِ قائدة المجموعة في هذه المحطة</b><span>تديرين الحوار وتنقلين الكلمة بين الزميلات، ولكِ صلاحية كل المراحل حتى تسليم المحطة؛ وهذه المرحلة على جوال ${fn(who)} بالتناوب.</span></div>`);return}
   if(S.i===oi)el.classList.add('rolemine');
-  if(S.i===oi){el.insertAdjacentHTML('afterbegin',`<div class="rolebar me"><b>دوركِ الآن (${task})</b><span>نفّذي هذه المرحلة على جوالكِ، وزميلاتكِ يتابعنكِ ويناقشنكِ.</span></div>`);return}
+  if(S.i===oi){el.insertAdjacentHTML('afterbegin',`<div class="rolebar me"><b>دوركِ الآن في هذه المرحلة</b><span>نفّذيها على جوالكِ، وزميلاتكِ يسجّلن بياناتهن في الدليل ويناقشنكِ.</span></div>`);return}
   el.classList.add('rolelock');
-  el.insertAdjacentHTML('afterbegin',`<div class="rolebar"><b>هذه المرحلة على جوال ${who} · ${task}</b><span>مهمتكِ في هذه الجولة: ${mineT}${TASKD[mineT]?' ('+TASKD[mineT]+')':''}. تابعي معها وناقشيها، ودوّني في دليلكِ؛ وتنتقل الشاشة تلقائياً مع كل مرحلة.</span></div>`);
+  el.insertAdjacentHTML('afterbegin',`<div class="rolebar"><b>هذه المرحلة على جوال ${who}</b><span>اقرئي معها، وسجّلي بياناتكِ بنفسكِ في الدليل، وناقشيها؛ فكل معلمة تقرأ وتسجّل وتناقش، وقد تختاركِ المضيفة للحديث. وتنتقل الشاشة تلقائياً مع كل مرحلة.</span></div>`);
   el.querySelectorAll('button,input,select,a.btn').forEach(x=>{if(!['back','annT'].includes(x.id))x.disabled=true});
   el.querySelectorAll('.opts,.num,.levels,#nx,.ctl .row,.ctl input[type=range]').forEach(x=>{if(!x.previousElementSibling||!x.previousElementSibling.classList.contains('forwho'))x.insertAdjacentHTML('beforebegin',tag(fn(who)))});
 }
@@ -1178,10 +1182,10 @@ try{const sv=localStorage.getItem('aafaq-me');if(sv)sel.value=sv}catch(e){}
 function renderMe(){
   const [g,i]=sel.value.split(':').map(Number);S.g=g;S.i=i;
   const G=GROUPS[g];$('#mg').textContent=G.n;$('#mv').textContent=G.v;
-  $('#ml').textContent=LENS[i%4][0];$('#ma').textContent=LENS[i%4][1];
-  $('#mt').textContent=TASKS[(i+ROUND)%6];
+  $('#ml').textContent=LENS[(i+ROUND)%4][0];$('#ma').textContent=LENS[(i+ROUND)%4][1];
+  $('#mt').textContent=i===LEADI(ROUND)?'👑 قائدة المجموعة في هذه المحطة':'أقرأ وأسجّل وأناقش وأتحدث';
   const st=(g+ROUND)%5;$('#ms').textContent=`م${st+1}: ${ST[st][0]}`;
-  $('#sg').textContent=G.n;try{const gm=SY.mode==='group';$('#sbMe').textContent=gm?G.m[i]:'';$('#sbMe').dataset.g=G.n;$('#sbLbl').textContent=gm?'· مجموعة':'مجموعتي';const tk=$('#sbTask');tk.hidden=!gm;tk.textContent='مهمتي: '+TASKS[(i+ROUND)%6]}catch(e){}renderBoard();
+  $('#sg').textContent=G.n;try{const gm=SY.mode==='group';$('#sbMe').textContent=gm?G.m[i]:'';$('#sbMe').dataset.g=G.n;$('#sbLbl').textContent=gm?'· مجموعة':'مجموعتي';const tk=$('#sbTask');tk.hidden=!gm;tk.textContent=i===LEADI(ROUND)?'👑 قائدة المجموعة':'عدستي: '+LENS[(i+ROUND)%4][0]}catch(e){}renderBoard();
   try{localStorage.setItem('aafaq-me',sel.value)}catch(e){}
 }
 sel.addEventListener('change',renderMe);
@@ -1463,7 +1467,7 @@ function runStation(k){
     mcq($('#pq'),L.predict,1,ok=>{const g2=award(1,ok);$('#qf').innerHTML=fb(ok,ok?`توقّع صحيح (+${g2})`:'التوقّع لم يطابق القانون',L.predict.ev,'تحقّقي من توقعكِ بالتجربة')+next('إلى التجربة');bindNext(1)});
   }
   if(step===1){
-    el.innerHTML=head+`<div class="lab two"><div style="display:grid;gap:14px;align-content:start">${ann(0,'المفهوم نفسه بالصورة وباليد وبالأرقام؛ كل متعلمة تدخل من الباب الذي يناسبها',bench(L.sim.svg()))}${ann(5,'التجربة مبنية على جهاز من حياتنا',`<div class="realtag">في الحياة: <b>${REAL[k]}</b></div>`)}${ann(0,'لكل عضوة دور يناسبها في هذه الجولة',`<div class="realtag">الأدوار: <b>قائدة التجربة · المسجّلة · ضابطة الوقت · المتحدثة</b></div>`)}</div><div class="ctl">${L.sim.ctl()}
+    el.innerHTML=head+`<div class="lab two"><div style="display:grid;gap:14px;align-content:start">${ann(0,'المفهوم نفسه بالصورة وباليد وبالأرقام؛ كل متعلمة تدخل من الباب الذي يناسبها',bench(L.sim.svg()))}${ann(5,'التجربة مبنية على جهاز من حياتنا',`<div class="realtag">في الحياة: <b>${REAL[k]}</b></div>`)}${ann(0,'لكل عضوة دور يناسبها في هذه الجولة',`<div class="realtag">العمل الجماعي: <b>👑 قائدة تدير الحوار · والجميع يقرأ ويسجّل ويناقش ويتحدث</b></div>`)}</div><div class="ctl">${L.sim.ctl()}
       ${ann(3,'تقويم أدائي: تُثبت فهمها بإنجاز مهمة عملية',`<div class="box" style="padding:12px"><b>التحدي · نقطتان:</b> ${L.chal.t}<div id="chal" style="margin-top:6px;font-size:14px;color:var(--muted)">جرّبي حتى تتحقق الشروط.</div></div>`)}${next('إلى تحدّي القراءة')}</div></div>`;
     let won=false;L.sim.wire(s=>{if(!won&&L.chal.check(s)){won=true;const g2=award(2,true);$('#chal').innerHTML=fb(true,`نجحتِ في التحدي (+${g2})`,L.chal.ev(s),L.chal.nx)}});bindNext(2);
   }
@@ -1705,8 +1709,8 @@ function ipBody(kind,r,rp,tot,max,w,last){
     <div class="board">${tot.map(x=>`<div class="lane"><div class="nm">${x.n}</div><div class="track"><i style="width:${(x.p/max*100).toFixed(1)}%"></i></div><b>${x.p}</b></div>`).join('')}</div>`;
   if(kind==='fb'){const q=FBQ[r];body=`<div class="ip-t">تغذية راجعة سريعة</div><div class="ip-big">${q[0]}</div><div class="ip-q">${q[1]}</div><div class="ip-joke">${q[2]}</div>`}
   if(kind==='rem'){const m=REMIND[r];body=`<div class="ip-t">${m.h}</div><ul class="ip-qs">${m.q.map(x=>`<li>${x}</li>`).join('')}</ul><div class="ip-pts">${m.p.map(x=>`<p>${x}</p>`).join('')}</div>`}
-  if(kind==='next')body=`<div class="ip-t">يلا نبدأ المحطة ${ORD[r+1]}… انتقلن إلى الطاولة التالية، وتبدّلت المهام</div>
-    <div class="nxt">${GROUPS.map((g,k)=>{const st=stationOf(k,r+1);return `<div><span class="gn">${g.n}</span><span class="to">إلى الطاولة ${st+1}: ${ST[st][0]}</span><ul>${g.m.map((m,i)=>`<li>${m}: <b>${TASKS[(i+r+1)%6]}</b></li>`).join('')}</ul></div>`}).join('')}</div>
+  if(kind==='next')body=`<div class="ip-t">يلا نبدأ المحطة ${ORD[r+1]}… انتقلن إلى الطاولة التالية، وتبدّلت القائدة والعدسات</div>
+    <div class="nxt">${GROUPS.map((g,k)=>{const st=stationOf(k,r+1);return `<div><span class="gn">${g.n}</span><span class="to">إلى الطاولة ${st+1}: ${ST[st][0]}</span><ul>${g.m.map((m,i)=>`<li>${m}${i===LEADI(r+1)?': <b>👑 القائدة</b>':''} <small style="opacity:.75">· ${['🔍 التمايز','🔍 التقويم','🔍 الواقع','🔍 الهوية وAI'][(i+r+1)%4]}</small></li>`).join('')}</ul></div>`}).join('')}</div>
     <div class="ip-go">وقتكم يبدأ بعد <span id="iCd2">${mmss(C2.nextAt?(C2.nextAt-Date.now())/1000:0)}</span></div>`;
   if(kind==='close')body=`<div class="ip-t">للأسف… انتهى لقائي معكم</div><div class="ip-pts big"><p>كنت سعيدة جداً بلقائكم، وجاهزة للرد على كل استفساراتكم.</p><p>أتمنى أني أفدتكم اليوم… والإفادة الكبيرة أكيد في حصة أ. سارة خالد.</p><p>سنستمتع معاً بحضور حصة استثنائية بتفعيل الذكاء الاصطناعي بشكل مميز.</p></div><div class="ip-sign">أ. أريج أبو حاشية · بوصلة الورشة</div>`;
   if(kind==='coffee')body=`<div class="ip-t">تفضّلوا على «قهوة نيوتن» ☕</div><div class="ip-big">تعبنا نيوتن وأينشتاين اليوم… خلّونا نتقهوى معهم</div><div class="ip-q">بريك خفيف لطيف، وبعدها ندخل حصة أ. سارة خالد، ونلتقي ببناتنا الطالبات</div>`;
@@ -1853,7 +1857,7 @@ function renderLab(){if(window.GLOCK!=null)viewGroup=null;
   if(SY.on&&SY.mode==='group'&&!C2.active[g]){clearInterval(timerId);$('#lab-list').hidden=true;$('#lab-vd').hidden=true;
     $('#lab-mine').innerHTML+=`<div class="lock wait"><span class="pulse"></span><b>بانتظار إذن أ. أريج أبو حاشية</b><span class="lede" style="margin:0">يُفتح معمل مجموعتكِ على هذه الشاشة تلقائياً لحظة تفعيله.</span></div>`;return}
   if(C2.phase==='round'&&!C2.active[g]){$('#lab-list').hidden=true;$('#lab-vd').hidden=true;
-    $('#lab-mine').innerHTML+=`<div class="lock"><b>معمل مجموعتكِ مقفل</b><span class="lede" style="margin:0">تضغط قائدة التجربة زر التفعيل عند بدء العمل في المحطة.</span><button class="btn" id="act" type="button">تفعيل معملنا</button></div>`;
+    $('#lab-mine').innerHTML+=`<div class="lock"><b>معمل مجموعتكِ مقفل</b><span class="lede" style="margin:0">تضغط قائدة المجموعة زر التفعيل عند بدء العمل في المحطة.</span><button class="btn" id="act" type="button">تفعيل معملنا</button></div>`;
     $('#act').onclick=()=>{C2.active[g]=true;renderLab();if(!$('#v-admin').hidden)renderAdmin()};return}
   if(C2.phase==='round'&&viewGroup===null&&(stDone(g,st)||C2.boomed)){clearInterval(timerId);$('#lab-list').hidden=true;const el=$('#lab-vd');el.hidden=false;el.innerHTML=doneCard(st,!stDone(g,st));curSt=st;return}
   if(C2.phase==='round'){const key=`${g}:${ROUND}`;if(curLabKey!==key){curLabKey=key;step=0;curSt=null}$('#lab-list').hidden=true;openStation(st);return}
@@ -1925,7 +1929,7 @@ function gateOn(v,kind){const sec=$('#v-'+v);if(!sec)return false;const open=!SY
 function curStepOf(k){const st=stationOf(k,ROUND),gs=SY.g&&SY.g[k],L=memList(k).filter(x=>x.st===st&&x.r===ROUND);
   if(gs&&gs.r===ROUND&&gs.k===st)return gs.s||0;return L.length?Math.max(...L.map(x=>x.s||0)):0}
 function workerOf(k){const s=curStepOf(k),G=GROUPS[k];if(s===3)return 'كل العضوات · المهمة الفردية';
-  const oi=(STEP_ROLE[s]-ROUND%6+12)%6,reg=memList(k).map(x=>x.i);const who=reg.length&&!reg.includes(oi)?Math.min(...reg):oi;
+  const oi=ownerOf(s,ROUND),reg=memList(k).map(x=>x.i);const who=reg.length&&!reg.includes(oi)?Math.min(...reg):oi;
   return `${G.m[who]} <small>(${STEPN[s]})</small>`}
 
 /* ===== live labs inside the presentation during a round ===== */
@@ -2101,7 +2105,7 @@ const DEMO=[
  ["رأس المعمل","أول ما يظهر بعد مسح الباركود: اسم مجموعتكِ، ورقم الجولة، والمحطة التي تعملين عليها الآن.","تتأكدين أنكِ في المحطة الصحيحة.",""],
  ["شريط المراحل الخمس","خمس مراحل بالترتيب، والمرحلة الحالية ملوّنة بالأحمر. لا تُفتح مرحلة قبل إنهاء التي قبلها.","تعرفين أين وصلت مجموعتكِ.",""],
  ["التوقّع","سؤال قصير قبل أي تجربة: ماذا تتوقعين أن يحدث؟","تختار المجموعة إجابة واحدة.","تقويم قبلي"],
- ["التجربة","دائرة تتحكمين بها بيدكِ: تغيّرين الجهد، وترين المصباح والأرقام تتغير أمامكِ.","تنفّذ قائدة التجربة التحدي العملي.","فروق فردية · تقويم أدائي · ربط بالواقع"],
+ ["التجربة","دائرة تتحكمين بها بيدكِ: تغيّرين الجهد، وترين المصباح والأرقام تتغير أمامكِ.","تنفّذ زميلة التحدي العملي على جوالها، والجميع يسجّل ويناقش.","فروق فردية · تقويم أدائي · ربط بالواقع"],
  ["تحدّي القراءة","قراءة رقم من الجهاز خلال دقيقة. الرقم مختلف في كل مجموعة، فلا يُنسخ من أحد.","تكتب المجموعة القراءة من جهازها.","تقويم بوقت محدد"],
  ["التغذية الراجعة","بعد كل إجابة تظهر ثلاثة أسطر: ما تحقق، والدليل، والخطوة التالية.","تقرئينها قبل الانتقال.","تغذية راجعة بنّاءة"],
  ["المهمة المتمايزة","سؤال واحد الهدف بثلاثة مستويات: دعم، وأساسي، وتمكّن. ابدئي بالمستوى المناسب، وارتقي متى شئتِ.","تختار المجموعة مستواها.","تمايز"],
@@ -2151,20 +2155,20 @@ const SLIDES=[
    <span class="gmem">${g.m.join(' · ')}</span></div>`).join('')}</div>`,
  ()=>`<h3 class="s-h">كيف تعمل المحطة؟ <small>معمل تجريبي للتوضيح، غير المحطات الخمس</small></h3><div class="dl" id="dlS">${demoLab()}</div>`,
  ()=>`<h3 class="s-h">أدواركنّ في المحطات</h3>
-   <div class="rl"><div class="a1"><b>العدسة · ثابتة طوال اليوم</b><span>ترصد كل معلمة محورين من المحاور الثمانية.</span><div class="rot4">${LENS.map(l=>`<span>${l[0]}</span>`).join('')}</div></div>
-   <div class="a2"><b>المهمة · تتبدّل كل جولة</b><span>تنتقل كل معلمة إلى المهمة التالية مع كل جولة.</span><div class="rot4">${TASKS.map((t,i)=>`<span>${t}</span>${i<TASKS.length-1?'<i>←</i>':''}`).join('')}</div></div></div>
-   <div class="rg a3">${GROUPS.map(g=>`<div><span class="gn">${g.n}</span>${g.m.map((m,i)=>`<div class="m"><b>${m}</b> · <span>${TASKS[i%6]}</span><small>${LENS[i%4][0]}</small></div>`).join('')}</div>`).join('')}</div>
-   <p class="s-note" style="margin:0;font-size:clamp(11px,1.4vw,19px)">ابحثي عن اسمكِ: <span style="color:var(--rosso)">مهمتكِ بالأحمر</span>، و<span style="color:var(--muted)">عدستكِ تحتها</span> · وتُعرض المهام الجديدة على الشاشة قبل كل جولة</p>`,
+   <div class="rl"><div class="a1"><b>العدسة · تتبدّل كل جولة</b><span>ترصد كل معلمة محورين في كل محطة، ثم تنتقل إلى العدسة التالية؛ فتمرّ على المحاور الثمانية كلها.</span><div class="rot4">${LENS.map(l=>`<span>${l[0]}</span>`).join('')}</div></div>
+   <div class="a2"><b>👑 قائدة المجموعة · تتبدّل كل محطة</b><span>تدير الحوار وتنقل الكلمة بين الزميلات، ولها صلاحية كل المراحل؛ والجميع يقرأ ويسجّل ويناقش ويتحدث.</span></div></div>
+   <div class="rg a3">${GROUPS.map(g=>`<div><span class="gn">${g.n}</span>${g.m.map((m,i)=>`<div class="m"><b>${m}</b>${i===LEADI(ROUND)?' · <span>👑 القائدة</span>':''}<small>${LENS[(i+ROUND)%4][0]}</small></div>`).join('')}</div>`).join('')}</div>
+   <p class="s-note" style="margin:0;font-size:clamp(11px,1.4vw,19px)">ابحثي عن اسمكِ: <span style="color:var(--muted)">عدستكِ تحته</span>، و<span style="color:var(--rosso)">👑 القائدة بالأحمر</span> · وتتبدّلان قبل كل جولة</p>`,
  ()=>`<h3 class="s-h">الآن: كيف تدوّنين في دليل المتدربة؟</h3><div class="gd">
    <ol class="gd-st a1">${[
     ["افتحي الدليل على صفحة المحطة","المحطة التي تقفين عندها الآن، مثلاً: «المحطة 1: الدايود والترانزستور»"],
-    ["ضعي ✓ أمام مهمتكِ","كما هي أمام اسمكِ على الشاشة في هذه الجولة"],
+    ["ضعي ✓ أمام عدستكِ","كما هي تحت اسمكِ على الشاشة في هذه الجولة"],
     ["اكتبي توقّعكِ قبل التجربة","سطر واحد، قبل أن تفتح المجموعة المعمل"],
     ["اكتبي في صف عدستكِ فقط","«الشاهد الذي رصدته» و«فكرة أنقلها إلى صفي»"],
     ["ضعي ✓ أمام مستوى مجموعتكم","الدعم، أو الأساسي، أو التمكّن"]].map((x,i)=>`<li><span class="k">${i+1}</span><span><b>${x[0]}</b><small>${x[1]}</small></span></li>`).join('')}</ol>
    <div class="gd-pg a2"><div class="gd-cap">نموذج: دليل هيفاء أبو راس · مجموعة السابقات · الجولة الأولى</div>
     <div class="gd-t">المحطة 1: الدايود والترانزستور</div>
-    <table class="gd-tb"><tr><th>مهمتي في المحطة</th><td><span class="hw">☑</span> قائدة التجربة &nbsp; ☐ المسجّلة &nbsp; ☐ ضابطة الوقت &nbsp; ☐ المتحدثة</td></tr>
+    <table class="gd-tb"><tr><th>قائدة المجموعة في هذه المحطة</th><td>☐ أنا &nbsp; ☐ زميلتي: <span class="hw">……………</span></td></tr>
      <tr><th>مستوى مجموعتنا</th><td>☐ الدعم &nbsp; <span class="hw">☑</span> الأساسي &nbsp; ☐ التمكّن</td></tr>
      <tr><th>توقعي قبل التجربة</th><td class="hw">إذا عكسنا الدايود ينطفئ المصباح</td></tr></table>
     <div class="gd-t2">ما رصدته بعدستي</div>
@@ -2173,14 +2177,14 @@ const SLIDES=[
      <tr><th>خبيرة التقويم</th><td></td><td></td></tr><tr><th>سفيرة الواقع</th><td></td><td></td></tr><tr><th>رائدة الهوية</th><td></td><td></td></tr></table></div></div>`,
  ()=>`<h3 class="s-h">ماذا تكتب كل واحدة في صف عدستها؟</h3>
    <div class="gx">${[
-    ["هيفاء أبو راس","قائدة التجربة","مهندسة التمايز","عُرض الدايود بالرسم وباليد وبالأرقام، وبدأنا بالمستوى الأساسي ثم ارتقينا للتمكّن.","أعدّ سؤال الترانزستور بثلاثة مستويات لطالباتي."],
-    ["شذى نوافله","المسجّلة","خبيرة التقويم والتغذية الراجعة","سؤال التوقّع كشف أن اثنتين منا توقعتا زيادة السطوع؛ والتغذية الراجعة ذكرت الدليل والخطوة التالية.","أبدأ درس الدايود بسؤال توقّع على السبورة."],
-    ["هديل الحايك","ضابطة الوقت","سفيرة الواقع والاستدامة","رُبط الدايود بألواح الطاقة الشمسية وترشيد تشغيل الأجهزة.","أعرض صورة الألواح الشمسية في مدرستنا قبل الشرح."],
-    ["أسماء بكر","المتحدثة","رائدة الهوية والذكاء الاصطناعي","قال Copilot إن الدايود يمرّر التيار في الاتجاهين، فأثبتنا خطأه بالتجربة؛ ومثال من مشروعات قطر الذكية.","أعطي الطالبات ادّعاءً من الذكاء الاصطناعي ليصحّحنه بالدليل."],
-    ["كوثر الخوالدة","المدقّقة","مهندسة التمايز","راجعتُ قراءة التيار ووحدتها قبل الإرسال، فصحّحنا 15 A إلى 15 mA؛ ومستويات المهمة ناسبت كل واحدة منا.","أخصّص في مجموعات صفي «مدقّقة» تراجع الوحدات قبل الإجابة."],
-    ["عبير السيد","الموثّقة","خبيرة التقويم والتغذية الراجعة","صوّرتُ لحظة إضاءة المصباح في الانحياز الأمامي، وكانت شاهداً على أن التغذية الراجعة ذكرت الدليل.","أطلب من طالباتي توثيق التجربة بصورة قبل كتابة الاستنتاج."]]
+    ["هيفاء أبو راس","👑 قائدة المجموعة","مهندسة التمايز","عُرض الدايود بالرسم وباليد وبالأرقام، وبدأنا بالمستوى الأساسي ثم ارتقينا للتمكّن.","أعدّ سؤال الترانزستور بثلاثة مستويات لطالباتي."],
+    ["شذى نوافله","","خبيرة التقويم والتغذية الراجعة","سؤال التوقّع كشف أن اثنتين منا توقعتا زيادة السطوع؛ والتغذية الراجعة ذكرت الدليل والخطوة التالية.","أبدأ درس الدايود بسؤال توقّع على السبورة."],
+    ["هديل الحايك","","سفيرة الواقع والاستدامة","رُبط الدايود بألواح الطاقة الشمسية وترشيد تشغيل الأجهزة.","أعرض صورة الألواح الشمسية في مدرستنا قبل الشرح."],
+    ["أسماء بكر","","رائدة الهوية والذكاء الاصطناعي","قال Copilot إن الدايود يمرّر التيار في الاتجاهين، فأثبتنا خطأه بالتجربة؛ ومثال من مشروعات قطر الذكية.","أعطي الطالبات ادّعاءً من الذكاء الاصطناعي ليصحّحنه بالدليل."],
+    ["كوثر الخوالدة","","مهندسة التمايز","راجعتُ قراءة التيار ووحدتها قبل الإرسال، فصحّحنا 15 A إلى 15 mA؛ ومستويات المهمة ناسبت كل واحدة منا.","أطلب من كل طالبة مراجعة الوحدات بنفسها قبل الإجابة."],
+    ["عبير السيد","","خبيرة التقويم والتغذية الراجعة","صوّرتُ لحظة إضاءة المصباح في الانحياز الأمامي، وكانت شاهداً على أن التغذية الراجعة ذكرت الدليل.","أطلب من طالباتي توثيق التجربة بصورة قبل كتابة الاستنتاج."]]
     .map((x,i)=>`<div class="a${1+i%4}"><div class="gx-h"><b>${x[0]}</b><span>${x[1]}</span></div><div class="gx-l">العدسة: ${x[2]}</div><div class="gx-r"><i>الشاهد الذي رصدته</i><span class="hw">${x[3]}</span></div><div class="gx-r"><i>فكرة أنقلها إلى صفي</i><span class="hw">${x[4]}</span></div></div>`).join('')}</div>
-   <p class="s-note" style="margin:0;font-size:clamp(11px,1.4vw,19px)">مثال من مجموعة السابقات في المحطة 1 · كل معلمة تكتب في صف عدستها فقط، والمتحدثة تقرأ أقوى شاهد على المضيفة</p>`,
+   <p class="s-note" style="margin:0;font-size:clamp(11px,1.4vw,19px)">مثال من مجموعة السابقات في المحطة 1 · كل معلمة تكتب في صف عدستها، وتختار المضيفة من تقرأ أقوى شاهد</p>`,
  ()=>`<h3 class="s-h">خريطة القاعة <small>منظر علوي · المحطات الخمس ومكان بوصلة الورشة</small></h3><div class="hm1 a1"><img src="hall-map.jpg?v=2" alt="خريطة القاعة من أعلى: خمس طاولات مرقمة، ومكان أ. أريج أبو حاشية عند السبورة"></div>
    <p class="s-note" style="margin:0">التدوير بعد كل جولة: 1 ← 2 ← 3 ← 4 ← 5 ← ثم إلى 1</p>`,
  ()=>`<h3 class="s-h">تعليمات الدخول إلى المعمل</h3><ol class="en">${[
@@ -2191,12 +2195,12 @@ const SLIDES=[
    ["يُفتح المعمل على محطتكم مباشرة","وأول ما يظهر: سؤال التوقّع"],
    [`${C2.dur/60} دقائق للمحطة`,"المؤقت والقنبلة على الشاشة"],
    ["سلّمي المحطة بعد آخر مرحلة","ويُغلق المعمل عند انتهاء الوقت أيضاً"],
-   ["تابعي نتائج الجولة على الشاشة","ثم انتقلي إلى الطاولة التالية بمهمتكِ الجديدة"]].map((x,i)=>`<li class="a${1+i%4}"><span class="k">${i+1}</span><span><b>${x[0]}</b><small>${x[1]}</small></span></li>`).join('')}</ol>`,
+   ["تابعي نتائج الجولة على الشاشة","ثم انتقلي إلى الطاولة التالية بعدستكِ الجديدة"]].map((x,i)=>`<li class="a${1+i%4}"><span class="k">${i+1}</span><span><b>${x[0]}</b><small>${x[1]}</small></span></li>`).join('')}</ol>`,
  ()=>`<h3 class="s-h">العمل الجماعي: مَن تعمل في كل مرحلة؟</h3>
-   <p class="lede a1" style="margin:0;font-size:clamp(12px,1.4vw,19px)">تمسح كل معلمة الباركود على جوالها، فتظهر المرحلة على جوال صاحبة الدور، وتتابعها الزميلات على جوالاتهن ويناقشنها ويدوّنّ في الدليل؛ وتنتقل الجوالات معاً إلى المرحلة التالية.</p>
-   <div class="rmap a2">${STEPN.map((n,i)=>`<div><b>${i+1}. ${n}</b>${TASKS[STEP_ROLE[i]]}</div>`).join('')}</div>
-   <div class="rb rb6 a3" style="grid-template-columns:repeat(3,1fr)">${TASKS.map((t,i)=>`<div><b>${t}</b><span>${["تنفّذ التجربة وتقرأ من الجهاز","تسجّل توقّع المجموعة بعد النقاش","تختار مستوى المهمة وتراقب الوقت","تحكم على ادّعاء Copilot وتسلّم المحطة","تراجع الإجابة والوحدات والأرقام قبل الإرسال، وتنبّه المجموعة لأي خطأ","تصوّر التجربة وتوثّق أقوى شاهد على المحاور لتعرضه المتحدثة"][i]}</span></div>`).join('')}</div>
-   <p class="s-note" style="margin:0">وتتبدّل الأدوار مع كل جولة… فكل معلمة تمرّ على المراحل كلها</p>`,
+   <p class="lede a1" style="margin:0;font-size:clamp(12px,1.4vw,19px)">تمسح كل معلمة الباركود على جوالها، فتظهر كل مرحلة على جوال إحدى الزميلات بالتناوب، والجميع يقرأ ويسجّل بياناته بنفسه في الدليل ويناقش؛ وتنتقل الجوالات معاً إلى المرحلة التالية.</p>
+   <div class="rmap a2">${STEPN.map((n,i)=>`<div><b>${i+1}. ${n}</b>${i===3?'لكل معلمة على جوالها':'على جوال زميلة بالتناوب'}</div>`).join('')}</div>
+   <div class="rb rb6 a3" style="grid-template-columns:repeat(3,1fr)"><div><b>👑 قائدة المجموعة</b><span>تدير الحوار، وتنقل الكلمة: «ركّزي معانا يا فلانة»، وتمنع الصدام؛ ولها صلاحية كل المراحل. وتتبدّل كل محطة.</span></div><div><b>الكل يقرأ</b><span>تظهر المرحلة على جوال زميلة، والباقيات يقرأن معها ويتابعن.</span></div><div><b>الكل يسجّل</b><span>كل معلمة تسجّل البيانات بنفسها في دليلها، فلا ترجع أي واحدة بلا شيء.</span></div><div><b>الكل يناقش</b><span>بعد التسجيل الفردي تتناقش المجموعة وتتفق على الإجابة.</span></div><div><b>الكل مستعدة للحديث</b><span>المضيفة تختار من تتحدث، فلا متحدثة ثابتة.</span></div><div><b>لا يتوقف العمل</b><span>إذا غابت زميلة تنتقل مرحلتها تلقائياً إلى أخرى.</span></div></div>
+   <p class="s-note" style="margin:0">المهام مطلوبة من الجميع… والقائدة والعدسة تتبدّلان مع كل محطة</p>`,
  ()=>`<h3 class="s-h">كيف تُقيَّم المجموعات؟</h3><div class="rb a1">
    <div><b>صحة الإجابات</b><span>التوقّع: نقطة</span><span>التحدي العملي: نقطتان</span><span>تحدّي القراءة: 3 نقاط</span><span>المستويات: نقطة، ونقطتان، و3 نقاط</span><span>تحقّق Copilot: نقطتان</span></div>
    <div><b>الدقة</b><span>قراءة الجهاز بدقة عالية (نصف هامش الخطأ)</span><em>+1</em><span>إجابتان صحيحتان متتاليتان: تسارع</span><em>النقاط ×2</em></div>
@@ -2228,7 +2232,7 @@ const SLIDES=[
       ["ما يتغيّر","طريقة الوصول: الأسلوب والدور والوسيلة","المهمة نفسها: مستواها وصعوبتها ودعمها"],
       ["الهدف","واحد للجميع","واحد للجميع"],
       ["أداة المعلمة","توزيع الأدوار، وتنويع العرض (صورة، تجربة، شرح)","مستويات المهمة: دعم، أساسي، تمكّن"],
-      ["في محطة مجزئ الجهد","قائدة التجربة تنفّذ، والمسجّلة تدوّن، وضابطة الوقت تتابع، والمتحدثة تلخّص","الدعم: قانون مكتوب · الأساسي: حساب V2 · التمكّن: تصميم دائرة لمصباح 3V"],
+      ["في محطة مجزئ الجهد","كل مرحلة على جوال زميلة بالتناوب، والجميع يقرأ ويسجّل ويناقش، والقائدة تدير الحوار","الدعم: قانون مكتوب · الأساسي: حساب V2 · التمكّن: تصميم دائرة لمصباح 3V"],
       ["في منصة آفاق","الدائرة مرسومة ومتحكَّم بها وبقراءات رقمية، والأدوار تتبدّل كل جولة","خطوة «المهمة المتمايزة» بثلاثة مستويات ونقاط مختلفة"]]
      .map((r,i)=>`<div class="cmp-k a${1+i%4}">${r[0]}</div><div class="cmp-c a${1+i%4}">${r[1]}</div><div class="cmp-c a${1+i%4}">${r[2]}</div>`).join('')}</div>
    <p class="s-note">نفس الهدف… طرق مختلفة للوصول (فروق فردية)، ومهام بمستويات مختلفة (تمايز)</p>`,
