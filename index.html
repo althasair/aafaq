@@ -1911,12 +1911,17 @@ let viewGroup=null,curLabKey='';
 function renderLabHead(){
   const g=viewGroup??S.g,G=GROUPS[g],st=stationOf(g,ROUND);
   $('#lab-mine').innerHTML=`<div class="labhead"><div class="grp">معمل مجموعة ${G.n}<small>${G.v}</small>${SY.mode==='group'&&viewGroup===null?`<span class="lh-me">👤 ${G.m[S.i]}</span>`:''}</div>
-    <div>${C2.phase==='round'?`الجولة ${C2.round+1} · محطتكِ الآن: م${st+1} ${ST[st][0]}`:(window.GLOCK!=null?'تبدأ الجولات بإشارة أ. أريج أبو حاشية':'اختاري المحطة التي تعملين عليها')}${viewGroup!==null?' · <span class="sample">عرض أ. أريج أبو حاشية</span>':''}</div></div>`;
+    <div>${C2.phase==='round'?`الجولة ${C2.round+1} · محطتكِ الآن: م${st+1} ${ST[st][0]}`:(window.GLOCK!=null?'تبدأ الجولات بإشارة أ. أريج أبو حاشية':'اختاري المحطة التي تعملين عليها')}${viewGroup!==null?(window.HOSTK!=null?` · <span class="sample">شاشة مضيفة المحطة ${window.HOSTK+1}</span>`:' · <span class="sample">عرض أ. أريج أبو حاشية</span>'):''}</div></div>`;
   $('#stations').innerHTML=ST.map((s,k)=>{const dn=viewGroup===null&&stDone(g,k);return `<button type="button" class="st ${C2.phase==='round'&&k===st?'live':''} ${dn?'passed':''}" data-k="${k}" ${dn?'disabled':''}>
     <span class="n">المحطة ${k+1}</span><b>${s[0]}</b><span>أ. ${s[1]} · صفحة ${s[2]}</span><span>${dn?'✓ اجتازتها مجموعتكِ':(C2.phase==='round'&&k===st?'محطة مجموعتكِ الآن':'افتحي المعمل')}</span></button>`}).join('');
   document.querySelectorAll('#stations .st:not([disabled])').forEach(b=>b.onclick=()=>openStation(+b.dataset.k));
 }
 function renderLab(){if(window.GLOCK!=null)viewGroup=null;
+  if(window.HOSTK!=null){const k=window.HOSTK;$('#lab-list').hidden=true;
+    if(C2.phase!=='round'||C2.boomed){clearInterval(timerId);viewGroup=null;$('#lab-vd').hidden=true;
+      $('#lab-mine').innerHTML=`<div class="labhead"><div class="grp">المعمل الافتراضي · المحطة ${k+1}<small>${ST[k][0]}</small></div><div>المضيفة: أ. ${ST[k][1]}</div></div><div class="lock wait" style="margin-top:12px"><span class="pulse"></span><b>${C2.phase==='round'?'انتهى وقت الجولة '+(C2.round+1)+'… بانتظار الجولة التالية':'بانتظار بدء الجولة من أ. أريج أبو حاشية'}</b><span class="lede" style="margin:0">يُفتح معمل محطتكِ على هذه الشاشة تلقائياً مع بدء كل جولة، وتظهر فيه المجموعة التي تعمل في محطتكِ.</span></div>`;curLabKey='';return}
+    viewGroup=groupAt(k,C2.round);const key='h'+k+':'+C2.round;if(curLabKey!==key){curLabKey=key;step=0;curSt=null}
+    renderLabHead();$('#lab-list').hidden=true;openStation(k);return}
   const g=viewGroup??S.g,st=stationOf(g,ROUND);
   renderLabHead();
   if(window.GLOCK!=null&&(C2.phase!=='round'||(C2.boomed&&!SY.lv&&SY.on))){clearInterval(timerId);$('#lab-list').hidden=true;$('#lab-vd').hidden=true;
@@ -2148,11 +2153,12 @@ function axesTalk(r){
   if(h==='guide'){['home','lab','admin'].forEach(hide);setTimeout(()=>document.querySelector('[data-v="guide"]').click(),0)}
   if(h==='areej')setTimeout(()=>document.querySelector('[data-v="admin"]').click(),0);
   const hs=/^st([1-5])$/.exec(h);
-  if(hs){const k=+hs[1]-1;['home','lab','show','board','monitor','guide','admin'].forEach(hide);document.body.classList.add('hostmode');
+  if(hs){const k=+hs[1]-1;window.HOSTK=k;['home','show','board','monitor','guide','admin'].forEach(hide);document.body.classList.add('hostmode');
     scrStation=k;const ss=$('#scrSt');ss.value=k;ss.disabled=true;
     const hl=document.createElement('div');hl.className='hello';hl.style.marginBottom='10px';hl.innerHTML=`أهلاً أ. <b>${ST[k][1]}</b> · مضيفة المحطة ${k+1}: ${ST[k][0]}`;$('#v-screen').prepend(hl);
-    setTimeout(()=>{document.querySelector('[data-v="screen"]').click();renderScreen(true)},0)}
-  SY.mode=m?'group':(SY.pin?'admin':'view');if(m){document.body.classList.add('gmode');setTimeout(renderMe,0)}
+    const hl2=hl.cloneNode(true);$('#v-lab').prepend(hl2);
+    setTimeout(()=>{document.querySelector('[data-v="lab"]').click();renderLab()},0)}
+  SY.mode=m?'group':(hs?'view':(SY.pin?'admin':'view'));if(m){document.body.classList.add('gmode');setTimeout(renderMe,0)}
   if(!m){document.body.classList.add('nogroup');setTimeout(renderOverview,0)}
   if(m)sel.addEventListener('change',()=>{SY.ev=[];SY.sent='';pushMine()});
   if(SY.on){(function loop(){(document.hidden?Promise.resolve():poll()).finally(()=>setTimeout(loop,SY.mode==='group'?4500:3500))})();setInterval(()=>{if(SY.mode==='admin')pushCtl()},700);}
