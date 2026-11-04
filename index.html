@@ -2129,7 +2129,7 @@ function axesTalk(r){
     <div class="axtalk">${pr.map(i=>`<div class="axt"><div class="axt-h"><span class="fx-ic">${AXI[i]}</span><b>${AXES8[i]}</b></div>
       <p class="was">✗ كان: ${FIXC[i][0]}</p><p class="now">✓ صار: ${FIXC[i][1]}</p><p class="axt-in"><i>شاهدتِه اليوم:</i> ${AXD[i][2]}</p></div>`).join('')}</div>
     <ul class="ip-qs">${AXQ[r].map(q=>`<li>${q}</li>`).join('')}</ul>`}
-/* ===== entry by QR: #g1..#g5, #guide, #areej ===== */
+/* ===== entry by QR: #g1..#g5, #guide, #areej, #st1..#st5 (host: her station only) ===== */
 (function(){
   const h=(location.hash||'').slice(1),hide=v=>{const t=document.querySelector(`[data-v="${v}"]`);if(t)t.hidden=true};
   const m=/^g([1-5])(?:-([1-6]))?$/.exec(h);
@@ -2147,6 +2147,11 @@ function axesTalk(r){
     try{if(localStorage.getItem('aafaq-me'))setTimeout(()=>document.querySelector('[data-v="lab"]').click(),0)}catch(e){}}}
   if(h==='guide'){['home','lab','admin'].forEach(hide);setTimeout(()=>document.querySelector('[data-v="guide"]').click(),0)}
   if(h==='areej')setTimeout(()=>document.querySelector('[data-v="admin"]').click(),0);
+  const hs=/^st([1-5])$/.exec(h);
+  if(hs){const k=+hs[1]-1;['home','lab','show','board','monitor','guide','admin'].forEach(hide);document.body.classList.add('hostmode');
+    scrStation=k;const ss=$('#scrSt');ss.value=k;ss.disabled=true;
+    const hl=document.createElement('div');hl.className='hello';hl.style.marginBottom='10px';hl.innerHTML=`أهلاً أ. <b>${ST[k][1]}</b> · مضيفة المحطة ${k+1}: ${ST[k][0]}`;$('#v-screen').prepend(hl);
+    setTimeout(()=>{document.querySelector('[data-v="screen"]').click();renderScreen(true)},0)}
   SY.mode=m?'group':(SY.pin?'admin':'view');if(m){document.body.classList.add('gmode');setTimeout(renderMe,0)}
   if(!m){document.body.classList.add('nogroup');setTimeout(renderOverview,0)}
   if(m)sel.addEventListener('change',()=>{SY.ev=[];SY.sent='';pushMine()});
