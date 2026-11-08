@@ -885,6 +885,10 @@ body.gmode .hum{bottom:110px}
 .ls-was{background:#F7EDEE;border:1.5px dashed #C0392B;color:#7a3b3b}.ls-now{background:#EAF5EE;border:1.5px solid #2E6B58;color:#1F4D3E}
 .ls4{display:grid;grid-template-columns:repeat(4,1fr);gap:2%}.ls4>div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:3% 2%;display:grid;justify-items:center;text-align:center;gap:2px}.ls4 i{font-style:normal;font-size:clamp(26px,3.6vw,48px)}.ls4 b{color:var(--emerald);font-size:clamp(14px,1.7vw,22px)}.ls4 span{font-size:clamp(11px,1.25vw,16px);color:var(--muted)}
 .qabox summary{cursor:pointer}.qa-r h4{margin:10px 0 6px;color:var(--emerald)}.qa{display:grid;gap:2px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid var(--line);margin-bottom:6px}.qa small{color:var(--muted)}.qa span{color:#1F4D3E}
+
+.kafrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}.kafrow>b{font-size:clamp(12px,1.25vw,16px);color:var(--gold,#C59A52);margin-inline-end:4px}
+.kf{font-size:clamp(11px,1.1vw,15px);padding:3px 10px;border-radius:999px;background:rgba(197,154,82,.14);border:1px solid rgba(197,154,82,.55);color:inherit;white-space:nowrap}
+.kafbox .kafrow{margin-top:0}.tkaf{display:block;font-style:normal;font-size:clamp(10px,.95vw,13px);opacity:.85;margin-top:4px;line-height:1.5}
 </style></head><body>
 
 <div class="ticker" aria-label="شريط الترحيب"><div class="run" id="run"></div></div>
@@ -1111,6 +1115,9 @@ const isOwner=()=>!teamMode()||canAct(step);
 function gState(){try{return SY.g&&SY.g[S.g]}catch(e){return null}}
 function pushGroup(extra){if(!teamMode()||!isOwnerAny())return;const gt=gTally();const o=Object.assign({ok:gt.ok,n:gt.n,k:curSt,s:step,p:S.pts-(S.ind||0),r:ROUND,d:curSt!=null&&stDoneR(S.g,ROUND,curSt)?1:0,t:Math.round(sNow()/1000)},extra||{});SY.gLast=o;api({a:'set',k:'G'+S.g,v:JSON.stringify(o),w:1})}
 function isOwnerAny(){return true}
+function grpStat(g,k){const r=ROUND,c={ok:0,n:0},add=e=>{if(e.r!==r||e.k!==k||e.b)return;c.n++;if(e.o)c.ok++};
+  if(g===S.g)(SY.ev||[]).forEach(add);try{memList(g).forEach(x=>{if(g===S.g&&x.i===S.i)return;(x.ev||[]).forEach(add)})}catch(e){}
+  if(!c.n&&g===S.g){const t=TL[k]||{ok:0,n:0};c.ok=t.ok;c.n=t.n}return c}
 function gTally(){const gs=gState(),key=`${ROUND}:${curSt}`;if(!SY.gt||SY.gt.key!==key)SY.gt={key,ok:0,n:0};if(gs&&gs.r===ROUND&&gs.k===curSt&&(gs.n||0)>SY.gt.n){SY.gt.ok=gs.ok||0;SY.gt.n=gs.n||0}return SY.gt}
 function stDoneR(g,r,k){return !!DONE[doneKey(g,r,k)]}
 function stDone(g,k){const z=(typeof C2!=='undefined'&&C2.z)||0;return Object.keys(DONE).some(x=>{const p=x.split(':');return +p[0]===g&&+p[2]===k&&+p[3]===z})}
@@ -1276,7 +1283,7 @@ const ann=(ax,why,html,cls='')=>{ax=[].concat(ax);return `<div class="cl ${cls}"
 const chips=list=>`<div class="axrow"><small>محاور هذه الخطوة:</small>${list.map(x=>Array.isArray(x)?chip(x[0],x[1]):chip(x)).join('')}</div>`;
 const AIR=[
  {a:"لحماية اللوح الشمسي ليلاً نضع دايوداً على التوالي بين اللوح والبطارية، بحيث يتصل الأنود (الطرف الموجب للدايود) بالبطارية، والكاثود باللوح. هكذا يمرّ تيار الشحن نهاراً، ويُمنع التيار العكسي ليلاً.",e:"اتجاه الدايود معكوس: بهذا التوصيل يمنع الدايود تيار الشحن نهاراً أيضاً. الصحيح: الأنود من جهة اللوح، والكاثود من جهة البطارية."},
- {a:"نستخدم مجزئ جهد من مقاومتين على التوالي مع المصدر 12V، ونأخذ الجهد عن المقاومة R2. نختار R1 = 5 kΩ و R2 = 7 kΩ، فيكون الجهد الخارج 5V تقريباً، وهو مناسب للحساس.",e:"القيمتان معكوستان: V2 = 12 × 7 / (5 + 7) = 7V وليس 5V. الصحيح: R1 = 7 kΩ و R2 = 5 kΩ، فيكون V2 = 5V."},
+ {a:"نستخدم مجزئ جهد من مقاومتين على التوالي مع المصدر 12V، ونأخذ الجهد عن المقاومة R2. نختار R1 = 50 Ω و R2 = 70 Ω، فيكون الجهد الخارج 5V تقريباً، وهو مناسب للحساس.",e:"القيمتان معكوستان: V2 = 12 × 70 / (50 + 70) = 7V وليس 5V. الصحيح: R1 = 70 Ω و R2 = 50 Ω، فيكون V2 = 5V. تحقّقي في المعمل: V0 = 12V و R1 = 70Ω و R2 = 50Ω."},
  {a:"نوصل المصباح بين طرف السلك والمنزلق. ولتقليل الطاقة المهدرة نقرّب المنزلق من طرف السلك (نقلّل الطول) فيزداد الجهد على المصباح وتزداد الإضاءة عند الحاجة فقط.",e:"العلاقة طردية لا عكسية: تقليل الطول يقلّل الجهد والإضاءة. لزيادة الإضاءة نزيد الطول بين نقطتي القياس."},
  {a:"نضع المقاومة الضوئية LDR في الجزء السفلي من مجزئ الجهد مع مقاومة ثابتة 10 kΩ. عند الغروب تقلّ مقاومة LDR، فيرتفع الجهد عليها ويشغّل الإنارة تلقائياً.",e:"مقاومة LDR تزداد في الظلام ولا تقلّ؛ وارتفاع الجهد عليها عند الغروب سببه زيادة مقاومتها."},
  {a:"جدول الحقيقة لنظام الإنارة (A = وجود طالبات، B = انخفاض الضوء):  A=0 B=0 ← 0 ·  A=0 B=1 ← 0 ·  A=1 B=0 ← 1 ·  A=1 B=1 ← 1. فالإنارة تعمل عند وجود الطالبات.",e:"الصف A=1 و B=0 خطأ: النظام يعمل بشرط AND، فالناتج 1 فقط عندما A=1 و B=1 معاً؛ والجدول المكتوب هو تقريباً جدول تجاهل B."}];
@@ -1373,7 +1380,7 @@ const LABS=[
   {t:"مصباح 3V يُشغَّل من مصدر 12V، و R1 = 90Ω. كم يجب أن تكون R2 نظرياً (بالأوم)؟",num:30,ev:"R2/(R1+R2) = 3/12، إذن R2 = 30Ω"}],
  copilot:{claim:"«نعم، إذا كانت المقاومتان كبيرتين جداً فقد يتجاوز مجموع الجهدين V1 و V2 جهد المصدر.»",data:b=>{const i=b[0]/(b[1]+b[2]+2);return `قياسكِ: V1 + V2 = ${fx(i*(b[1]+b[2]))} V من مصدر ${b[0]} V`},ev:"مجموع الجهدين لا يتجاوز جهد المصدر أبداً (حفظ الطاقة)"},
  qatar:"يوفّر مجزئ الجهد جهداً مناسباً لدوائر الحساسات في أنظمة مراقبة الطاقة بالمباني المستدامة في دولة قطر.",
- prompt:"صمّم دائرة مجزئ جهد تشغّل حساس حرارة يعمل على 5V من مصدر 12V في مبنى مدرسي، واذكر قيمتي المقاومتين."},
+ prompt:"صمّم دائرة مجزئ جهد تشغّل حساس حرارة يعمل على 5V من مصدر 12V في مبنى مدرسي، واذكر قيمتي المقاومتين بالأوم."},
 
 /* ---- 2: Sliding potentiometer ---- */
 {name:"مقياس الجهد الانزلاقي",host:"مريم ماشه",page:"101",
@@ -1577,7 +1584,7 @@ function runStation(k){
   el.querySelector('#back').onclick=()=>{clearInterval(timerId);if(LABS[4].sim._o)LABS[4].sim.out=LABS[4].sim._o;showPicker()};
 }
 function doneCard(k,tout){
-  const g=viewGroup??S.g,G=GROUPS[g],rnd=C2.phase==='round';let t=TL[k]||{ok:0,n:0,pts:0};if(teamMode()){const gt=gTally();t=Object.assign({},t,{ok:gt.ok,n:gt.n})}
+  const g=viewGroup??S.g,G=GROUPS[g],rnd=C2.phase==='round';let t=TL[k]||{ok:0,n:0,pts:0};if(teamMode()){const gt=grpStat(g,k);if(gt.n)t=Object.assign({},t,{ok:gt.ok,n:gt.n})}
   const q=tout?'«على قدر أهل العزم تأتي العزائم… الجولة الجاية لكم!»':PH[4][Math.floor(Math.random()*4)];
   return `<div class="donecard ${tout?'tout':''}"><div class="seal">${tout?'⌛':'✓'}</div>
     <b>${tout?'انتهى وقت الجولة':'أحسنتنّ يا '+G.n+'!'}</b>
@@ -1624,13 +1631,13 @@ function cheer(Lv,ok,D){let nm='';try{nm=String(GROUPS[S.g].m[S.i]).split(' ')[0
   return `<div class="cheer l${all?3:Lv}"><span class="ch-ic">${C[0]}</span><div><b>${C[2]}</b><span>${C[3]}</span><i class="ch-st">${C[1]}</i></div></div>`}
 function finishStation(k){
   clearInterval(timerId);if(LABS[4].sim._o)LABS[4].sim.out=LABS[4].sim._o;
-  const t=teamMode()?gTally():(TL[k]||{ok:0,n:0});if(t.n>=5&&t.ok===t.n)bonus(2,'محطة بلا أخطاء');
+  const t=teamMode()?grpStat(S.g,k):(TL[k]||{ok:0,n:0});if(t.n>=5&&t.ok===t.n)bonus(2,'محطة بلا أخطاء');
   if(C2.phase==='round'&&!C2.boomed){const rm=remain()/60;bonus(Math.min(3,Math.floor(rm/2)),'سرعة الإنجاز')}
   const g=viewGroup??S.g;markDone(g,ROUND,k);pushGroup({d:1});
   const el=$('#lab-vd');el.hidden=false;$('#lab-list').hidden=true;el.innerHTML=doneCard(k,false);boost('أُنجزت المحطة');pushMine();
   const a=el.querySelector('#again2');if(a)a.onclick=()=>{step=0;showPicker()};window.scrollTo({top:$('#v-lab').offsetTop-10,behavior:'smooth'});
 }
-function showPicker(){if(window.GLOCK!=null){renderLab();return}$('#lab-vd').hidden=true;$('#lab-list').hidden=false;renderLabHead();}
+function showPicker(){if(window.GLOCK!=null){renderLab();return}if(window.TRYMODE)curSt=null;$('#lab-vd').hidden=true;$('#lab-list').hidden=false;renderLabHead();}
 function openStation(k){if(window.GLOCK!=null&&(C2.phase!=='round'||k!==stationOf(S.g,ROUND))){renderLab();return}if(viewGroup===null&&stDone(viewGroup??S.g,k)){clearInterval(timerId);$('#lab-list').hidden=true;const el=$('#lab-vd');el.hidden=false;el.innerHTML=doneCard(k,false);curSt=k;const a=el.querySelector('#again2');if(a)a.onclick=()=>{step=0;showPicker()};return}$('#lab-list').hidden=true;if(curSt!==k){step=0;window._lvDone=null}runStation(k)}
 
 /* ===== Controller: rounds, timer, lab access (single-device prototype) ===== */
@@ -1835,7 +1842,7 @@ function renderScreen(full){
         <div class="box"><h3>خريطة العمل</h3><ol class="flow" id="sFlow">${flow.map(f=>`<li data-a="${f.a}" data-b="${f.b}"><time>${mmss(f.a)}–${mmss(f.b)}</time><span>${f.n}</span></li>`).join('')}</ol></div>
       </div>
       <div style="display:grid;gap:14px;align-content:start">
-        <div class="box"><h3>تعليمات المحطة</h3><ol class="instr">${INSTR[scrStation].map(t=>`<li>${t}</li>`).join('')}</ol></div>
+        <div class="box"><h3>تعليمات المحطة</h3><ol class="instr">${INSTR[scrStation].map(t=>`<li>${t}</li>`).join('')}</ol></div><div class="box kafbox">${kafRow(scrStation)}</div>
         <div class="scene ${C2.boomed?'boom':''}" id="sScene">
           <img src="lab-scene.jpg" alt="نيوتن وأينشتاين يعملان على قنبلة الوقت في المعمل">
           <div class="bclock" id="bClock">00:00</div>
@@ -1909,6 +1916,9 @@ function renderAdmin(){
 /* ---------- lab: each group's own lab ---------- */
 let viewGroup=null,curLabKey='';
 function renderLabHead(){
+  if(window.TRYMODE){$('#lab-mine').innerHTML=`<div class="labhead"><div class="grp">المعمل الافتراضي · تجربة حرّة<small>${window.TRYMODE}</small></div><div>اختاروا أي محطة، وجرّبوا التجربة وأسئلتها ومهامها بأنفسكم · المحاولات هنا لا تُحتسب في نقاط المجموعات</div></div>`;
+    $('#stations').innerHTML=ST.map((s,k)=>`<button type="button" class="st" data-k="${k}"><span class="n">المحطة ${k+1}</span><b>${s[0]}</b><span>أ. ${s[1]} · صفحة ${s[2]}</span><span>افتحي المعمل</span></button>`).join('');
+    document.querySelectorAll('#stations .st').forEach(b=>b.onclick=()=>{step=0;openStation(+b.dataset.k)});return}
   const g=viewGroup??S.g,G=GROUPS[g],st=stationOf(g,ROUND);
   $('#lab-mine').innerHTML=`<div class="labhead"><div class="grp">معمل مجموعة ${G.n}<small>${G.v}</small>${SY.mode==='group'&&viewGroup===null?`<span class="lh-me">👤 ${G.m[S.i]}</span>`:''}</div>
     <div>${C2.phase==='round'?`الجولة ${C2.round+1} · محطتكِ الآن: م${st+1} ${ST[st][0]}`:(window.GLOCK!=null?'تبدأ الجولات بإشارة أ. أريج أبو حاشية':'اختاري المحطة التي تعملين عليها')}${viewGroup!==null?(window.HOSTK!=null?` · <span class="sample">شاشة مضيفة المحطة ${window.HOSTK+1}</span>`:' · <span class="sample">عرض أ. أريج أبو حاشية</span>'):''}</div></div>`;
@@ -1917,6 +1927,7 @@ function renderLabHead(){
   document.querySelectorAll('#stations .st:not([disabled])').forEach(b=>b.onclick=()=>openStation(+b.dataset.k));
 }
 function renderLab(){if(window.GLOCK!=null)viewGroup=null;
+  if(window.TRYMODE){viewGroup=null;if(curSt==null||!$('#lab-list').hidden&&$('#lab-vd').hidden){renderLabHead();if(curSt==null)showPicker()}return}
   if(window.HOSTK!=null){const k=window.HOSTK;$('#lab-list').hidden=true;
     if(C2.phase!=='round'||C2.boomed){clearInterval(timerId);viewGroup=null;$('#lab-vd').hidden=true;
       $('#lab-mine').innerHTML=`<div class="labhead"><div class="grp">المعمل الافتراضي · المحطة ${k+1}<small>${ST[k][0]}</small></div><div>المضيفة: أ. ${ST[k][1]}</div></div><div class="lock wait" style="margin-top:12px"><span class="pulse"></span><b>${C2.phase==='round'?'انتهى وقت الجولة '+(C2.round+1)+'… بانتظار الجولة التالية':'بانتظار بدء الجولة من أ. أريج أبو حاشية'}</b><span class="lede" style="margin:0">يُفتح معمل محطتكِ على هذه الشاشة تلقائياً مع بدء كل جولة، وتظهر فيه المجموعة التي تعمل في محطتكِ.</span></div>`;curLabKey='';return}
@@ -2150,7 +2161,9 @@ function axesTalk(r){
     $('#v-home').prepend(hl);$('#goLab').onclick=()=>{SY.picked=true;renderMe();document.querySelector('[data-v="lab"]').click()};
     sel.addEventListener('change',()=>setTimeout(()=>document.querySelector('[data-v="lab"]').click(),400));
     try{if(localStorage.getItem('aafaq-me'))setTimeout(()=>document.querySelector('[data-v="lab"]').click(),0)}catch(e){}}}
-  if(h==='guide'){['home','lab','admin'].forEach(hide);setTimeout(()=>document.querySelector('[data-v="guide"]').click(),0)}
+  if(h==='guide'||h==='guest'){window.TRYMODE=h==='guest'?'ضيف الشرف من وزارة التربية والتعليم':'لوحة التوجيه التربوي';['home','admin'].forEach(hide);document.body.classList.add('trymode');
+    if(h==='guest'){const hl=document.createElement('div');hl.className='hello';hl.style.marginBottom='10px';hl.innerHTML=`أهلاً وسهلاً بـ<b>ضيف الشرف من وزارة التربية والتعليم</b><br><span style="font-size:14px">تابعوا الورشة مباشرة، وجرّبوا المعمل الافتراضي بأنفسكم</span>`;$('#v-guide').prepend(hl)}
+    setTimeout(()=>document.querySelector('[data-v="guide"]').click(),0)}
   if(h==='areej')setTimeout(()=>document.querySelector('[data-v="admin"]').click(),0);
   const hs=/^st([1-5])$/.exec(h);
   if(hs){const k=+hs[1]-1;window.HOSTK=k;['home','show','board','monitor','guide','admin'].forEach(hide);document.body.classList.add('hostmode');
@@ -2158,13 +2171,17 @@ function axesTalk(r){
     const hl=document.createElement('div');hl.className='hello';hl.style.marginBottom='10px';hl.innerHTML=`أهلاً أ. <b>${ST[k][1]}</b> · مضيفة المحطة ${k+1}: ${ST[k][0]}`;$('#v-screen').prepend(hl);
     const hl2=hl.cloneNode(true);$('#v-lab').prepend(hl2);
     setTimeout(()=>{document.querySelector('[data-v="lab"]').click();renderLab()},0)}
-  SY.mode=m?'group':(hs?'view':(SY.pin?'admin':'view'));if(m){document.body.classList.add('gmode');setTimeout(renderMe,0)}
+  SY.mode=m?'group':((hs||window.TRYMODE)?'view':(SY.pin?'admin':'view'));if(m){document.body.classList.add('gmode');setTimeout(renderMe,0)}
   if(!m){document.body.classList.add('nogroup');setTimeout(renderOverview,0)}
   if(m)sel.addEventListener('change',()=>{SY.ev=[];SY.sent='';pushMine()});
   if(SY.on){(function loop(){(document.hidden?Promise.resolve():poll()).finally(()=>setTimeout(loop,SY.mode==='group'?4500:3500))})();setInterval(()=>{if(SY.mode==='admin')pushCtl()},700);}
 })();
 
 /* ===== Interactive presentation ===== */
+const KAF=["كفاية البحث والتقصي","كفايتا التفكير الناقد والتفكير الإبداعي","الكفاية اللغوية والكفاية العددية","كفاية التعاون والمشاركة","كفاية حل المشكلات","كفاية التواصل"];
+const KAFSH=['البحث والتقصي','التفكير الناقد والإبداعي','اللغوية والعددية','التعاون والمشاركة','حل المشكلات','التواصل'];
+const KAFS=[[0,1,4,3],[2,4,3,5],[0,2,5,3],[1,0,2,3],[1,4,5,3]];
+const kafRow=k=>`<div class="kafrow"><b>الكفايات الأساسية المعزَّزة</b>${KAFS[k].map(i=>`<span class="kf kf${i}">${KAF[i]}</span>`).join('')}</div>`;
 const ENV=[
  {img:["i15.jpg"],real:"تنظيم اتجاه التيار في دوائر الطاقة الشمسية، والتحكم الذكي في تشغيل الأجهزة.",qa:"الأجهزة الإلكترونية لمشروعات البنية التحتية الذكية في دولة قطر.",su:"دعم الاستفادة من الطاقة المتجددة، وتقليل تشغيل الأجهزة دون حاجة.",links:[]},
  {img:["i17.jpg","i19.jpg","i18.gif"],real:"توفير جهد مناسب لجزء من الدائرة، كجهاز الراديو الذي يعمل بـ6V من مصدر 12V.",qa:"دوائر الحساسات في أنظمة مراقبة الطاقة بالمباني المستدامة في دولة قطر.",su:"رفع كفاءة أنظمة مراقبة الطاقة في المباني المستدامة.",links:[["معمل GeoGebra","https://www.geogebra.org/m/BZCC4nkW"],["فيديو الراديو","https://youtu.be/l1l6fdT6KyQ"]]},
@@ -2223,7 +2240,7 @@ const SLIDES=[
    <div class="fma-k"><div class="a2"><b>F القوة</b><span>الاستراتيجية التدريسية الفاعلة</span></div><div class="a3"><b>m الكتلة</b><span>المحتوى وخصائص الطالبات</span></div><div class="a4"><b>a التسارع</b><span>التغذية الراجعة البنّاءة</span></div></div>`,
  ()=>`<h3 class="s-h">فريق الملتقى</h3><div class="team">${TEAM.map((t,i)=>`<div class="a${1+i%4}"><b>${t[0]}</b><span>${t[1]}</span></div>`).join('')}</div>`,
  ()=>`<h3 class="s-h">محاور الورشة</h3><ol class="agenda">${["مقدمة: الاستراتيجية قوة والتغذية الراجعة تسارع","محطات إثراء المادة العلمية: خمس محطات، عشر دقائق لكل محطة","عرض موجز لكل محطة وربطها بالبيئة القطرية","الجولة الحاسمة، ثم الإجابة عن الاستفسارات"].map((x,i)=>`<li class="a${i+1}">${x}</li>`).join('')}</ol>`,
- ()=>`<h3 class="s-h">المواضيع من كتاب الصف الحادي عشر</h3><div class="topics">${ST.map((s,i)=>`<div class="a${1+i%4}"><span class="n">م${i+1}</span><b>${s[0]}</b><span>صفحة ${s[2]}</span></div>`).join('')}</div>
+ ()=>`<h3 class="s-h">المواضيع من كتاب الصف الحادي عشر</h3><div class="topics">${ST.map((s,i)=>`<div class="a${1+i%4}"><span class="n">م${i+1}</span><b>${s[0]}</b><span>صفحة ${s[2]}</span><em class="tkaf">${KAFS[i].map(j=>KAFSH[j]).join(' · ')}</em></div>`).join('')}</div>
    <div class="pages">${[5,6,7,8,9,10,11].map(n=>`<img src="i${n}.jpg" alt="صفحة من كتاب الفيزياء">`).join('')}</div>`,
  ()=>`<h3 class="s-h">المحاور الثمانية… وعدساتكِ</h3><div class="axes" id="axGrid">${AXES8.map((a,i)=>`<div class="a${1+i%4}" data-i="${i}" role="button" tabindex="0"><span>${i+1}</span>${a}</div>`).join('')}</div>
    <div class="axd" id="axD"><b>لكل متدربة عدسة ترصد بها محورين طوال اليوم</b></div>`,
@@ -2295,7 +2312,7 @@ const SLIDES=[
  ...[0,1,2,3,4].map(k=>()=>`<h3 class="s-h">المحطة ${k+1}: ${ST[k][0]} <small>أ. ${ST[k][1]}</small></h3>
    <div class="envs"><div class="gal">${ENV[k].img.map(s=>`<img src="${s}" alt="">`).join('')}</div>
    <div class="envk"><div class="a1"><b>ربط بالواقع</b><span>${ENV[k].real}</span></div><div class="a2"><b>الهوية القطرية</b><span>${ENV[k].qa}</span></div><div class="a3"><b>التنمية المستدامة</b><span>${ENV[k].su}</span></div>
-   ${ENV[k].links.length?`<div class="a4 links">${ENV[k].links.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]}</a>`).join('')}</div>`:''}</div></div>`),
+   ${ENV[k].links.length?`<div class="a4 links">${ENV[k].links.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]}</a>`).join('')}</div>`:''}</div></div>${kafRow(k)}`),
  ()=>`<div class="quipslide"><img src="lab-scene.jpg" alt=""><div class="qbubble">واضح إن الجاذبية اليوم جاذبة الكل للتجربة!</div></div>`,
  ()=>`<h3 class="s-h">مفاهيم نصحّحها اليوم <small>كان… وصار · 1 من 2</small></h3><div class="fixg fixg4">${[0,1,2,3].map(i=>`<div class="fx a${1+i%4}"><span class="fx-ic">${AXI[i]}</span><div><b>${AXES8[i]}</b><p class="was">✗ ${FIXC[i][0]}</p><p class="now">✓ ${FIXC[i][1]}</p><p class="exm"><i>مثال:</i> ${FIXE[i]}</p></div></div>`).join('')}</div>`,
  ()=>`<h3 class="s-h">مفاهيم نصحّحها اليوم <small>كان… وصار · 2 من 2</small></h3><div class="fixg fixg4">${[4,5,6,7].map(i=>`<div class="fx a${1+i%4}"><span class="fx-ic">${AXI[i]}</span><div><b>${AXES8[i]}</b><p class="was">✗ ${FIXC[i][0]}</p><p class="now">✓ ${FIXC[i][1]}</p><p class="exm"><i>مثال:</i> ${FIXE[i]}</p></div></div>`).join('')}</div>`,
