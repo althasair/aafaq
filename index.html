@@ -890,6 +890,7 @@ body.gmode .hum{bottom:110px}
 .kf{font-size:clamp(11px,1.1vw,15px);padding:3px 10px;border-radius:999px;background:rgba(197,154,82,.14);border:1px solid rgba(197,154,82,.55);color:inherit;white-space:nowrap}
 .kafbox .kafrow{margin-top:0}.gal{position:relative}.galkaf{position:absolute;left:0;right:0;bottom:0;background:rgba(255,250,246,.95);border-top:1px solid rgba(197,154,82,.5);padding:6px 8px}.galkaf .kafrow{margin-top:0;gap:4px;justify-content:center}.galkaf .kf{font-size:clamp(10px,.9vw,13px);padding:2px 8px}.kafin .kafrow{margin-top:0;gap:4px}.kafin .kf{font-size:clamp(10px,.85vw,12.5px);padding:2px 7px}.kafin .kafrow>b{width:100%;font-size:clamp(12px,1.1vw,15px)}.tkaf{display:block;font-style:normal;font-size:clamp(10px,.95vw,13px);opacity:.85;margin-top:4px;line-height:1.5}
 .labkaf .kafrow{margin-top:4px;gap:4px}.labkaf .kf{font-size:12px;padding:2px 8px}.labkaf .kafrow>b{font-size:13px}.kafgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}.kafgrid>div{background:rgba(255,250,246,.92);border:1px solid rgba(197,154,82,.55);border-radius:16px;padding:14px;display:grid;gap:4px;text-align:center;justify-items:center}.kafgrid .ic{font-size:clamp(22px,2.4vw,34px)}.kafgrid b{color:#7A1F35;font-size:clamp(14px,1.5vw,21px)}.kafgrid span{font-size:clamp(12px,1.15vw,16px);color:#5E3A36}
+body:not(.noanno) .cl:has(u.kt){padding-top:62px}.cl-tag u.kt{text-decoration:none;flex-basis:100%;display:inline-block;margin-top:2px;background:#FFF6E6;color:#7A4E1E;border:1px solid #C9A06A;border-radius:999px;padding:1px 9px;font-size:11.5px;font-weight:700;width:max-content;max-width:100%}
 </style></head><body>
 
 <div class="ticker" aria-label="شريط الترحيب"><div class="run" id="run"></div></div>
@@ -1280,7 +1281,9 @@ const AXD=[
  ["إبراز الهوية القطرية","إظهار حضور قطر ومنجزاتها في المحتوى العلمي.","بطاقة «من قطر» بالعلم في كل محطة: الدوحة، واستاد البيت، والمتاحف، والمباني الذكية."]];
 const chip=(i,extra)=>`<span class="axc ax${i}" title="${AXD[i][1]}"><i>${i+1}</i>${AXD[i][0]}${extra?` · ${extra}`:''}</span>`;
 const SHORT=["مراعاة للفروق الفردية","تمايز","تغذية راجعة بنّاءة","تقويم","توظيف للذكاء الاصطناعي","ربط بالواقع","تنمية مستدامة","هوية قطرية"];
-const ann=(ax,why,html,cls='')=>{ax=[].concat(ax);return `<div class="cl ${cls}" style="--c:var(--ax${ax[0]})"><div class="cl-tag">${ax.map(i=>`<i class="ax${i}">${i+1}</i>`).join('')}<b>هذا ${ax.map(i=>SHORT[i]).join(' + ')}</b><span>${why}</span></div>${html}</div>`};
+const KMAP=[['تقويم قبلي',[0]],['المفهوم نفسه بالصورة',[0,2]],['أنماط التعلم',[5]],['كل عضوة تجرّب',[3]],['تقويم أدائي',[4]],['قراءة من الجهاز',[2]],['هدف واحد بثلاثة',[1]],['الذكاء الاصطناعي بعين ناقدة',[1]],['من مصدر علمي',[0]],['ما تحقق + الدليل',[5]],['جهاز من حياتنا',[4]],['يوفّر هذا التطبيق',[1]],['منشآت قطر',[5]]];
+const kOf=why=>{const m=KMAP.find(x=>why.includes(x[0]));return m?m[1]:[]};
+const ann=(ax,why,html,cls='')=>{ax=[].concat(ax);const kk=kOf(why);return `<div class="cl ${cls}" style="--c:var(--ax${ax[0]})"><div class="cl-tag">${ax.map(i=>`<i class="ax${i}">${i+1}</i>`).join('')}<b>هذا ${ax.map(i=>SHORT[i]).join(' + ')}</b><span>${why}</span>${kk.length?`<u class="kt">🎯 ${kk.map(i=>KAF[i]).join(' · ')}</u>`:''}</div>${html}</div>`};
 const chips=list=>`<div class="axrow"><small>محاور هذه الخطوة:</small>${list.map(x=>Array.isArray(x)?chip(x[0],x[1]):chip(x)).join('')}</div>`;
 const AIR=[
  {a:"لحماية اللوح الشمسي ليلاً نضع دايوداً على التوالي بين اللوح والبطارية، بحيث يتصل الأنود (الطرف الموجب للدايود) بالبطارية، والكاثود باللوح. هكذا يمرّ تيار الشحن نهاراً، ويُمنع التيار العكسي ليلاً.",e:"اتجاه الدايود معكوس: بهذا التوصيل يمنع الدايود تيار الشحن نهاراً أيضاً. الصحيح: الأنود من جهة اللوح، والكاثود من جهة البطارية."},
