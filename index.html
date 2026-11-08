@@ -888,7 +888,7 @@ body.gmode .hum{bottom:110px}
 
 .kafrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}.kafrow>b{font-size:clamp(12px,1.25vw,16px);color:var(--gold,#C59A52);margin-inline-end:4px}
 .kf{font-size:clamp(11px,1.1vw,15px);padding:3px 10px;border-radius:999px;background:rgba(197,154,82,.14);border:1px solid rgba(197,154,82,.55);color:inherit;white-space:nowrap}
-.kafbox .kafrow{margin-top:0}.tkaf{display:block;font-style:normal;font-size:clamp(10px,.95vw,13px);opacity:.85;margin-top:4px;line-height:1.5}
+.kafbox .kafrow{margin-top:0}.gal{position:relative}.galkaf{position:absolute;left:0;right:0;bottom:0;background:rgba(255,250,246,.95);border-top:1px solid rgba(197,154,82,.5);padding:6px 8px}.galkaf .kafrow{margin-top:0;gap:4px;justify-content:center}.galkaf .kf{font-size:clamp(10px,.9vw,13px);padding:2px 8px}.kafin .kafrow{margin-top:0;gap:4px}.kafin .kf{font-size:clamp(10px,.85vw,12.5px);padding:2px 7px}.kafin .kafrow>b{width:100%;font-size:clamp(12px,1.1vw,15px)}.tkaf{display:block;font-style:normal;font-size:clamp(10px,.95vw,13px);opacity:.85;margin-top:4px;line-height:1.5}
 </style></head><body>
 
 <div class="ticker" aria-label="شريط الترحيب"><div class="run" id="run"></div></div>
@@ -2180,7 +2180,7 @@ function axesTalk(r){
 /* ===== Interactive presentation ===== */
 const KAF=["كفاية البحث والتقصي","كفايتا التفكير الناقد والتفكير الإبداعي","الكفاية اللغوية والكفاية العددية","كفاية التعاون والمشاركة","كفاية حل المشكلات","كفاية التواصل"];
 const KAFSH=['البحث والتقصي','التفكير الناقد والإبداعي','اللغوية والعددية','التعاون والمشاركة','حل المشكلات','التواصل'];
-const KAFS=[[0,1,4,3],[2,4,3,5],[0,2,5,3],[1,0,2,3],[1,4,5,3]];
+const KAFS=[[0,1,2,3,4,5],[0,1,2,3,4,5],[0,1,2,3,4,5],[0,1,2,3,4,5],[0,1,2,3,4,5]];
 const kafRow=k=>`<div class="kafrow"><b>الكفايات الأساسية المعزَّزة</b>${KAFS[k].map(i=>`<span class="kf kf${i}">${KAF[i]}</span>`).join('')}</div>`;
 const ENV=[
  {img:["i15.jpg"],real:"تنظيم اتجاه التيار في دوائر الطاقة الشمسية، والتحكم الذكي في تشغيل الأجهزة.",qa:"الأجهزة الإلكترونية لمشروعات البنية التحتية الذكية في دولة قطر.",su:"دعم الاستفادة من الطاقة المتجددة، وتقليل تشغيل الأجهزة دون حاجة.",links:[]},
@@ -2240,7 +2240,7 @@ const SLIDES=[
    <div class="fma-k"><div class="a2"><b>F القوة</b><span>الاستراتيجية التدريسية الفاعلة</span></div><div class="a3"><b>m الكتلة</b><span>المحتوى وخصائص الطالبات</span></div><div class="a4"><b>a التسارع</b><span>التغذية الراجعة البنّاءة</span></div></div>`,
  ()=>`<h3 class="s-h">فريق الملتقى</h3><div class="team">${TEAM.map((t,i)=>`<div class="a${1+i%4}"><b>${t[0]}</b><span>${t[1]}</span></div>`).join('')}</div>`,
  ()=>`<h3 class="s-h">محاور الورشة</h3><ol class="agenda">${["مقدمة: الاستراتيجية قوة والتغذية الراجعة تسارع","محطات إثراء المادة العلمية: خمس محطات، عشر دقائق لكل محطة","عرض موجز لكل محطة وربطها بالبيئة القطرية","الجولة الحاسمة، ثم الإجابة عن الاستفسارات"].map((x,i)=>`<li class="a${i+1}">${x}</li>`).join('')}</ol>`,
- ()=>`<h3 class="s-h">المواضيع من كتاب الصف الحادي عشر</h3><div class="topics">${ST.map((s,i)=>`<div class="a${1+i%4}"><span class="n">م${i+1}</span><b>${s[0]}</b><span>صفحة ${s[2]}</span><em class="tkaf">${KAFS[i].map(j=>KAFSH[j]).join(' · ')}</em></div>`).join('')}</div>
+ ()=>`<h3 class="s-h">المواضيع من كتاب الصف الحادي عشر</h3><div class="topics">${ST.map((s,i)=>`<div class="a${1+i%4}"><span class="n">م${i+1}</span><b>${s[0]}</b><span>صفحة ${s[2]}</span></div>`).join('')}</div><div class="kafrow" style="justify-content:center"><b>الكفايات الأساسية المعزَّزة في كل محطة</b>${KAF.map((t,i)=>`<span class="kf">${t}</span>`).join('')}</div>
    <div class="pages">${[5,6,7,8,9,10,11].map(n=>`<img src="i${n}.jpg" alt="صفحة من كتاب الفيزياء">`).join('')}</div>`,
  ()=>`<h3 class="s-h">المحاور الثمانية… وعدساتكِ</h3><div class="axes" id="axGrid">${AXES8.map((a,i)=>`<div class="a${1+i%4}" data-i="${i}" role="button" tabindex="0"><span>${i+1}</span>${a}</div>`).join('')}</div>
    <div class="axd" id="axD"><b>لكل متدربة عدسة ترصد بها محورين طوال اليوم</b></div>`,
@@ -2310,9 +2310,9 @@ const SLIDES=[
    <button class="btn gold go-open a4" id="goOpen" type="button">🧭 تفضّلي… افتحي المعامل لنبدأ الجولة ${ORD[r]}</button><div id="goMsg" class="go-msg"></div></div>`),
  ()=>`<div class="sl-title"><div class="s-sch a1">بعد انتهاء الجولات الخمس · 9:30</div><div class="s-aafaq a2" style="font-size:clamp(46px,8vw,104px)">منصة العرض</div><div class="s-day a3">نعود معاً إلى كل محطة: ربطها بالواقع، وبقطر، وبالاستدامة</div><div class="s-ribbon a4">ثم الجولة الحاسمة</div></div>`,
  ...[0,1,2,3,4].map(k=>()=>`<h3 class="s-h">المحطة ${k+1}: ${ST[k][0]} <small>أ. ${ST[k][1]}</small></h3>
-   <div class="envs"><div class="gal">${ENV[k].img.map(s=>`<img src="${s}" alt="">`).join('')}</div>
+   <div class="envs"><div class="gal">${ENV[k].img.map(s=>`<img src="${s}" alt="">`).join('')}<div class="galkaf a4">${kafRow(k)}</div></div>
    <div class="envk"><div class="a1"><b>ربط بالواقع</b><span>${ENV[k].real}</span></div><div class="a2"><b>الهوية القطرية</b><span>${ENV[k].qa}</span></div><div class="a3"><b>التنمية المستدامة</b><span>${ENV[k].su}</span></div>
-   ${ENV[k].links.length?`<div class="a4 links">${ENV[k].links.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]}</a>`).join('')}</div>`:''}</div></div>${kafRow(k)}`),
+   ${ENV[k].links.length?`<div class="a4 links">${ENV[k].links.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${l[0]}</a>`).join('')}</div>`:''}</div></div>`),
  ()=>`<div class="quipslide"><img src="lab-scene.jpg" alt=""><div class="qbubble">واضح إن الجاذبية اليوم جاذبة الكل للتجربة!</div></div>`,
  ()=>`<h3 class="s-h">مفاهيم نصحّحها اليوم <small>كان… وصار · 1 من 2</small></h3><div class="fixg fixg4">${[0,1,2,3].map(i=>`<div class="fx a${1+i%4}"><span class="fx-ic">${AXI[i]}</span><div><b>${AXES8[i]}</b><p class="was">✗ ${FIXC[i][0]}</p><p class="now">✓ ${FIXC[i][1]}</p><p class="exm"><i>مثال:</i> ${FIXE[i]}</p></div></div>`).join('')}</div>`,
  ()=>`<h3 class="s-h">مفاهيم نصحّحها اليوم <small>كان… وصار · 2 من 2</small></h3><div class="fixg fixg4">${[4,5,6,7].map(i=>`<div class="fx a${1+i%4}"><span class="fx-ic">${AXI[i]}</span><div><b>${AXES8[i]}</b><p class="was">✗ ${FIXC[i][0]}</p><p class="now">✓ ${FIXC[i][1]}</p><p class="exm"><i>مثال:</i> ${FIXE[i]}</p></div></div>`).join('')}</div>`,
