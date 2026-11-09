@@ -1067,7 +1067,7 @@ body:not(.noanno) .cl:has(u.kt){padding-top:62px}.cl-tag u.kt{text-decoration:no
 
     <div class="scorebar" aria-live="polite">
       <span class="sb-me" id="sbMe"></span><span id="sbLbl">مجموعتي</span><span class="g" id="sg"></span><span class="sb-task" id="sbTask" hidden></span>
-      <span class="pts"><span id="sp">0</span> نقطة</span>
+      <span class="pts" id="spMeW" hidden>نقاطي <span id="spMe">0</span> ·</span><span class="pts"><span id="sp">0</span> نقطة<span id="spG" hidden> لمجموعتي</span></span>
       <span class="mult" id="sm" hidden>تسارع ×2</span>
     </div>
     <footer>منصة «آفاق» · قسم الفيزياء · الثلاثاء 10 نوفمبر 2026</footer>
@@ -1215,8 +1215,9 @@ function syncText(){if(!SY.on)return '';const a=SY.ok?Math.round((Date.now()-SY.
 function memList(g){const out=[];for(let i=0;i<6;i++){const v=SY.m['m'+g+'_'+i];if(v&&!v.gone)out.push(Object.assign({i,on:(sNow()/1000-(v.t||0))<20},v))}return out}
 function grpPts(g){if(!SY.on)return null;const L=memList(g),gs=SY.g&&SY.g[g],own=SY.mode==='group'&&g===S.g;let sum=0,n=0,me=false;
   L.forEach(x=>{n++;if(own&&x.i===S.i){me=true;sum+=S.ind||0}else sum+=x.ind||0});if(own&&!me){n++;sum+=S.ind||0}
-  const base=gs&&gs.p||0;return n?base+Math.round(sum*GROUPS[g].m.length/n):base}
+  const base=gs&&gs.p||0;return base+Math.round(sum)}
 function dispPts(){return teamMode()?(grpPts(S.g)||0):S.pts}
+setInterval(()=>{try{const t=teamMode(),w=$('#spMeW');if(!w)return;w.hidden=!t;$('#spG').hidden=!t;if(t){const v=String(Math.round(S.ind||0));if($('#spMe').textContent!==v)$('#spMe').textContent=v}}catch(e){}},500);
 
 
 /* ticker */
@@ -2326,7 +2327,7 @@ const SLIDES=[
    <div><b>الدقة</b><span>قراءة الجهاز بدقة عالية (نصف هامش الخطأ)</span><em>+1</em><span>إجابتان صحيحتان متتاليتان: تسارع</span><em>النقاط ×2</em></div>
    <div><b>الإتقان</b><span>إنجاز المستويات الثلاثة كلها صحيحة</span><em>+2</em><span>محطة كاملة بلا أي خطأ</span><em>+2</em></div>
    <div><b>السرعة</b><span>تسليم المحطة قبل انتهاء الوقت</span><em>+1 لكل دقيقتين متبقيتين (حتى 3)</em></div></div>
-   <p class="s-note" style="margin:0">تجيب كل معلمة بنفسها، ونقاط المجموعة مجموع نقاط عضواتها دون إظهار من أجابت ومن أخفقت</p>`,
+   <p class="s-note" style="margin:0">تجيب كل معلمة بنفسها على جوالها · <b>نقاط المجموعة = مجموع نقاط عضواتها الست</b> (مثال: 12 + 10 + 8 + 9 + 11 + 10 = 60) · ونتيجة كل جولة = ما جمعته المجموعة في تلك الجولة فقط</p>`,
  ()=>`<div class="quipslide"><img src="lab-scene.jpg" alt=""><div class="qbubble">ترى نيوتن ما بيحلّها عنكم!</div></div>`,
  ...[0,1,2,3,4].map(r=>()=>`<div class="go" id="goBox" data-r="${r}"><div class="go-t a1">الجولة ${ORD[r]}</div>
    <div class="go-lock a2"><span class="pulse"></span>${r?'تبدّلت الطاولات والقائدات والعدسات… والمعامل بانتظار بوصلة الورشة':'المحطات جاهزة، والمعامل مقفلة على جوالاتكنّ… بانتظار بوصلة الورشة'}</div>
