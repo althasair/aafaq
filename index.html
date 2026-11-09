@@ -891,6 +891,22 @@ body.gmode .hum{bottom:110px}
 .kafbox .kafrow{margin-top:0}.gal{position:relative}.galkaf{position:absolute;left:0;right:0;bottom:0;background:rgba(255,250,246,.95);border-top:1px solid rgba(197,154,82,.5);padding:6px 8px}.galkaf .kafrow{margin-top:0;gap:4px;justify-content:center}.galkaf .kf{font-size:clamp(10px,.9vw,13px);padding:2px 8px}.kafin .kafrow{margin-top:0;gap:4px}.kafin .kf{font-size:clamp(10px,.85vw,12.5px);padding:2px 7px}.kafin .kafrow>b{width:100%;font-size:clamp(12px,1.1vw,15px)}.tkaf{display:block;font-style:normal;font-size:clamp(10px,.95vw,13px);opacity:.85;margin-top:4px;line-height:1.5}
 .labkaf .kafrow{margin-top:4px;gap:4px}.labkaf .kf{font-size:12px;padding:2px 8px}.labkaf .kafrow>b{font-size:13px}.kafgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}.kafgrid>div{background:rgba(255,250,246,.92);border:1px solid rgba(197,154,82,.55);border-radius:16px;padding:14px;display:grid;gap:4px;text-align:center;justify-items:center}.kafgrid .ic{font-size:clamp(22px,2.4vw,34px)}.kafgrid b{color:#7A1F35;font-size:clamp(14px,1.5vw,21px)}.kafgrid span{font-size:clamp(12px,1.15vw,16px);color:#5E3A36}
 body:not(.noanno) .cl:has(u.kt){padding-top:62px}.cl-tag u.kt{text-decoration:none;flex-basis:100%;display:inline-block;margin-top:2px;background:#FFF6E6;color:#7A4E1E;border:1px solid #C9A06A;border-radius:999px;padding:1px 9px;font-size:11.5px;font-weight:700;width:max-content;max-width:100%}
+.ohmbox{display:grid;gap:6px}.ohmbox label{display:flex;gap:8px;align-items:center;font-weight:600}
+.ohm{position:relative;height:100%;display:flex;align-items:center;justify-content:center;padding:.5% 2%}
+.ohm-card{width:100%;max-width:1150px;border-radius:22px;padding:14px 24px;color:#fff;background:#B3261E;box-shadow:0 18px 50px -18px rgba(0,0,0,.6),0 0 0 4px rgba(255,255,255,.25) inset;transition:background 12s linear;animation:ohmPulse 1s ease-in-out 3}
+.ohm.s1 .ohm-card{background:#C8641E}.ohm.s2 .ohm-card{background:#C9A03A;transition-duration:12s}.ohm.done .ohm-card{background:#2E7D5B;transition-duration:1.5s;animation:none}
+@keyframes ohmPulse{50%{transform:scale(1.02);box-shadow:0 0 0 10px rgba(179,38,30,.35)}}
+.ohm-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ohm-who{background:rgba(255,255,255,.18);border-radius:999px;padding:6px 16px;font-weight:800;font-size:clamp(14px,1.5vw,20px)}
+.ohm-h{font-size:clamp(22px,2.6vw,40px);font-weight:900}.ohm-m{font-family:monospace;font-size:clamp(15px,1.7vw,26px);font-weight:800;background:rgba(0,0,0,.22);border-radius:12px;padding:4px 14px;direction:ltr}
+.ohm-q{font-size:clamp(16px,1.85vw,28px);font-weight:800;line-height:1.45;margin:8px 0 4px;opacity:0;transition:opacity .6s}
+.ohm-ar{font-size:clamp(13px,1.35vw,20px);font-weight:700;color:#FFE7B5;margin:0 0 8px;opacity:0;transition:opacity .6s}
+.ohm-a{margin:4px 0 0;padding-inline-start:1.2em;display:grid;gap:3px}.ohm-a li{font-size:clamp(13px,1.4vw,21px);font-weight:700;line-height:1.45;opacity:0;transform:translateY(8px);transition:opacity .6s,transform .6s}
+.ohm-q.on,.ohm-ar.on,.ohm-a li.on{opacity:1;transform:none}
+.ohm-f{margin-top:8px;font-size:clamp(16px,1.9vw,28px);font-weight:900;color:#FFF6D8;display:flex;align-items:center;gap:12px;opacity:0;transition:opacity .8s}.ohm-f.on{opacity:1}
+.ohm-f .bulb{font-size:1.6em;filter:grayscale(1) brightness(.6);transition:filter 1s}.ohm.done .ohm-f .bulb,.medal .ohm-f .bulb{filter:none;text-shadow:0 0 22px #FFE27A}
+.ohm-skip{position:absolute;bottom:10px;left:12px;border:0;background:rgba(0,0,0,.12);color:#fff;border-radius:999px;width:34px;height:34px;cursor:pointer;opacity:.35}.ohm-skip:hover{opacity:1}
+.ohm.medal .ohm-card{background:linear-gradient(135deg,#2E7D5B,#1F5A41);animation:none}
 </style></head><body>
 
 <div class="ticker" aria-label="شريط الترحيب"><div class="run" id="run"></div></div>
@@ -1037,6 +1053,7 @@ body:not(.noanno) .cl:has(u.kt){padding-top:62px}.cl-tag u.kt{text-decoration:no
         <div class="box" style="overflow-x:auto"><h3>خريطة التدوير</h3><table class="rot" id="rotT"></table></div>
         <div class="box" style="display:grid;gap:8px"><h3>الأصوات</h3><p class="lede" style="margin:0;font-size:13px">صوت يُسمع على هذا الجهاز مع بداية كل جولة، وصوت بعد الانفجار عند انتهاء الوقت. يُسجَّل بالصوت مباشرة (حتى 10 ثوانٍ) أو يُرفع ملف صوتي.</p><div id="vBox" style="display:grid;gap:10px"></div></div>
         <div class="box reset-box" id="resetBox" style="display:grid;gap:8px"><h3>🔄 بدء الورشة من جديد</h3><p class="lede" style="margin:0;font-size:14px">يمسح كل شيء من كل الأجهزة: نقاط المجموعات، وإجابات المتدربات، والتصفيق، والرسائل الصوتية، ويرجع الجولات إلى البداية. استخدميه بعد البروفة وقبل يوم الملتقى.</p><div class="row"><button class="btn" id="aReset" type="button">مسح كل البيانات والبدء من جديد</button><span id="aResetMsg" style="font-size:13px;color:var(--muted)"></span></div></div>
+        <div class="box ohmbox"><b>⚡ مشاهد «أ. أوم» في العرض</b><label><input type="checkbox" id="ohmOnChk"> إظهار المشاهد (6 مشاهد + وسام الختام)</label><label><input type="checkbox" id="ohmSndChk"> صوت الإنذار والرنين</label><span class="lede" style="font-size:13px">إذا أُلغي التحديد تتخطّاها أسهم العرض والمؤشر تلقائياً، ولا يتغيّر شيء آخر.</span></div>
         <details class="box qabox" id="qaBox"><summary><b>🎯 أسئلة مفاجئة · لكِ وحدكِ (لا تظهر في العرض)</b></summary><p class="lede" style="margin:6px 0;font-size:13px">تطرحها المضيفات أو متدربة متفق معها في «وقفة مع المحاور»، وأحياناً بنبرة تهكمية؛ والرد جاهز هنا.</p><div class="qa-r"><h4>بعد الجولة الأولى · الفروق الفردية والتمايز</h4><div class="qa"><small>إسراء بركات</small><b>«طيب أنماط التعلم وين؟ يعني لازم أصنّف بناتي بصرية وسمعية؟»</b><span>← لا؛ أقدّم المفهوم الواحد بأكثر من تمثيل للجميع: صورة ويد ورقم وكلام، كما رأيتنّ في التجربة، فكل بنت تدخل من بابها.</span></div><div class="qa"><small>(بنبرة تهكمية)</small><b>«حلو التمايز… بس منو عنده وقت يحضّر ثلاث أوراق لكل حصة؟»</b><span>← ليست ثلاث أوراق؛ هدف واحد بثلاث درجات للسؤال نفسه، يُكتب في دقيقتين، والبنت تختار وترتقي.</span></div></div><div class="qa-r"><h4>بعد الجولة الثانية · التغذية الراجعة والتقويم</h4><div class="qa"><small>سمر رشيد</small><b>«كيف عرفتي إن التغذية الراجعة على الجوال بنّاءة، مو بس صح وغلط؟»</b><span>← فيها ثلاثة أجزاء: ما تحقّق، والدليل، والخطوة التالية؛ وهذا نفسه ما تقولينه شفهياً لطالبتكِ.</span></div><div class="qa"><small>(بنبرة تهكمية)</small><b>«يعني ألف على الصف من A لين Z وأعطي كل وحدة تغذية راجعة؟»</b><span>← لا؛ تغذية راجعة مقصودة: للمتعثرة بهدف العلاج، وللمتمكنة لتشرح لزميلاتها، وجماعية للأخطاء الشائعة، وتحيل إلى المصدر لا إلى المعلمة.</span></div></div><div class="qa-r"><h4>بعد الجولة الثالثة · الذكاء الاصطناعي والربط بالواقع</h4><div class="qa"><small>مريم ماشه</small><b>«إذا Copilot يغلط، ليش نستخدمه أصلاً مع الطالبات؟»</b><span>← لنعلّمهن ألا يأخذن إجابته قبل أن يختبرنها؛ التجربة هي الحَكَم، والمصدر العلمي هو المرجع.</span></div><div class="qa"><small>(بنبرة تهكمية)</small><b>«وبناتنا ما عندهن حساب Copilot… شلون بيدخلن؟»</b><span>← كما فعلنا اليوم: ردّ جاهز أطبعه أو أعرضه، والطالبة تحكم عليه بالدليل.</span></div></div><div class="qa-r"><h4>بعد الجولة الرابعة · الاستدامة والهوية القطرية</h4><div class="qa"><small>سارة خالد</small><b>«الربط بقطر والاستدامة حلو، بس ما يصير حشو في كل درس؟»</b><span>← مثال واحد صادق من صلب المفهوم (الخرسعة، إنارة الشوارع) يكفي، ولا يحتاج فقرة منفصلة.</span></div></div><div class="qa-r"><h4>بعد الجولة الخامسة · أسئلة الميدان</h4><div class="qa"><small>(بنبرة تهكمية)</small><b>«يا جماعة خطة الحادي عشر مضغوطة جداً… وين نلقى وقت للتجربة؟»</b><span>← لا وقت لأن التجربة تأتي بعد الشرح؛ اجعلي التجربة هي الدرس: الطالبة تسجّل وتستنتج القانون بنفسها فتوفّرين وقت الشرح، والحصة التالية للتطبيق.</span></div><div class="qa"><small>نهى محسن</small><b>«استراتيجيات تتمحور حول الطالبة… بس الصف فيه ثلاثين بنت!»</b><span>← الكل يجيب على ورقته أو جواله، والقائدة تدير مجموعتها، وأنا أتابع بالبيانات من تحتاجني؛ لا يلزم أن أدور على الكل.</span></div><div class="qa"><small>(بنبرة تهكمية)</small><b>«وإذا وحدة ما سوت شي واتكلت على الشاطرة؟»</b><span>← لا تنتهي المرحلة حتى تنتهي الجميع، والنقاط مجموع الأفراد؛ كل واحدة مسؤولة دون أن نفضح أحداً.</span></div></div></details>
       </div>
     </section>
@@ -1071,7 +1088,7 @@ const LENS=[["مهندسة التمايز","الفروق الفردية + الت
 const TASKS=["قائدة التجربة","المسجّلة","ضابطة الوقت","المتحدثة","المدقّقة","الموثّقة"];
 const TASKD={"المدقّقة":"تراجع الإجابة والوحدات والأرقام قبل الإرسال، وتنبّه المجموعة لأي خطأ","الموثّقة":"تلتقط صور التجربة وتوثّق أقوى شاهد على المحاور لتعرضه المتحدثة"};
 const ST=[["الدايود والترانزستور","إسراء بركات","92–93"],["دائرة مجزئ الجهد","سمر رشيد","98"],["مقياس الجهد الانزلاقي","مريم ماشه","101"],["المقاومة الضوئية والحرارية","سارة خالد","102–103"],["البوابات المنطقية","نهى محسن","109–111"]];
-const AG=[["8:00 – 8:15","الاستقبال والقياس القبلي"],["8:15 – 8:30","الافتتاح والمحاور الثمانية"],["8:30 – 9:30","تدوير المحطات الخمس"],["9:30 – 9:50","منصة العرض والجولة الحاسمة"],["9:50 – 10:00","التهيئة لحضور الحصة"],["10:00 – 10:15","قهوة نيوتن",1],["10:15 – 11:00","حصة سارة خالد للصف الحادي عشر"],["11:00 – 11:30","فطور مع أينشتاين",1],["11:30 – 12:15","نقاش الأثر"],["12:15 – 12:45","القياس البعدي وجدار الالتزامات"],["12:45 – 1:00","الختام وإعلان المجموعة الفائزة"]];
+const AG=[["8:00 – 8:15","الاستقبال والقياس القبلي"],["8:15 – 8:30","الافتتاح والمحاور التسعة"],["8:30 – 9:30","تدوير المحطات الخمس"],["9:30 – 9:50","منصة العرض والجولة الحاسمة"],["9:50 – 10:00","التهيئة لحضور الحصة"],["10:00 – 10:15","قهوة نيوتن",1],["10:15 – 11:00","حصة سارة خالد للصف الحادي عشر"],["11:00 – 11:30","فطور مع أينشتاين",1],["11:30 – 12:15","نقاش الأثر"],["12:15 – 12:45","القياس البعدي وجدار الالتزامات"],["12:45 – 1:00","الختام وإعلان المجموعة الفائزة"]];
 let ROUND=0;
 const S={g:0,i:0,pts:0,streak:0,mult:1};
 
@@ -2086,7 +2103,7 @@ const FIXE=["في مجزئ الجهد: تحرّك الطالبة المنزلق 
 const FIXC=[["ورقة أسهل للضعيفة، وتبقى عند مستواها", "نبدأ من مستواها ونرفعها: من المحسوس إلى المجرد، ومن البسيط إلى التفكير المنطقي"], ["ثلاث أوراق لثلاث فئات ثابتة", "هدف واحد للجميع بمداخل متعددة، والطالبة تنتقل وترتقي"], ["«صح أو خطأ»، أو «ممتاز» ودرجة", "ما تحقق + الدليل + الخطوة التالية… فوراً"], ["اختبار في النهاية لرصد الدرجة", "تقويم قبل وأثناء وبعد، يوجّه التدريس"], ["نمنعه خوفاً من الغش، أو ننسخ إجاباته", "أداة نحاورها، ونتحقق من إجاباتها بالتجربة والدليل"], ["مثال في آخر الدرس: «وين نشوفه؟»", "نبدأ بمشكلة حقيقية، والمفهوم أداة لحلّها"], ["نصيحة عامة «لا تهدري الكهرباء»", "نحسب ونصمّم بالعلم حلولاً توفّر الطاقة"], ["ذكر اسم قطر أو صورة العلم في مثال", "مشروعات قطر وإنجازاتها سياق حيّ للمفهوم، وقيمها في السلوك"]];
 /* line icons for the eight axes */
 const _ic=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-const AXI=[
+const AXI9=1;const AXI=[
  _ic('<circle cx="6" cy="9" r="2.2"/><circle cx="12" cy="6.5" r="2.6"/><circle cx="18" cy="9" r="2.2"/><path d="M2.8 18c.4-2.6 1.6-4 3.2-4s2.6.8 3 2"/><path d="M8 19c.3-3.4 1.8-5.5 4-5.5s3.7 2.1 4 5.5"/><path d="M15 16c.4-1.2 1.4-2 3-2s2.8 1.4 3.2 4"/>'),
  _ic('<path d="M3 20h18"/><rect x="4" y="13" width="4" height="7" rx=".8"/><rect x="10" y="9" width="4" height="11" rx=".8"/><rect x="16" y="4.5" width="4" height="15.5" rx=".8"/><path d="m16.5 3 1.5-1.2L19.5 3"/>'),
  _ic('<path d="M4 5.5h16v10H11l-4.5 3.5v-3.5H4z"/><path d="m8.5 10.5 2.3 2.2 4.7-4.7"/>'),
@@ -2095,13 +2112,15 @@ const AXI=[
  _ic('<path d="M9 17.5h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/><path d="M12 7v3l1.5 1.5"/>'),
  _ic('<path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19l7-7"/><path d="M3 21l2-2"/>'),
  `<svg viewBox="0 0 28 20" aria-hidden="true"><rect x=".5" y=".5" width="27" height="19" rx="2.5" fill="#8A1538" stroke="#E8C08A"/><path d="M.5 3A2.5 2.5 0 0 1 3 .5h6.2l2.3 1.06L9.2 2.6l2.3 1.06L9.2 4.7l2.3 1.06L9.2 6.8l2.3 1.06L9.2 8.9l2.3 1.06L9.2 11l2.3 1.06L9.2 13.1l2.3 1.06L9.2 15.2l2.3 1.06L9.2 17.3l2.3 1.06-2.3 1.14H3A2.5 2.5 0 0 1 .5 17z" fill="#fff"/></svg>`];
+AXD.push(["تعزيز الكفايات الأساسية","تنمية الكفايات الست: البحث والتقصي، والتفكير الناقد والإبداعي، واللغوية والعددية، والتعاون والمشاركة، وحل المشكلات، والتواصل.","وسم 🎯 تحت كل إشارة محور داخل المعمل يبيّن الكفاية التي تتعزّز في تلك الخطوة، والكفايات الست في كل محطة."]);
+AXI.push('🎯');AXC.push('في الفيزياء: الطالبة تتقصّى بالتجربة، وتحسب وتقرأ النص العلمي، وتتعاون مع مجموعتها، وتعرض نتيجتها وتناقشها.');
 document.addEventListener('click',e=>{const c=e.target.closest('.axcard');if(!c)return;const o=c.getAttribute('aria-expanded')==='true';c.setAttribute('aria-expanded',String(!o))});
 /* ===== home overview: what the workshop is about (general devices; trainees see their own card via QR) ===== */
 function renderOverview(){const o=$('#ov');if(!o)return;
   o.innerHTML=`<div class="box ov-why"><b class="why-t">لماذا نحن هنا اليوم؟</b><p class="why-s">لنُصحّح مفاهيم شائعة في التدريس، ونضع مكانها ممارساتٍ صحيحة… تُريح المعلّمة، وتُمتع الطالبة، وتُسرّع تعلّمها.</p><p class="why-w">في جعبتنا الكثير والممتع… <b>حيّاكم الله… أسفرت ونوّرت، واستهلّت وأمطرت</b></p></div>
    <div class="box ov-idea"><h3>فكرة الورشة في معادلة</h3><div class="ov-fma"><span><b>F</b>القوة<small>الاستراتيجية التدريسية الفاعلة</small></span><i>=</i><span><b>m</b>الكتلة<small>المحتوى وخصائص الطالبات</small></span><i>·</i><span><b>a</b>التسارع<small>التغذية الراجعة البنّاءة</small></span></div>
      <p class="lede" style="margin:8px 0 0;text-align:center">استراتيجية قوية مع تغذية راجعة سريعة… تُسرّع تعلّم الطالبات</p></div>
-   <div class="box ov-axbox"><h3>المحاور الثمانية</h3><div class="ov-ax8">${AXD.map((a,i)=>`<button type="button" class="axcard" aria-expanded="false"><span class="axic">${AXI[i]}</span><b>${a[0]}</b><span class="axin">${a[1]}<br><i>في آفاق:</i> ${a[2]}</span></button>`).join('')}</div></div>
+   <div class="box ov-axbox"><h3>المحاور التسعة</h3><div class="ov-ax8">${AXD.map((a,i)=>`<button type="button" class="axcard" aria-expanded="false"><span class="axic">${AXI[i]}</span><b>${a[0]}</b><span class="axin">${a[1]}<br><i>في آفاق:</i> ${a[2]}</span></button>`).join('')}</div></div>
    <div class="box"><h3>المحطات الخمس · من كتاب الصف الحادي عشر</h3><div class="ov-st">${ST.map((x,i)=>`<div><span class="n">${i+1}</span><b>${x[0]}</b><small>أ. ${x[1]} · صفحة ${x[2]}</small></div>`).join('')}</div>
      <p class="lede" style="margin:8px 0 0">عشر دقائق لكل محطة، تمرّ فيها كل مجموعة بخمس مراحل: التوقّع ← التجربة ← تحدّي القراءة ← المهمة المتمايزة ← تحقّق Copilot.</p></div>
    <div class="box"><h3>رحلة المتدربة اليوم</h3><ol class="ov-road">${["تصوّر الباركود الذي على بطاقتها، فيفتح باسمها ومجموعتها","تتابع العرض على جوالها حتى تُفتح المعامل","تدخل معمل محطتها، وتجيب عن كل مرحلة بنفسها","تُدار خمس جولات، وتنتقل المجموعات بين المحطات","تُعلن النتائج، ثم تحضر حصة الصف الحادي عشر","نقاش الأثر، والقياس البعدي، وجدار الالتزامات"].map(t=>`<li>${t}</li>`).join('')}</ol></div>
@@ -2142,7 +2161,7 @@ const AXQ=[["هل لاحظتنّ كيف بدأت كل عضوة من مدخل ي�
  ["هل كشفتنّ خطأ Copilot بالقياس قبل أن تعتمدن إجابته؟","أي جهاز من الحياة جعل المفهوم أقرب لطالبتكِ؟"],
  ["كيف حسبنا التوفير بالعلم بدل النصيحة العامة؟","أين ظهرت قطر في المحطة سياقاً حيّاً لا صورةً فقط؟"]];
 function axesTalk(r){
-  if(r>=4)return `<div class="ip-t">وقفة ختامية مع المحاور الثمانية</div><div class="axall">${AXES8.map((a,i)=>`<div><span class="fx-ic">${AXI[i]}</span><b>${a}</b></div>`).join('')}</div>
+  if(r>=4)return `<div class="ip-t">وقفة ختامية مع المحاور التسعة</div><div class="axall">${[...AXES8,"تعزيز الكفايات الأساسية"].map((a,i)=>`<div><span class="fx-ic">${AXI[i]}</span><b>${a}</b></div>`).join('')}</div>
     <ul class="ip-qs"><li>أي محور شعرتِ اليوم أنكِ تمكّنتِ منه أكثر؟</li><li>وأي مفهوم تغيّر عندكِ: كيف كان… وكيف صار؟</li></ul>`;
   const pr=AXPAIR[r]||AXPAIR[0];
   return `<div class="ip-t">وقفة مع المحاور · بعد الجولة ${ORD[r]}</div>
@@ -2247,7 +2266,7 @@ const SLIDES=[
  ()=>`<h3 class="s-h">المواضيع من كتاب الصف الحادي عشر</h3><div class="topics">${ST.map((s,i)=>`<div class="a${1+i%4}"><span class="n">م${i+1}</span><b>${s[0]}</b><span>صفحة ${s[2]}</span></div>`).join('')}</div><div class="kafrow" style="justify-content:center"><b>الكفايات الأساسية المعزَّزة في كل محطة</b>${KAF.map((t,i)=>`<span class="kf">${t}</span>`).join('')}</div>
    <div class="pages">${[5,6,7,8,9,10,11].map(n=>`<img src="i${n}.jpg" alt="صفحة من كتاب الفيزياء">`).join('')}</div>`,
  ()=>`<h3 class="s-h">الكفايات الأساسية المعزَّزة في كل محطة</h3><div class="kafgrid">${[['🔎','كفاية البحث والتقصي','نتوقّع ثم نختبر في المعمل ونتحقّق من النتيجة'],['💡','كفايتا التفكير الناقد والتفكير الإبداعي','نحاكم ادّعاء Copilot بالدليل، ونبتكر حلاً للمهمة المتمايزة'],['🔢','الكفاية اللغوية والكفاية العددية','نقرأ النص العلمي، ونحسب ونقارن القراءة بالقيمة النظرية'],['🤝','كفاية التعاون والمشاركة','الكل يجيب في كل مرحلة، ولا تتقدّم المجموعة إلا معاً'],['🧩','كفاية حل المشكلات','نشغّل الجهاز دون أن يحترق، ونصحّح الدائرة حتى تعمل'],['💬','كفاية التواصل','نعرض النتائج ونتبادل التغذية الراجعة مع المضيفة والزميلات']].map((x,i)=>`<div class="a${1+i%4}"><span class="ic">${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></div>`).join('')}</div><p class="lede" style="text-align:center;margin-top:10px">تتعزّز الكفايات الست في المحطات الخمس جميعها</p>`,
- ()=>`<h3 class="s-h">المحاور الثمانية… وعدساتكِ</h3><div class="axes" id="axGrid">${AXES8.map((a,i)=>`<div class="a${1+i%4}" data-i="${i}" role="button" tabindex="0"><span>${i+1}</span>${a}</div>`).join('')}</div>
+ ()=>`<h3 class="s-h">المحاور التسعة… وعدساتكِ</h3><div class="axes" id="axGrid">${[...AXES8,"تعزيز الكفايات الأساسية"].map((a,i)=>`<div class="a${1+i%4}" data-i="${i}" role="button" tabindex="0"><span>${i+1}</span>${a}</div>`).join('')}</div>
    <div class="axd" id="axD"><b>لكل متدربة عدسة ترصد بها محورين طوال اليوم</b></div>`,
  ()=>`<h3 class="s-h">كيف تظهر المحاور في كل محطة؟</h3><div class="map">${[["1. التوقّع",[[3,'قبلي']]],["2. التجربة",[0,5,[3,'أدائي']]],["3. تحدّي القراءة",[[3,'بوقت'],1]],["4. المهمة المتمايزة",[0,1,[3,'ختامي']]],["5. Copilot ومن قطر",[4,6,7]]].map(([t,l],i)=>`<div class="a${1+i%4}"><b>${t}</b>${l.map(x=>Array.isArray(x)?chip(x[0],x[1]):chip(x)).join('')}</div>`).join('')}</div>
    <p class="s-note">وبعد كل إجابة: ${chip(2)} ما تحقق · الدليل · الخطوة التالية</p>`,
@@ -2353,12 +2372,58 @@ function winHTML(){const R=GROUPS.map((g,k)=>({k,g,t:totalPts(k)||0,r:[0,1,2,3,4
   return `<div class="wpod">${pod.map(x=>{const i=R.indexOf(x);return `<div class="wp p${i+1}"><div class="wm">${med[i]}</div><b>${x.g.n}</b><small>${x.g.v}</small><div class="wt">${x.t}<span> نقطة</span></div><div class="wst">${i+1}</div></div>`}).join('')}</div>
   <div class="wtab"><div class="wrow wh"><span>المجموعة</span>${ORD.slice(0,5).map(o=>`<span>${o}</span>`).join('')}<span>المجموع</span></div>${R.map((x,i)=>`<div class="wrow ${i===0?'w1':''}"><span>${i<3?med[i]+' ':''}${x.g.n}</span>${x.r.map(v=>`<span>${v==null?'—':v}</span>`).join('')}<span><b>${x.t}</b></span></div>`).join('')}</div>`}
 setInterval(()=>{const b=document.getElementById('winBox');if(b&&!$('#v-show').hidden){const h=winHTML();if(b._h!==h){b._h=h;b.innerHTML=h}}},3000);
+
+/* ===== مشاهد «أ. أوم» — شرائح مستقلة لا تمسّ المعامل ولا الجولات ===== */
+const OHMS=[
+ {after:'محاور الورشة',q:'تسعة محاور في حصة مدتها 45 دقيقة؟! يعني تسعة أنشطة؟ هذه مدينة فاضلة… إحنا في مدرسة!',
+  a:['ليست تسعة أنشطة… نشاط واحد مصمَّم بإتقان، والمحاور التسعة ساكنة فيه ضمنياً','سؤال المستويات الثلاثة يحمل التمايز ومراعاة الفروق الفردية','بطاقات الطيف تحمل التقويم والتغذية الراجعة، ومحطة الخرسعة تحمل الواقع والهوية والاستدامة','التحقق من Copilot يوظّف الذكاء الاصطناعي، والكفايات تتعزّز في كل خطوة'],
+  f:'المحاور لا تُضاف إلى الحصة… المحاور هي الحصة'},
+ {after:'العمل الجماعي: مَن تعمل',q:'في صفّي 30 طالبة… وحدة تشتغل والباقي يتفرّجون!',
+  a:['الكل يجيب في كل مرحلة على جهازه أو في دليله','المجموعة لا تتقدّم إلا حين تُنهي جميع عضواتها','القائدة تتبدّل في كل محطة، وتساعد من تحتاج إلى مساعدة'],
+  f:'لا متفرّجات في آفاق… الكل تيار'},
+ {after:'كيف تُقيَّم المجموعات؟',q:'تغذية راجعة لثلاثين طالبة في كل حصة؟! متى أصحّح؟!',
+  a:['بطاقات الطيف والمنصة تعطيكِ نتيجة الصف كله في ثوانٍ','التغذية الراجعة ثلاث كلمات: ما تحقق + الدليل + الخطوة التالية… في عشرين ثانية','والزميلة والمصدر العلمي شريكان لكِ في التغذية الراجعة'],
+  f:'التغذية الراجعة تسارع… لا عبء'},
+ {after:'المحطة 5: البوابات المنطقية',q:'ذكاء اصطناعي في الحصة؟! البنات بيغشّون منه!',
+  a:['نجعله المتّهَم لا المجيب','الطالبة تحاكم ادّعاءه بالتجربة والمصدر العلمي','فتتعلّم أن الذكاء الاصطناعي يخطئ… والتجربة هي الحَكَم'],
+  f:'الذكاء الاصطناعي تحت المجهر… لا فوق العقل'},
+ {after:'مقارنة: كيف تطبّق المعلمة',q:'30 طالبة يعني 30 خطة؟! أنا معلمة… مو مصنع!',
+  a:['سؤال واحد بثلاثة مستويات: مستكشفة، ومحلّلة، ومبتكرة','الطالبة تبدأ من مستواها… ثم ترتقي','ورقة واحدة، وتحضير واحد'],
+  f:'تمايز ذكي… لا تحضير مضاعف'},
+ {after:'أنماط التعلم… كان وصار',q:'ما عندي أجهزة ولا منصة… ولا أعرف أصمّم موقع!',
+  a:['ليس شرطاً أن تصمّمي موقعاً','جهاز واحد للمجموعة بالتناوب، أو المعمل على البروجكتر','والمفهوم نفسه يصل بالصورة واليد والرقم والنقاش'],
+  f:'الفكرة أهم من الجهاز'}];
+const OHMK='aafaq-ohm-on',OHMSK='aafaq-ohm-snd';
+const ohmOn=()=>{try{return localStorage.getItem(OHMK)!=='0'}catch(e){return true}};
+const ohmSnd=()=>{try{return localStorage.getItem(OHMSK)!=='0'}catch(e){return true}};
+function ohmSlide(k){const o=OHMS[k];const f=()=>`<div class="ohm" data-ohm="${k}"><div class="ohm-card"><div class="ohm-top"><span class="ohm-who">⚡ أ. أوم</span><b class="ohm-h">مقاومة عالية!</b><span class="ohm-m"><i id="ohmR">1000</i> Ω</span></div>
+ <p class="ohm-q" id="ohmQ">«${o.q}»</p><p class="ohm-ar" id="ohmAr">أ. أريج: «هدّي علينا يا أ. أوم… لا تشحنين الجو! الحل جاهز ⚡»</p>
+ <ul class="ohm-a">${o.a.map((t,i)=>`<li id="ohmA${i}">${t}</li>`).join('')}</ul><div class="ohm-f" id="ohmF"><span class="bulb">💡</span>${o.f}</div></div>
+ <button type="button" class="ohm-skip" id="ohmSkip" title="إكمال المشهد">⏭</button></div>`;f.ohm=1;return f}
+function ohmMedal(){const f=()=>`<div class="ohm done medal"><div class="ohm-card"><div class="ohm-top"><b class="ohm-h">وسام «تحوّلتُ إلى تيار» 💡</b></div>
+ <p class="ohm-q">يُمنح لـ <b>أ. أوم</b>… بعد أن انخفضت مقاومتها إلى الصفر!</p><p class="ohm-ar" style="opacity:1">أ. أوم: «خلاص… مقاومتي صفر!»</p>
+ <div class="ohm-f" style="opacity:1"><span class="bulb">🏅</span>شكراً للأستاذة نهى محسن على أداء دور «أ. أوم» ببراعة</div></div></div>`;f.ohm=1;return f}
+let OHMT=[];let OHMAC=null;
+function ohmTone(kind){if(!ohmSnd())return;try{OHMAC=OHMAC||new (window.AudioContext||window.webkitAudioContext)();const ac=OHMAC,t=ac.currentTime;
+  const note=(fr,st,du,ty,vol)=>{const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.setValueAtTime(fr,t+st);g.gain.setValueAtTime(0.0001,t+st);g.gain.exponentialRampToValueAtTime(vol,t+st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+st+du);o.connect(g).connect(ac.destination);o.start(t+st);o.stop(t+st+du+0.05)};
+  if(kind==='alarm'){for(let i=0;i<4;i++){note(880,i*0.45,0.2,'square',0.12);note(620,i*0.45+0.22,0.2,'square',0.12)}}
+  else{[523,659,784,1047].forEach((fr,i)=>note(fr,i*0.13,0.6,'sine',0.18))}}catch(e){}}
+function ohmStop(){OHMT.forEach(clearTimeout);OHMT=[]}
+function ohmRun(){ohmStop();const el=document.querySelector('#slide .ohm[data-ohm]');if(!el)return;const at=(ms,fn)=>OHMT.push(setTimeout(fn,ms));
+  const card=el.querySelector('.ohm-card');let r=1000;const meter=to=>{const st=r,t0=Date.now(),D=24000;const tick=()=>{const k=Math.min(1,(Date.now()-t0)/D);r=Math.round(st+(to-st)*k);const e=document.getElementById('ohmR');if(e)e.textContent=r;if(k<1)OHMT.push(setTimeout(tick,200))};tick()};
+  const H=t=>{const h=el.querySelector('.ohm-h');if(h)h.textContent=t};const finish=()=>{ohmStop();el.classList.add('s1','s2','s3','done');H('انخفضت المقاومة… ومرّ التيار!');['ohmQ','ohmAr','ohmF'].forEach(i=>{const e=document.getElementById(i);if(e)e.classList.add('on')});el.querySelectorAll('.ohm-a li').forEach(l=>l.classList.add('on'));const e=document.getElementById('ohmR');if(e)e.textContent=10;ohmTone('chime')};
+  ohmTone('alarm');at(3000,()=>document.getElementById('ohmQ').classList.add('on'));at(15000,()=>document.getElementById('ohmAr').classList.add('on'));
+  at(20000,()=>{el.classList.add('s1');H('المقاومة تنخفض…');meter(10)});const li=[...el.querySelectorAll('.ohm-a li')];li.forEach((l,i)=>at(22000+i*Math.floor(20000/li.length),()=>l.classList.add('on')));
+  at(32000,()=>el.classList.add('s2'));at(45000,finish);const sk=document.getElementById('ohmSkip');if(sk)sk.onclick=finish}
+(function(){const at=t=>{let i=SLIDES.findIndex(f=>{try{return String(f).includes(t)}catch(e){return false}});if(i<0)i=SLIDES.findIndex(f=>{try{return f().includes(t)}catch(e){return false}});return i};
+  const W=at('تكريم المجموعة الفائزة');if(W>=0)SLIDES.splice(W+1,0,ohmMedal());
+  for(let k=OHMS.length-1;k>=0;k--){const i=at(OHMS[k].after);if(i>=0)SLIDES.splice(i+1,0,ohmSlide(k))}})();
 let slide=0,goTimer=null;
 function renderShow(){
   if(gateOn('show','a'))return;if(LIVE.on)return renderLive(true);
   clearInterval(goTimer);goTimer=null;window._goArm=0;$('#sBack').hidden=true;
   $('#slide').innerHTML=SLIDES[slide]();$('#slide').classList.remove('in');void $('#slide').offsetWidth;$('#slide').classList.add('in');
-  $('#sNum').textContent=`${slide+1} / ${SLIDES.length}`;
+  $('#sNum').textContent=`${slide+1} / ${SLIDES.length}`;ohmRun();
   document.querySelectorAll('#axGrid [data-i]').forEach(c=>{const f=()=>{const i=+c.dataset.i;document.querySelectorAll('#axGrid [data-i]').forEach(x=>x.classList.toggle('open',x===c));clearInterval(window._axT);$('#axD').innerHTML=`<b>${i+1}. ${AXD[i][0]}</b><span>${AXD[i][1]}</span><span style="color:var(--emerald);font-weight:700">${AXC[i]}</span><span class="lab-in">في منصة آفاق: ${AXD[i][2]}</span>`};c.onclick=f;c.onkeydown=e=>{if(e.key==='Enter')f()}});
   clearInterval(window._axT);if($('#axGrid')){let ai=0;const show=()=>{const c=document.querySelector(`#axGrid [data-i="${ai}"]`);if(!c)return clearInterval(window._axT);document.querySelectorAll('#axGrid [data-i]').forEach(x=>x.classList.toggle('open',x===c));$('#axD').innerHTML=`<b>${ai+1}. ${AXD[ai][0]}</b><span>${AXD[ai][1]}</span><span style="color:var(--emerald);font-weight:700">${AXC[ai]}</span><span class="lab-in">في منصة آفاق: ${AXD[ai][2]}</span>`;ai=(ai+1)%8};show();window._axT=setInterval(show,9000)}
   clearInterval(window._dlT);if($('#dlS')){let di=0;
@@ -2377,8 +2442,10 @@ function renderShow(){
     let c=3;goTimer=setInterval(()=>{c--;if($('#goC'))$('#goC').textContent=Math.max(c,0);if(c<=0){clearInterval(goTimer);goTimer=null;launch(R)}},1000)}}
 }
 function launch(r){C2.active=C2.active.map(()=>true);startRound(r||0);slide=Math.min(slide+1,SLIDES.length-1);if(!$('#v-show').hidden)enterLive();else document.querySelector('[data-v="screen"]').click()}
-$('#sPrev').onclick=()=>{if(LIVE.on){liveStep(-1);return}slide=Math.max(0,slide-1);renderShow()};
-$('#sNext').onclick=()=>{if(LIVE.on){liveStep(1);return}slide=Math.min(SLIDES.length-1,slide+1);renderShow()};
+(function(){const a=document.getElementById('ohmOnChk'),b=document.getElementById('ohmSndChk');if(!a)return;a.checked=ohmOn();b.checked=ohmSnd();
+  a.onchange=()=>{try{localStorage.setItem(OHMK,a.checked?'1':'0')}catch(e){}};b.onchange=()=>{try{localStorage.setItem(OHMSK,b.checked?'1':'0')}catch(e){}}})();
+$('#sPrev').onclick=()=>{if(LIVE.on){liveStep(-1);return}slide=Math.max(0,slide-1);while(slide>0&&SLIDES[slide].ohm&&!ohmOn())slide--;renderShow()};
+$('#sNext').onclick=()=>{if(LIVE.on){liveStep(1);return}slide=Math.min(SLIDES.length-1,slide+1);while(slide<SLIDES.length-1&&SLIDES[slide].ohm&&!ohmOn())slide++;renderShow()};
 $('#sBack').onclick=()=>exitLive();
 /* presenter clicker + keyboard: PageDown/PageUp (clicker), arrows (RTL), B = black screen */
 document.addEventListener('keydown',e=>{if($('#v-show').hidden||$('#v-show').classList.contains('locked')||e.target.closest('input,textarea,select'))return;const k=e.key;
