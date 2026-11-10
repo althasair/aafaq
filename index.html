@@ -1573,6 +1573,7 @@ function runStation(k){
     }else{
       // mystery gate: override sim gate selector
       $('#gsel').hidden=true;const real=Bv;$('#gN').textContent='؟';
+      {const st=L.sim.st;st.g=real;st.seen={};const sw=$('#swA');if(sw&&sw.onclick){sw.onclick();sw.onclick()}const q0=st.seen[real+'00'];st.seen={};st.seen[real+'00']=q0;document.querySelectorAll('#tt tr[data-r]').forEach(tr=>{tr.lastElementChild.textContent=tr.dataset.r==='00'?q0:'؟'});$('#gN').textContent='؟'}
       $('#ans').innerHTML=`<div class="opts" id="mo">${['AND','OR','NAND','NOR','XOR'].map(x=>`<button type="button" data-g="${x}">${x}</button>`).join('')}</div>`;
       const ev=`البوابة الغامضة هي ${real}، وجدولها: ${['00','01','10','11'].map(r=>r+'→'+origOut(real,+r[0],+r[1])).join('  ')}`;
       const restore=()=>{L.sim.out=origOut};
